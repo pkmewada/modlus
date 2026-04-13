@@ -1,0 +1,19 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteBase /mamix/
+
+RewriteRule ^$ index.php [L]
+RewriteRule ^mamix_esbuild/?$ /mamix/login [R=302,L,NC]
+
+# Serve existing files and directories directly.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Redirect explicit PHP page requests to clean auth URLs.
+RewriteRule ^mamix_esbuild/pages/(login|signup|verifyotp|dashboard|addlead|leads|setup|logout)\.php$ /mamix/$1 [R=302,L,NC]
+
+# Route clean app URLs into the app router.
+RewriteRule ^(login|signup|verifyotp|dashboard|addlead|leads|setup|logout)/?$ mamix_esbuild/routes.php [L,QSA,NC]
+
