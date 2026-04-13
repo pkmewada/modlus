@@ -2,9 +2,9 @@
 session_start();
 
 if (isset($_SESSION['userId'])) {
-    header('Location: /mamix/dashboard');
+    header('Location: /dashboard');
     exit();
 }
 
-header('Location: /mamix/login');
+header('Location: /login');
 exit();
