@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 // Replace with your actual domain path and a strong secret token.
-$repoDir = '/home/u438562206/domains/YOUR-DOMAIN/public_html';
+$repoDir = '/home/u438562206/domains/modlus.in/public_html';
 $deployScript = $repoDir . '/deploy.sh';
 $logFile = $repoDir . '/deploy.log';
-$secretToken = 'replace-with-a-strong-token';
+$secretToken = '69dccd7c-3b90-8324-bbb1-7dd2dcaf04f0';
 
 header('Content-Type: application/json; charset=utf-8');
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="/home/u438562206/domains/YOUR-DOMAIN/public_html"
+REPO_DIR="/home/u438562206/domains/modlus.in/public_html"
 LOG_FILE="${REPO_DIR}/deploy.log"
 
 function log() {
