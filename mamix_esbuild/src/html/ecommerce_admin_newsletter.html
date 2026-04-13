@@ -1,0 +1,407 @@
+<!-- include mainhead.html"-->
+
+<!-- Dropzone CSS -->
+<link rel="stylesheet" href="../assets/libs/dropzone/dropzone.css">
+
+<!-- Quill editor Css -->
+<link rel="stylesheet" href="../assets/libs/quill/quill.snow.css">
+<link rel="stylesheet" href="../assets/libs/quill/quill.bubble.css">
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">News Letter</h1>
+                        <div class="">
+                            <nav>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Ecommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">News Letter</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-primary-light btn-wave me-2">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+                
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    SUBSCRIBERS LIST
+                                </div>
+                                <div class="d-flex gap-3 align-items-center flex-wrap">
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ti ti-sort-descending-2 me-1"></i> Sort By
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Created Date</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Status</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">User Name</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Newest</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Oldest</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="custom-form-group flex-grow-1">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Search Here.." aria-label="Recipient's username" aria-describedby="button-addon2">
+                                        <a href="javascript:void(0);" class="text-muted custom-form-btn"><i class="ti ti-search"></i></a>
+                                    </div> 
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                        <i class="bi bi-plus-circle"></i>  Add User
+                                    </a> 
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">User Name</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Created Date</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/1.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Emily Johnson</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Pune, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>emily.johnson@example.com</td>
+                                                <td>12 Oct 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/3.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Alex Smith</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Noida, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>alex.smith@email.com</td>
+                                                <td>15 Nov 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/4.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Jessica Miller</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Banglore, Karnataka, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>jessica.miller@example.net</td>
+                                                <td>21 Jan 2024</td>
+                                                <td><span class="badge bg-danger-transparent">Deactive</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/5.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Ryan Davis</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Surat, Gujarat, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>ryan.davis@email.org</td>
+                                                <td>30 Mar 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/21.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Megan Brown</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Surat, Gujarat, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>megan.brown@example.co</td>
+                                                <td>25 April 2024</td>
+                                                <td><span class="badge bg-danger-transparent">Deactive</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/7.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Jordan Taylor</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Surat, Gujarat, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>jordan.taylor@example.info</td>
+                                                <td>16 May 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/8.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Ashley White</a>
+                                                            <p class="fs-12 text-muted mb-0"><i class="bi bi-geo-alt"></i> Surat, Gujarat, India</p>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>ashley.white@example.biz</td>
+                                                <td>21 June 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>
+                                                    <a href="ecommerce_admin_vendordetails.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addnewuser">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer border-top-0">
+                                <nav aria-label="Page navigation" class="pagination-style-4 float-end">
+                                    <ul class="pagination mb-0">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="javascript:void(0)">
+                                                Prev
+                                            </a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="javascript:void(0)">
+                                                <i class="bi bi-three-dots"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0)">16</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0)">17</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link text-primary" href="javascript:void(0)">
+                                                next
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        <!-- Start::Add New User off-canvas -->
+        <div class="modal fade" id="addnewuser" tabindex="-1" aria-labelledby="addnewuser" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="exampleModalLabel">Add New User</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row gy-4 mb-4">
+                            <div class="col-lg-12">
+                                <label for="User-Name" class="form-label">User Name : </label>
+                                <input type="text" class="form-control" id="User-Name" placeholder="User Name" value="Brenda Simpson">
+                            </div>
+                            <div class="col-xl-12">
+                                <label for="Email-id" class="form-label">Email ID</label>
+                                <input type="text" class="form-control" id="Email-id" placeholder="Enter Here" value="brendasimpson@gmail.com">
+                            </div>
+                            <div class="col-lg-12">
+                                <label class="form-label">Location</label> 
+                                <select class="form-control" data-trigger name="Location"
+                                    >
+                                    <option value="Choice 1"> Pune, India</option> 
+                                    <option value="Choice 2"> Noida, India</option>
+                                    <option value="Choice 3"> Banglore, Karnataka, India</option>
+                                    <option value="Choice 4"> Surat, Gujarat, India</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-12">
+                                <label class="form-label">Status</label> 
+                                <select class="form-control" data-trigger name="Status"
+                                    >
+                                    <option value="Choice 1">Active</option> 
+                                    <option value="Choice 2">Deactive</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-12">                                            
+                                <div class="mb-3">
+                                    <span class="avatar avatar-lg avatar-rounded">
+                                        <img src="../assets/images/faces/9.jpg" alt="" class="w-100 h-100">
+                                        <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                    </span>
+                                </div>
+                                <div class="btn-list">
+                                    <input class="form-control" type="file" id="formFile">
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary">Add User</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::Add New User off-canvas -->
+
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- include custom_switcherjs.html"-->
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>

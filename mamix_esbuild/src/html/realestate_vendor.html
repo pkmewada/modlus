@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="horizontal" data-nav-style="menu-click" data-menu-position="fixed" data-theme-mode="light">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> MAMIX - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+    <script>
+        if(localStorage.mamixdarktheme){
+            document.querySelector("html").setAttribute("data-theme-mode","dark")
+        }
+        if(localStorage.mamixrtl){
+            document.querySelector("html").setAttribute("dir","rtl")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+        }
+        if(localStorage.mamixltr){
+            document.querySelector("html").setAttribute("dir","ltr")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.min.css");
+        }
+		let html = document.querySelector("html");
+		if (window.innerWidth < 992) {
+		html.setAttribute("data-toggled", "close");
+		}
+    </script>
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet" >
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet" >
+
+    <!-- SwiperJS Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Dropzone Css -->
+    <link rel="stylesheet" href="../assets/libs/dropzone/dropzone.css">
+
+</head>
+
+<body class="landing-body">
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="">
+                <p class="switcher-style-head">Theme Color Mode:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-light-theme">
+                                Light
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-light-theme"
+                                checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-dark-theme">
+                                Dark
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-dark-theme">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <p class="switcher-style-head">Directions:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-ltr">
+                                LTR
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-ltr" checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-rtl">
+                                RTL
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-rtl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-colors">
+                <p class="switcher-style-head">Theme Primary:</p>
+                <div class="d-flex align-items-center switcher-style">
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-1" type="radio"
+                            name="theme-primary" id="switcher-primary">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-2" type="radio"
+                            name="theme-primary" id="switcher-primary1">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-3" type="radio" name="theme-primary"
+                            id="switcher-primary2">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-4" type="radio" name="theme-primary"
+                            id="switcher-primary3">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-5" type="radio" name="theme-primary"
+                            id="switcher-primary4">
+                    </div>
+                    <div class="form-check switch-select me-3 ps-0 mt-1 color-primary-light">
+                        <div class="theme-container-primary"></div>
+                        <div class="pickr-container-primary"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="switcher-style-head">reset:</p>
+                <div class="text-center">
+                    <button id="reset-all" class="btn btn-danger mt-3">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="landing-page-wrapper">
+
+        <!-- app-header -->
+       <header class="app-header" id="header">
+
+           <!-- Start::main-header-container -->
+           <div class="main-header-container container-fluid">
+
+               <!-- Start::header-content-left -->
+               <div class="header-content-left">
+
+                   <!-- Start::header-element -->
+                   <div class="header-element">
+                       <div class="horizontal-logo">
+                           <a href="index.html" class="header-logo">
+                               <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                               <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                           </a>
+                       </div>
+                   </div>
+                   <!-- End::header-element -->
+
+                   <!-- Start::header-element -->
+                   <div class="header-element">
+                       <!-- Start::header-link -->
+                       <a href="javascript:void(0);" class="sidemenu-toggle header-link" data-bs-toggle="sidebar">
+                           <span class="open-toggle">
+                               <i class="ri-menu-3-line fs-20"></i>
+                           </span>
+                       </a>
+                       <!-- End::header-link -->
+                   </div>
+                   <!-- End::header-element -->
+
+               </div>
+               <!-- End::header-content-left -->
+
+               <!-- Start::header-content-right -->
+               <div class="header-content-right">
+
+                   <!-- Start::header-element -->
+                   <div class="header-element align-items-center">
+                       <!-- Start::header-link|switcher-icon -->
+                       <div class="btn-list d-lg-none d-block">
+                           <a href="sign-up-basic.html" class="btn btn-primary-light">
+                               Sign Up
+                           </a>
+                           <button class="btn btn-icon btn-success switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                               <i class="ri-settings-3-line"></i>
+                           </button>
+                       </div>
+                       <!-- End::header-link|switcher-icon -->
+                   </div>
+                   <!-- End::header-element -->
+
+               </div>
+               <!-- End::header-content-right -->
+
+           </div>
+           <!-- End::main-header-container -->
+
+       </header>
+       <!-- /app-header -->
+
+       <!-- Start::app-sidebar -->
+       <aside class="app-sidebar sticky" id="sidebar">
+
+           <div class="container-xl px-0">
+               <!-- Start::main-sidebar -->
+               <div class="main-sidebar">
+
+                   <!-- Start::nav -->
+                   <nav class="main-menu-container nav nav-pills sub-open">
+                       <div class="landing-logo-container">
+                           <div class="horizontal-logo">
+                               <a href="index.html" class="header-logo">
+                                   <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                                   <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                               </a>
+                           </div>
+                       </div>
+                       <div class="slide-left" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg></div>
+                       <ul class="main-menu flex-fill ms-lg-5">
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a class="side-menu__item active" href="javascript:void(0);">
+                                   <span class="side-menu__label">Home</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Properties</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Buy</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Rent</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide has-sub">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Pages</span>
+                                   <i class="fe fe-chevron-down side-menu__angle"></i>
+                               </a>
+                               <ul class="slide-menu child1">
+                                   <li class="slide">
+                                       <a href="javascript:void(0);" class="side-menu__item">Abous Us</a>
+                                   </li>
+                                   <li class="slide">
+                                       <a href="javascript:void(0);" class="side-menu__item">Terms & Conditions</a>
+                                   </li>
+                                   <li class="slide">
+                                       <a href="javascript:void(0);" class="side-menu__item">Privacy Policy</a>
+                                   </li>
+                                   <li class="slide has-sub">
+                                       <a href="javascript:void(0);" class="side-menu__item">Level-2
+                                           <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                       <ul class="slide-menu child2">
+                                           <li class="slide">
+                                               <a href="javascript:void(0);" class="side-menu__item">Level-2-1</a>
+                                           </li>
+                                           <li class="slide has-sub">
+                                               <a href="javascript:void(0);" class="side-menu__item">Level-2-2
+                                                   <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                               <ul class="slide-menu child3">
+                                                   <li class="slide">
+                                                       <a href="javascript:void(0);" class="side-menu__item">Level-2-2-1</a>
+                                                   </li>
+                                                   <li class="slide has-sub">
+                                                       <a href="javascript:void(0);" class="side-menu__item">Level-2-2-2</a>
+                                                   </li>
+                                               </ul>
+                                           </li>
+                                       </ul>
+                                   </li>
+                               </ul>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Agents</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Contact Us</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                       </ul>
+                       <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
+                       <div class="d-lg-flex d-none align-items-center">
+                           <!-- Start::header-link -->
+                           <a href="javascript:void(0);" class="me-3" data-bs-toggle="modal" data-bs-target="#searchModal">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="20px" viewBox="0 0 24 24"><path fill="var(--primary-color)" d="M21.71,20.29,18,16.61A9,9,0,1,0,16.61,18l3.68,3.68a1,1,0,0,0,1.42,0A1,1,0,0,0,21.71,20.29ZM11,18a7,7,0,1,1,7-7A7,7,0,0,1,11,18Z"/></svg>
+                           </a>
+                           <!-- End::header-link -->
+                           <!-- Start::dropdown -->
+                           <div class="country-selector dropdown">
+                               <!-- Start::dropdown-toggle -->
+                               <a href="javascript:void(0);" class="btn btn-wave btn-light border btn-country dropdown-toggle me-2" data-bs-toggle="dropdown">
+                                   English
+                               </a>
+                               <!-- End::dropdown-toggle -->
+                               <ul class="main-header-dropdown dropdown-menu py-2" data-popper-placement="none">
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           English
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           Spanish
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           French
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           German
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           Italian
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           Russian
+                                       </a>
+                                   </li>
+                               </ul>
+                           </div>
+                           <!-- End::dropdown -->                         
+                           <div class="btn-list d-xl-flex d-none">
+                               <button class="btn btn-wave btn-light border">
+                                   Login / Register
+                               </button>
+                               <button class="btn btn-wave btn-primary">
+                                   <i class="bi bi-plus-circle me-2"></i>Post Property
+                               </button>
+                           </div>
+                           
+                           <a href="javascript:void(0);" class="btn btn-icon btn-secondary-light switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                               <i class="ti ti-settings"></i>
+                           </a>
+                       </div>    
+                   </nav>
+                   <!-- End::nav -->
+
+               </div>
+               <!-- End::main-sidebar -->
+           </div>
+
+       </aside>
+       <!-- End::app-sidebar -->
+
+        <!-- Start::app-content -->
+        <div class="main-content landing-main">
+
+            <!-- Start:: Breadcrumb-->
+            <div class="border-bottom border-top py-3 bg-white">
+                <div class="container">
+                    <div class="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Real Estate</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Vendor</li>
+                            </ol>
+                        </nav>
+                        <p class="mb-0">
+                            <span class="text-muted">Updated on </span> Yesterday
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- End:: Breadcrumb-->
+
+             <!-- Start:: Landing Banner -->
+             <div class="landing-banner">
+                <section class="py-5">
+                    <div class="container main-banner-container">
+                        <div class="row gy-2">
+                            <div class="col-lg-8 col-md-8">
+                                <div class="d-flex align-items-center flex-wrap gap-3">
+                                    <div>
+                                        <span class="realestate-company-icon">
+                                           <img src="../assets/images/company-logos/1.png" alt="">
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);"> sprukotechnologies</a></h4>
+                                        <p class="mb-2">Member Since <span class="fw-semibold">2005</span></p>
+                                        <div class="d-flex align-items-center fs-14 flex-wrap ap-2">
+                                            <p class="fs-15 fw-semibold mb-0">Customer Ratings : </p>
+                                            <div class="min-w-fit-content">
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-half"></i></span>
+                                            </div>
+                                            <p class="mb-0 mx-1 min-w-fit-content text-muted">
+                                                <span>(142)</span>
+                                                <span>Ratings</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 my-md-auto">
+                                <div class="row gy-2">
+                                    <div class="col-lg-6">
+                                        <div class="p-2 bg-primary-transparent rounded d-flex gap-2 align-items-center">
+                                            <span class="avatar avatar-sm bg-primary rounded-circle">
+                                                <i class="bi bi-building"></i>
+                                            </span>
+                                            <p class="mb-0 fw-semibold">156 Properties</p>
+                                        </div>
+                                    </div> 
+                                    <div class="col-lg-6">
+                                        <div class="p-2 bg-secondary-transparent rounded d-flex gap-2 align-items-center">
+                                            <span class="avatar avatar-sm bg-secondary rounded-circle">
+                                                <i class="bi bi-bar-chart-fill"></i>
+                                            </span>
+                                            <p class="mb-0 fw-semibold">100 Sales</p>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section> 
+            </div>
+            <!-- End:: Landing Banner -->
+
+            <!-- Start:: Nav Tabs-->
+            <div class="border-bottom bg-white">
+                <div class="container">
+                    <ul class="nav nav-tabs tab-style-8 scaleX custom-nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="#Profile-tab" class="nav-link p-3 active" data-bs-toggle="tab" aria-selected="true" role="tab">My Profile</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#allproperties-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">All Properties</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#addproperty-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Add Property</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#pending-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Pending Approved</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#settings-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Settings</a>
+                        </li>
+                    </ul> 
+                </div>
+            </div>
+            <!-- End:: Nav Tabs-->
+
+            <!-- Start:: Section-1 -->
+            <section class="section py-4 bg-white">
+                <div class="container"> 
+                    <div class="tab-content">
+                        <div class="tab-pane border-0 p-0 show active" id="Profile-tab" role="tabpanel"> 
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title flex-fill">
+                                       Basic Information
+                                    </div>
+                                    <div>
+                                        <p class="fw-semibold mb-2">Profile 60% completed - <a href="javscript:void(0);" class="text-primary fs-12">Finish now</a></p>
+                                        <div class="progress progress-xs progress-animate">
+                                            <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gy-4 mb-4">
+                                        <div class="col-xl-6">
+                                            <label for="vendor-name" class="form-label">Vendor Name</label>
+                                            <input type="text" class="form-control" id="vendor-name" placeholder="vendor Name" value="Jack Miller">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="vendor-username" class="form-label">Vendor Username</label> 
+                                            <input type="text" class="form-control" id="vendor-username" placeholder="Vendor username" value="sprukotechnologies">
+                                        </div> 
+                                        <div class="col-xl-6">
+                                            <label for="company-name" class="form-label">Company Name</label>
+                                            <input type="text" class="form-control" id="company-name" placeholder="Company Name" value="Spruko Technologies PRIVATE LIMITED">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="company-website" class="form-label">Company Website</label> 
+                                            <input type="text" class="form-control" id="company-website" placeholder="Company Website" value="https://spruko.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="email-address" class="form-label">Email Address :</label>
+                                            <input type="text" class="form-control" id="email-address" placeholder="xyz@gmail.com" value="json@gmail.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Category-select" class="form-label">Category :</label>
+                                            <select class="form-control" data-trigger name="Category-select" id="Category-select">
+                                                <option value="Choice 1">Commercial</option>
+                                                <option value="Choice 2">Residential</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="phone-number" class="form-label">Mobile Number :</label>
+                                            <input type="text" class="form-control" id="phone-number" placeholder="*** *** ****" value="65432 76765">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="establishment-year" class="form-label">Establishment Year :</label>
+                                            <input type="text" class="form-control" id="establishment-year" placeholder="Establishment Year" value="2019">
+                                        </div>
+                                    </div>
+                                    <div class="row gy-4"> 
+                                        <div class="col-xl-6">
+                                            <label for="Address" class="form-label">Address :</label>
+                                            <input type="text" class="form-control" id="Address" placeholder="Address" value="USA">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="zip-code" class="form-label">Zip Code :</label>
+                                            <input type="text" class="form-control" id="zip-code" placeholder="Zip Code" value="1234">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="facebook" class="form-label">Facebook :</label>
+                                            <input type="text" class="form-control" id="facebook" placeholder="https://" value="https://www.facebook.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Twitter" class="form-label">Twitter :</label>
+                                            <input type="text" class="form-control" id="Twitter" placeholder="https://" value="https://twitter.com"> 
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Pinterest" class="form-label">Pinterest:</label>
+                                            <input type="text" class="form-control" id="Pinterest" placeholder="https://" value="https://in.pinterest.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Linkedin" class="form-label">Linkedin :</label>
+                                            <input type="text" class="form-control" id="Linkedin" placeholder="https://" value="https://www.linkedin.com">
+                                        </div>
+                                        <div class="col-xl-12">                                            
+                                            <div class="mb-3">
+                                                <span class="avatar avatar-lg avatar-rounded">
+                                                    <img src="../assets/images/faces/9.jpg" alt="" class="w-100 h-100">
+                                                    <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                                </span>
+                                            </div>
+                                            <div class="btn-list">
+                                                <input class="form-control" type="file" id="formFile">
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <label for="bio" class="form-label">Bio :</label>
+                                            <textarea class="form-control" id="bio" rows="7">Lorem ipsum dolor sit amet consectetur adipisicing elit. At sit impedit, officiis non minima saepe voluptates a magnam enim sequi porro veniam ea suscipit dolorum vel mollitia voluptate iste nemo!</textarea>
+                                        </div>
+                                    </div>                                        
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-end">
+                                        <button class="btn btn-primary">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="allproperties-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header justify-content-between">
+                                    <div class="card-title">
+                                        All Properties
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div>
+                                            <input class="form-control form-control-sm" type="text" placeholder="Search Here" aria-label=".form-control-sm example">
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-wave waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort By<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);">New</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Month</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="row" class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts1" value="" aria-label="..."></th>
+                                                    <th scope="col">Property Name</th>
+                                                    <th scope="col">Category</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Type</th>
+                                                    <th scope="col">Posted Date</th>
+                                                    <th scope="col">Location</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts2" value="" aria-label="..."></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/2.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Duplex House</a></p>
+                                                                <p class="fs-12 text-muted mb-0">5BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Luxury House
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-success-transparent">Active</span></td>
+                                                    <td>
+                                                        For Rent
+                                                    </td>
+                                                    <td>03 Sep 2022</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">Germany</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$15,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts3" value="" aria-label="..." checked></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/4.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Nature House</a></p>
+                                                                <p class="fs-12 text-muted mb-0">3BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Garden Villa
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-danger-transparent">Expired</span></td>
+                                                    <td>
+                                                        For Sale
+                                                    </td>
+                                                    <td>16 Nov 2022</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">Canada</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$16,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts4" value="" aria-label="..." checked></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/6.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Riddi Houses</a></p>
+                                                                <p class="fs-12 text-muted mb-0">2BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Commercial
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-warning-transparent">Pending</span></td>
+                                                    <td>
+                                                        For Rent
+                                                    </td>
+                                                    <td>17 Jan 2024</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">Europe</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$32,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts5" value="" aria-label="..."></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/5.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Sidh Houses</a></p>
+                                                                <p class="fs-12 text-muted mb-0">4BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Flats
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-success-transparent">Active</span></td>
+                                                    <td>
+                                                        For Sale
+                                                    </td>
+                                                    <td>23 Dec 2022</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">USA</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$26,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-top-0">
+                                    <div class="d-flex align-items-center flex-wrap overflow-auto">
+                                        <div class="mb-2 mb-sm-0">
+                                            Showing <b>1</b> to <b>4</b> of <b>10</b> entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <ul class="pagination mb-0 overflow-auto">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link">Previous</a>
+                                                </li>
+                                                <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">2</a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">4</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">5</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">Next</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="addproperty-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        Add Property
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gy-4"> 
+                                        <div class="col-xl-6">
+                                            <label for="Property-name" class="form-label">Property Name</label>
+                                            <input type="text" class="form-control" id="Property-name" placeholder="Property Name" value="Duplex House">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label class="form-label">Property Category</label> 
+                                            <select class="form-control" data-trigger name="Category-select">
+                                                <option value="Choice 1">Luxury House</option>
+                                                <option value="Choice 2">Garden Villa</option>
+                                                <option value="Choice 3">Commercial</option>
+                                                <option value="Choice 4">Flats</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-6">
+                                            <label class="form-label">Type</label> 
+                                            <select class="form-control" data-trigger name="Type">
+                                                <option value="Choice 1">For Rent</option>
+                                                <option value="Choice 2">For Sale</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-6">
+                                            <label class="form-label">Property Address</label> 
+                                            <select class="form-control" data-trigger name="address">
+                                                <option value="Choice 1">Chennai</option>
+                                                <option value="Choice 2">Banglore</option>
+                                                <option value="Choice 3">Hyderabad</option>
+                                                <option value="Choice 4">USA</option>
+                                                <option value="Choice 5">Nellore</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-3">
+                                            <label class="form-label">Bedrooms</label> 
+                                            <select class="form-control" data-trigger name="Bedrooms">
+                                                <option value="Choice 1">1</option>
+                                                <option value="Choice 2">2</option>
+                                                <option value="Choice 3">3</option>
+                                                <option value="Choice 4">4</option>
+                                                <option value="Choice 5">5</option>
+                                                <option value="Choice 6">6</option>
+                                                <option value="Choice 7">7</option>
+                                                <option value="Choice 8">8</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-3">
+                                            <label class="form-label">Bathrooms</label> 
+                                            <select class="form-control" data-trigger name="Bathrooms">
+                                                <option value="Choice 1">1</option>
+                                                <option value="Choice 2">2</option>
+                                                <option value="Choice 3">3</option>
+                                                <option value="Choice 4">4</option>
+                                                <option value="Choice 5">5</option>
+                                                <option value="Choice 6">6</option>
+                                                <option value="Choice 7">7</option>
+                                                <option value="Choice 8">8</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-3">
+                                            <label class="form-label">Floors</label> 
+                                            <select class="form-control" data-trigger name="Bathrooms">
+                                                <option value="Choice 1">1</option>
+                                                <option value="Choice 2">2</option>
+                                                <option value="Choice 3">3</option>
+                                                <option value="Choice 4">4</option>
+                                                <option value="Choice 5">5</option>
+                                                <option value="Choice 6">6</option>
+                                                <option value="Choice 7">7</option>
+                                                <option value="Choice 8">8</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-3">
+                                            <label for="Square-name" class="form-label">Square (m²)</label>
+                                            <input type="text" class="form-control" id="Square-name" placeholder="Square (m²)">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Latitude-name" class="form-label">Latitude</label>
+                                            <input type="text" class="form-control" id="Latitude-name" placeholder="Latitude">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Longitude-name" class="form-label">Longitude</label>
+                                            <input type="text" class="form-control" id="Longitude-name" placeholder="Longitude">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="amenities" class="form-label">Amenities</label> 
+                                            <select class="form-control" name="amenities" id="amenities" multiple>
+                                                <option value="Choice 1" selected>Wifi</option>
+                                                <option value="Choice 2" selected>Parking</option>
+                                                <option value="Choice 3">Balcony</option>
+                                                <option value="Choice 4">Fitness Center</option>
+                                                <option value="Choice 5">Swimming Pool</option>
+                                            </select>
+                                        </div> 
+                                        <div class="col-xl-6">
+                                            <label for="Price" class="form-label">Price</label>
+                                            <input type="text" class="form-control" id="Price" placeholder="Price" value="$3654">
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <label for="Address" class="form-label">Upload Image</label> 
+                                            <form data-single="true" method="post" action="https://httpbin.org/post" class="dropzone"></form>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <label for="bio" class="form-label">Property Description :</label>
+                                            <textarea class="form-control" id="Ad-description" rows="7">Lorem ipsum dolor sit amet consectetur adipisicing elit. At sit impedit, officiis non minima saepe voluptates a magnam enim sequi porro veniam ea suscipit dolorum vel mollitia voluptate iste nemo!</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-end">
+                                        <button class="btn btn-primary">
+                                            Add Property
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="pending-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header justify-content-between">
+                                    <div class="card-title">
+                                        Sales
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div>
+                                            <input class="form-control form-control-sm" type="text" placeholder="Search Here" aria-label=".form-control-sm example">
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-wave waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort By<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);">New</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Month</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="row" class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts6" value="" aria-label="..."></th>
+                                                    <th scope="col">Property Name</th>
+                                                    <th scope="col">Category</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Type</th>
+                                                    <th scope="col">Posted Date</th>
+                                                    <th scope="col">Location</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts7" value="" aria-label="..."></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/2.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Duplex House</a></p>
+                                                                <p class="fs-12 text-muted mb-0">5BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Luxury House
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-warning-transparent">Pending</span></td>
+                                                    <td>
+                                                        For Rent
+                                                    </td>
+                                                    <td>03 Sep 2022</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">Germany</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$15,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts8" value="" aria-label="..." checked></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/4.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Nature House</a></p>
+                                                                <p class="fs-12 text-muted mb-0">3BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Garden Villa
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-warning-transparent">Pending</span></td>
+                                                    <td>
+                                                        For Sale
+                                                    </td>
+                                                    <td>16 Nov 2022</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">Canada</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$16,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts9" value="" aria-label="..." checked></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/6.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Riddi Houses</a></p>
+                                                                <p class="fs-12 text-muted mb-0">2BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Commercial
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-warning-transparent">Pending</span></td>
+                                                    <td>
+                                                        For Rent
+                                                    </td>
+                                                    <td>17 Jan 2024</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">Europe</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$32,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabelproducts10" value="" aria-label="..."></td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/realestate/properties/5.png" class="h-100 w-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Sidh Houses</a></p>
+                                                                <p class="fs-12 text-muted mb-0">4BHK Apartment</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        Flats
+                                                    </td>
+                                                    <td><span class="badge rounded-pill badge-sm bg-warning-transparent">Pending</span></td>
+                                                    <td>
+                                                        For Sale
+                                                    </td>
+                                                    <td>23 Dec 2022</td>
+                                                    <td>
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <i class="ri-map-pin-fill text-muted fs-12"></i>
+                                                            <span class="ms-1">USA</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="fw-semibold">$26,000</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-eye-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-top-0">
+                                    <div class="d-flex align-items-center flex-wrap overflow-auto">
+                                        <div class="mb-2 mb-sm-0">
+                                            Showing <b>1</b> to <b>4</b> of <b>10</b> entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <ul class="pagination mb-0 overflow-auto">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link">Previous</a>
+                                                </li>
+                                                <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">2</a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">4</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">5</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">Next</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="settings-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        Account Settings
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gy-5">
+                                        <div class="col-xl-12">
+                                            <h6 class="mb-3 fw-semibold text-primary">General Settings :</h6>
+                                            <div class="row mb-4">
+                                                <div class="col-xl-3">
+                                                    <span class="fs-14 fw-semibold mb-0">Account Type :</span>
+                                                    <p class="fs-12 mb-0 text-muted">Select the account type</p>
+                                                </div>
+                                                <div class="col-xl-9">
+                                                    <select class="form-control" data-trigger name="account-type-select" id="account-type-select">
+                                                        <option value="Choice 1">Private</option>
+                                                        <option value="Choice 2">Business</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="d-sm-flex d-block align-items-top mb-4 justify-content-between">
+                                                <div>
+                                                    <p class="fs-14 mb-1 fw-semibold">Two Step Verification</p>
+                                                    <p class="fs-12 text-muted mb-0">Two step verificatoin is very secured and restricts in happening faulty practices.</p>
+                                                </div>
+                                                <div class="custom-toggle-switch toggle-sm ms-sm-2 ms-0"> 
+                                                    <input id="two-step" name="toggleswitchsize" type="checkbox" checked=""> 
+                                                    <label for="two-step" class="label-primary mb-1"></label>
+                                                </div>
+                                            </div>
+                                            <div class="d-sm-flex d-block align-items-top mb-4 justify-content-between">
+                                                <div>
+                                                    <p class="fs-14 mb-1 fw-semibold">Recovery Mail</p>
+                                                    <p class="fs-12 text-muted mb-0">Incase of forgetting password mails are sent to  heifo@gmail.com</p>
+                                                </div>
+                                                <div class="custom-toggle-switch toggle-sm ms-sm-2 ms-0"> 
+                                                    <input id="recovery-mail" name="toggleswitchsize" type="checkbox" checked=""> 
+                                                    <label for="recovery-mail" class="label-primary mb-1"></label>
+                                                </div>
+                                            </div>
+                                            <div class="d-sm-flex d-block align-items-top justify-content-between">
+                                                <div>
+                                                    <p class="fs-14 mb-1 fw-semibold">SMS Recovery</p>
+                                                    <p class="fs-12 text-muted mb-0">SMS are sent to 9102312xx in case of recovery</p>
+                                                </div>
+                                                <div class="custom-toggle-switch toggle-sm ms-sm-2 ms-0"> 
+                                                    <input id="sms-recovery" name="toggleswitchsize" type="checkbox" checked=""> 
+                                                    <label for="sms-recovery" class="label-primary mb-1"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <h6 class="mb-3 fw-semibold text-primary">Email Settings</h6>
+                                            <div class="row">
+                                                <div class="col-sm-6 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="propertyupdate" checked="">
+                                                        <label class="form-check-label" for="propertyupdate">
+                                                            Property Update Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="propertycomment">
+                                                        <label class="form-check-label" for="propertycomment">
+                                                            Property Comment Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-0">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="propertyreview">
+                                                        <label class="form-check-label" for="propertyreview">
+                                                            Property Review Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-0">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="propertybuyerreview" checked="">
+                                                        <label class="form-check-label" for="propertybuyerreview">
+                                                            Buyer Review Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <h6 class="mb-3 fw-semibold text-primary">Change Password</h6>
+                                            <p class="fs-13">Password should be min of <b class="text-success fw-semibold">8 digits<sup>*</sup></b>,atleast <b class="text-success fw-semibold">One Capital letter<sup>*</sup></b> and <b class="text-success fw-semibold">One Special Character<sup>*</sup></b> included.</p>
+                                            <div class="row">
+                                                <div class="col-sm-4 col-12 mb-2">
+                                                    <label for="current-password" class="form-label">Current Password</label>
+                                                    <input type="text" class="form-control" id="current-password" placeholder="Current Password">
+                                                </div>
+                                                <div class="col-sm-4 col-12 mb-2">
+                                                    <label for="new-password" class="form-label">New Password</label>
+                                                    <input type="text" class="form-control" id="new-password" placeholder="New Password">
+                                                </div>
+                                                <div class="col-sm-4 col-12 mb-0">
+                                                    <label for="confirm-password" class="form-label">Confirm Password</label>
+                                                    <input type="text" class="form-control" id="confirm-password" placeholder="Confirm PAssword">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-end">
+                                        <button class="btn btn-light m-1">
+                                            Restore Defaults
+                                        </button>
+                                        <button class="btn btn-primary m-1">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-1 -->
+
+            <!-- Start:: Section-2 -->
+            <section class="section bg-banner px-lg-0 px-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="mb-4">
+                            <h3 class="fw-semibold mb-2 text-fixed-white">&#128073; Download our free mobile apps today</h3>
+                        </div>
+                        <h6 class="mb-4 op-9 text-fixed-white">Labore no sed ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore..</h6>
+                        <div class="btn-list">
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/play-store.png" alt="">
+                                Google Play
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/apple-store.png" alt="" class="invert-1">
+                                App Store
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-2 -->
+
+        </div>
+        <!-- End::app-content -->
+
+        <!-- Start:: Search Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-body p-4">
+                  <span class="input-group">
+                    <input type="text" class="form-control form-control-lg border-0 shadow-none" placeholder="Search" aria-label="Username">
+                    <a href="javascript:void(0);" class="input-group-text border-0" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                  </span>
+                  <div class="mt-4">
+                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                    <a href="javascript:void(0);" class="search-tags">Popular Articles</a>
+                    <a href="javascript:void(0);" class="search-tags">Recent Articles</a>
+                    <a href="javascript:void(0);" class="search-tags">News and Updates</a>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="ms-auto">
+                    <button class="btn btn-lg btn-primary">Search</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- End:: Search Modal -->
+
+        <!-- Start:: Footer -->
+        <div class="landing-main-footer py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 text-lg-start text-center">
+                        <span class="text-fixed-white op-7 fs-14"> © Copyright <span id="year"></span> <a
+                            href="javascript:void(0);" class="text-primary fs-15 fw-semibold">Mamix</a>.
+                        </span>
+                    </div>
+                    <div class="col-lg-6 text-lg-end text-center">
+                        <ul class="list-unstyled fw-normal landing-footer-list mb-0">
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Terms Of Service</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Legal</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Contact</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Report Abuse</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: Footer -->
+
+    </div>
+
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Dropzone JS -->
+    <script src="../assets/libs/dropzone/dropzone-min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="../assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Internal Landing JS -->
+    <script src="../assets/js/landing.js"></script>   
+
+    <!-- Real Estate vendor JS -->
+    <script src="../assets/js/realestate-vendor.js"></script>   
+
+    <!-- Node Waves JS-->
+    <script src="../assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky-landing.js"></script> 
+
+</body>
+
+</html>

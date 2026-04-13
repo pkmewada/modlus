@@ -1,0 +1,25 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteBase /mamix/
+
+# Redirect direct app-folder access to the clean login page.
+RewriteRule ^$ /mamix/login [R=302,L]
+
+# Serve existing files and directories directly.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Redirect explicit .php requests to clean URLs.
+RewriteCond %{THE_REQUEST} \s/+(?:pages/)?([^.]+)\.php [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Rewrite clean page routes to routes.php
+RewriteRule ^([^/.]+)/?$ routes.php [L,QSA]
+
+# Block access to includes
+RewriteRule ^includes/ - [F,L]
+
+# Block access to vendor
+RewriteRule ^vendor/ - [F,L]

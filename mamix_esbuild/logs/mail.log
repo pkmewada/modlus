@@ -1,0 +1,109 @@
+2026-04-09 13:04:08 - Attempting mail to: praveen.mqlus@gmail.com
+2026-04-09 13:04:08 - DEBUG: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-2b2749b2423sm313337025ad.67 - gsmtp
+2026-04-09 13:04:08 - DEBUG: CLIENT -> SERVER: EHLO localhost
+2026-04-09 13:04:09 - DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [2405:201:3009:886b:a9a1:c43f:117b:669e]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+2026-04-09 13:04:09 - DEBUG: CLIENT -> SERVER: STARTTLS
+2026-04-09 13:04:09 - DEBUG: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+2026-04-09 13:04:10 - DEBUG: CLIENT -> SERVER: EHLO localhost
+2026-04-09 13:04:10 - DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [2405:201:3009:886b:a9a1:c43f:117b:669e]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+2026-04-09 13:04:10 - DEBUG: CLIENT -> SERVER: AUTH LOGIN
+2026-04-09 13:04:11 - DEBUG: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+2026-04-09 13:04:11 - DEBUG: CLIENT -> SERVER: [credentials hidden]
+2026-04-09 13:04:11 - DEBUG: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+2026-04-09 13:04:11 - DEBUG: CLIENT -> SERVER: [credentials hidden]
+2026-04-09 13:04:11 - DEBUG: SERVER -> CLIENT: 235 2.7.0 Accepted
+2026-04-09 13:04:11 - DEBUG: CLIENT -> SERVER: MAIL FROM:<pkmewada@gmail.com>
+2026-04-09 13:04:11 - DEBUG: SERVER -> CLIENT: 250 2.1.0 OK d9443c01a7336-2b2749b2423sm313337025ad.67 - gsmtp
+2026-04-09 13:04:11 - DEBUG: CLIENT -> SERVER: RCPT TO:<praveen.mqlus@gmail.com>
+2026-04-09 13:04:12 - DEBUG: SERVER -> CLIENT: 250 2.1.5 OK d9443c01a7336-2b2749b2423sm313337025ad.67 - gsmtp
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: DATA
+2026-04-09 13:04:12 - DEBUG: SERVER -> CLIENT: 354 Go ahead d9443c01a7336-2b2749b2423sm313337025ad.67 - gsmtp
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Date: Thu, 9 Apr 2026 13:04:08 +0200
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: To: praveen.mqlus@gmail.com
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: From: Modlus CRM <pkmewada@gmail.com>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Reply-To: Support <pkmewada@gmail.com>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Subject: Verify your email - OTP Code
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Message-ID: <SZ4iNRJbpDOQpjQ8Lnwg0iWBeEBGhA7hSURy99Qx8A@localhost>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: X-Mailer: PHPMailer 7.0.2 (https://github.com/PHPMailer/PHPMailer)
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: MIME-Version: 1.0
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Content-Type: multipart/alternative;
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:  boundary="b1=_SZ4iNRJbpDOQpjQ8Lnwg0iWBeEBGhA7hSURy99Qx8A"
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: --b1=_SZ4iNRJbpDOQpjQ8Lnwg0iWBeEBGhA7hSURy99Qx8A
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Content-Type: text/plain; charset=us-ascii
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Hello,
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Thank you for signing up with Modlus CRM.
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Your OTP is 2749. Valid for 5 minutes.
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: If you did not request this, please ignore this email.
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Regards,
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Modlus Team
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: --b1=_SZ4iNRJbpDOQpjQ8Lnwg0iWBeEBGhA7hSURy99Qx8A
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: Content-Type: text/html; charset=us-ascii
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: <!DOCTYPE html>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: <html lang="en">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: <head>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:     <meta charset="UTF-8">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:     <title>Verify your email - OTP Code</title>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: </head>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: <body style="margin:0;padding:24px;background-color:#f4f6f8;font-family:Arial,sans-serif;color:#1f2937;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:         <tr>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:             <td style="padding:32px;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <div style="font-size:24px;font-weight:700;color:#111827;margin-bottom:24px;">Modlus CRM</div>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Hello,</p>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     Thank you for signing up with Modlus CRM.
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 </p>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     Your verification code is:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 </p>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <div style="margin:0 0 20px;padding:16px 20px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;display:inline-block;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     <span style="font-size:32px;font-weight:700;letter-spacing:6px;color:#111827;">2749</span>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 </div>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#4b5563;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     This code is valid for 5 minutes.
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 </p>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#4b5563;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     If you did not request this, please ignore this email.
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 </p>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 <p style="margin:0;font-size:15px;line-height:1.6;">
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     Regards,<br>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                     Modlus Team
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:                 </p>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:             </td>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:         </tr>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:     </table>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: </body>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: </html>
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: --b1=_SZ4iNRJbpDOQpjQ8Lnwg0iWBeEBGhA7hSURy99Qx8A--
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER:
+2026-04-09 13:04:12 - DEBUG: CLIENT -> SERVER: .
+2026-04-09 13:04:13 - DEBUG: SERVER -> CLIENT: 250 2.0.0 OK  1775732653 d9443c01a7336-2b2749b2423sm313337025ad.67 - gsmtp
+2026-04-09 13:04:13 - DEBUG: CLIENT -> SERVER: QUIT
+2026-04-09 13:04:13 - DEBUG: SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-2b2749b2423sm313337025ad.67 - gsmtp
+2026-04-09 13:04:13 - SUCCESS: Mail sent to praveen.mqlus@gmail.com

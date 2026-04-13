@@ -1,0 +1,306 @@
+<!-- include mainhead.html"-->
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">Reports</h1>
+                        <div class="">
+                            <nav>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Ecommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Reports</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-primary-light btn-wave me-2">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+                
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xxl-6 col-xl-12">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">ORDERS SUMMARY</div>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="p-2 fs-12" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        View All<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="row border-bottom border-block-end-dashed">
+                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="p-4 border-sm-end border-inline-end-dashed text-sm-start text-center">
+                                            <p class="fs-20 fw-semibold mb-0">1,117</p>
+                                            <p class="mb-0 text-muted">Total Orders</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="p-4 border-sm-end border-inline-end-dashed text-sm-start text-center">
+                                            <p class="fs-20 fw-semibold mb-0"><span class="basic-subscription">742</span></p>
+                                            <p class="mb-0 text-muted">Delivered Orders</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="p-4 text-sm-start text-center">
+                                            <p class="fs-20 fw-semibold mb-0"><span class="pro-subscription">259</span></p>
+                                            <p class="mb-0 text-muted">Cancelled Orders</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-2" id="order-summary"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6 col-xl-12">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    PRODUCTS OVERVIEW
+                                </div>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="p-2 fs-12 text-muted" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        View All<i class="ri-arrow-down-s-line align-middle ms-1 d-inline-block"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="products-overview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+
+                <!--Start::row-2 -->
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    MOST USED BROWSERS
+                                </div>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="py-2 fs-12"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        View All<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">This Week</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="used-browsers" class="p-3"></div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row row-cols-12">
+                                    <div class="col p-0">
+                                        <div class="text-center">
+                                            <span class="text-muted fs-12 mb-1 hrm-jobs-legend published d-inline-block ms-2">Chrome
+                                            </span>
+                                            <div><span class="fs-16 fw-semibold">1,624</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-0">
+                                        <div class="text-center">
+                                            <span class="text-muted fs-12 mb-1 hrm-jobs-legend private d-inline-block ms-2">Firefox
+                                            </span>
+                                            <div><span class="fs-16 fw-semibold">1,267</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-0">
+                                        <div class="text-center">
+                                            <span class="text-muted fs-12 mb-1 hrm-jobs-legend closed d-inline-block ms-2">Safari
+                                            </span>
+                                            <div><span class="fs-16 fw-semibold">1,153</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-0">
+                                        <div class="text-center">
+                                            <span class="text-muted fs-12 mb-1 hrm-jobs-legend onhold d-inline-block ms-2">Opera
+                                            </span>
+                                            <div><span class="fs-16 fw-semibold">1,153</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">TOTAL VENDORS</div>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="p-2 fs-12"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        View All<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">This Week</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="totalvendors-chart" class="p-3"></div>
+                                <div class="row row-cols-12 border-top border-block-start-dashed">
+                                    <div class="col">
+                                        <div class="p-3 border-end border-inline-end-dashed">
+                                            <div class="text-muted mb-1">Active
+                                            </div>
+                                            <div class="d-flex align-items-center"> <span
+                                                    class="me-2 fs-22 fw-semibold">1,234</span> <span
+                                                    class="text-success fs-11"><i
+                                                        class="ri-arrow-up-s-fill align-middle me-1"></i>0.23%</span> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="p-3">
+                                            <div class="text-muted mb-1">Inactive
+                                            </div>
+                                            <div class="d-flex align-items-center"> 
+                                                <span class="me-2 fs-22 fw-semibold">1,754</span> 
+                                                <span
+                                                    class="text-danger fs-11"><i
+                                                        class="ri-arrow-down-s-fill align-middle me-1"></i>0.11%</span> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-12">                        
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header">
+                                <div class="card-title">MONTHLY SALES REPORT</div>                                        
+                            </div>
+                            <div class="card-body">
+                                <div id="sales-report"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-6 col-12">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">TOTAL CUSTOMERS</div>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="p-2 fs-12"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        View All<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">This Week</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="total-customers" class="p-3"></div>
+                                <div class="row row-cols-12 border-top border-block-start-dashed">
+                                    <div class="col">
+                                        <div class="p-3 border-end border-inline-end-dashed">
+                                            <div class="text-muted mb-1">Active
+                                            </div>
+                                            <div class="d-flex align-items-center"> <span
+                                                    class="me-2 fs-22 fw-semibold">576</span> <span
+                                                    class="text-success fs-11"><i
+                                                        class="ri-arrow-up-s-fill align-middle me-1"></i>0.23%</span> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="p-3">
+                                            <div class="text-muted mb-1">Inactive
+                                            </div>
+                                            <div class="d-flex align-items-center"> 
+                                                <span class="me-2 fs-22 fw-semibold">876</span> 
+                                                <span
+                                                    class="text-danger fs-11"><i
+                                                        class="ri-arrow-down-s-fill align-middle me-1"></i>0.11%</span> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-2 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- include custom_switcherjs.html"-->
+
+    <!-- Apex Charts JS -->
+    <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- Index JS -->
+    <script src="../assets/js/ecommerce-admin-reports.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>

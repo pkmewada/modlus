@@ -1,0 +1,405 @@
+<!-- include mainhead.html"-->
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">Products</h1>
+                        <div class="">
+                            <nav>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Ecommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Products</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-primary-light btn-wave me-2">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+                
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    PRODUCTS LIST
+                                </div>
+                                <div class="d-flex gap-3 align-items-center flex-wrap">
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ti ti-sort-descending-2 me-1"></i> Sort By
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Created Date</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Status</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Category</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Product Name</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Newest</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Oldest</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="custom-form-group flex-grow-1">
+                                        <input type="text" class="form-control" placeholder="Search Products.." aria-label="Recipient's username" aria-describedby="button-addon2">
+                                        <a href="javascript:void(0);" class="text-muted custom-form-btn"><i class="ti ti-search"></i></a>
+                                    </div> 
+                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-primary btn-wave waves-effect waves-light">
+                                        <i class="bi bi-plus-circle"></i>  Add Product
+                                    </a> 
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="row" class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob1" value="" aria-label="..."></th>
+                                                <th scope="col">Product</th>
+                                                <th scope="col">Seller</th>
+                                                <th scope="col">Category</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Stock Qty</th>
+                                                <th scope="col">Total Sales</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob2" value="" aria-label="..."></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar avatar-md avatar-square bg-gray-300"><img src="../assets/images/ecommerce/jpg/2.jpg" class="" alt="..."></span>
+                                                        <div class="ms-2">
+                                                            <p class="fw-semibold mb-0 d-flex align-items-center"><a href="ecommerce-details.html"> SoundSync Headphones</a></p>
+                                                            <p class="fs-12 text-muted mb-0">Accusam Brand</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center fw-semibold">
+                                                        <span class="avatar avatar-sm me-2 avatar-rounded">
+                                                            <img src="../assets/images/faces/4.jpg" alt="">
+                                                        </span>
+                                                        <a href="ecommerce_admin_vendordetails.html">Mayor Kelly</a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    Electronics
+                                                </td>
+                                                <td><span class="badge bg-success-transparent">Published</span></td>
+                                                <td>
+                                                   60
+                                                </td>
+                                                <td>
+                                                   10
+                                                </td>
+                                                <td class="fw-semibold">$15,000</td>
+                                                <td>
+                                                    <a href="ecommerce-details.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob3" value="" aria-label="..." checked=""></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar avatar-md avatar-square bg-gray-300"><img src="../assets/images/ecommerce/png/10.png" class="" alt="..."></span>
+                                                        <div class="ms-2">
+                                                            <p class="fw-semibold mb-0 d-flex align-items-center"><a href="ecommerce-details.html"> Western Ladies Bag</a></p>
+                                                            <p class="fs-12 text-muted mb-0">Vellintn Brand</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center fw-semibold">
+                                                        <span class="avatar avatar-sm me-2 avatar-rounded">
+                                                            <img src="../assets/images/faces/15.jpg" alt="">
+                                                        </span>
+                                                        <a href="ecommerce_admin_vendordetails.html">Andrew Garfield </a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    Women's Fashion
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-transparent">Unpublished</span>
+                                                </td>
+                                                <td>
+                                                    120
+                                                </td>
+                                                <td>
+                                                    20
+                                                </td>
+                                                <td class="fw-semibold">$25,000</td>
+                                                <td>
+                                                    <a href="ecommerce-details.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob4" value="" aria-label="..." checked=""></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar avatar-md avatar-square bg-gray-300"><img src="../assets/images/ecommerce/jpg/3.jpg" class="" alt="..."></span>
+                                                        <div class="ms-2">
+                                                            <p class="fw-semibold mb-0 d-flex align-items-center"><a href="ecommerce-details.html">Digital Camera(100M Zoom)</a></p>
+                                                            <p class="fs-12 text-muted mb-0">Top Brand</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center fw-semibold">
+                                                        <span class="avatar avatar-sm me-2 avatar-rounded">
+                                                            <img src="../assets/images/faces/11.jpg" alt="">
+                                                        </span>
+                                                        <a href="ecommerce_admin_vendordetails.html">Simon Cowel </a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                   Electronics
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-success-transparent">Published</span>
+                                                </td>
+                                                <td>
+                                                    279
+                                                </td>
+                                                <td>
+                                                    27
+                                                </td>
+                                                <td class="fw-semibold">$43,000</td>
+                                                <td>
+                                                    <a href="ecommerce-details.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob55" value="" aria-label="..."></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar avatar-md avatar-square bg-gray-300"><img src="../assets/images/ecommerce/jpg/9.jpg" class="" alt="..."></span>
+                                                        <div class="ms-2">
+                                                            <p class="fw-semibold mb-0 d-flex align-items-center"><a href="ecommerce-details.html">High Heel Sandals</a></p>
+                                                            <p class="fs-12 text-muted mb-0">Erat Brand</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center fw-semibold">
+                                                        <span class="avatar avatar-sm me-2 avatar-rounded">
+                                                            <img src="../assets/images/faces/8.jpg" alt="">
+                                                        </span>
+                                                        <a href="ecommerce_admin_vendordetails.html">Mirinda Hers</a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    Men's Fashion
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-transparent">Unpublished</span>
+                                                </td>
+                                                <td>
+                                                    270
+                                                </td>
+                                                <td>
+                                                    34
+                                                </td>
+                                                <td class="fw-semibold">$10,000</td>
+                                                <td>
+                                                    <a href="ecommerce-details.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob44" value="" aria-label="..." checked=""></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar avatar-md avatar-square bg-gray-300"><img src="../assets/images/ecommerce/jpg/10.jpg" class="" alt="..."></span>
+                                                        <div class="ms-2">
+                                                            <p class="fw-semibold mb-0 d-flex align-items-center"><a href="ecommerce-details.html"> Men's Hoodie</a></p>
+                                                            <p class="fs-12 text-muted mb-0">Top Brand</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center fw-semibold">
+                                                        <span class="avatar avatar-sm me-2 avatar-rounded">
+                                                            <img src="../assets/images/faces/1.jpg" alt="">
+                                                        </span>
+                                                        <a href="ecommerce_admin_vendordetails.html">Simon Cowel</a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                   Men's Clothing
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-success-transparent">Published</span>
+                                                </td>
+                                                <td>
+                                                    279
+                                                </td>
+                                                <td>
+                                                    27
+                                                </td>
+                                                <td class="fw-semibold">$43,000</td>
+                                                <td>
+                                                    <a href="ecommerce-details.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4"><input class="form-check-input" type="checkbox" id="checkboxNoLabeljob5" value="" aria-label="..."></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar avatar-md avatar-square bg-gray-300"><img src="../assets/images/ecommerce/png/12.png" class="" alt="..."></span>
+                                                        <div class="ms-2">
+                                                            <p class="fw-semibold mb-0 d-flex align-items-center"><a href="ecommerce-details.html">Women's Sweater</a></p>
+                                                            <p class="fs-12 text-muted mb-0">Erat Brand</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center fw-semibold">
+                                                        <span class="avatar avatar-sm me-2 avatar-rounded">
+                                                            <img src="../assets/images/faces/2.jpg" alt="">
+                                                        </span>
+                                                        <a href="ecommerce_admin_vendordetails.html">Mirinda Hers</a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    Men's Fashion
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-transparent">Unpublished</span>
+                                                </td>
+                                                <td>
+                                                    270
+                                                </td>
+                                                <td>
+                                                    34
+                                                </td>
+                                                <td class="fw-semibold">$10,000</td>
+                                                <td>
+                                                    <a href="ecommerce-details.html" class="btn btn-icon btn-sm btn-primary-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-eye-line"></i>
+                                                    </a>
+                                                    <a href="ecommerce_admin_addproduct.html" class="btn btn-icon btn-sm btn-info-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave waves-effect waves-light">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer border-top-0">
+                                <div class="d-flex align-items-center flex-wrap overflow-auto">
+                                    <div class="mb-2 mb-sm-0">
+                                        Showing <b>1</b> to <b>6</b> of <b>10</b> entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <ul class="pagination mb-0 overflow-auto">
+                                            <li class="page-item disabled">
+                                                <a class="page-link">Previous</a>
+                                            </li>
+                                            <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="javascript:void(0)">2</a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0)">4</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0)">5</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="javascript:void(0)">Next</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- include custom_switcherjs.html"-->
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>

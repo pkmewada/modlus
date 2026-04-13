@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="horizontal" data-nav-style="menu-hover" data-menu-position="fixed" data-theme-mode="light">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> MAMIX - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+    <script>
+        if(localStorage.mamixdarktheme){
+            document.querySelector("html").setAttribute("data-theme-mode","dark")
+        }
+        if(localStorage.mamixrtl){
+            document.querySelector("html").setAttribute("dir","rtl")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+        }
+        if(localStorage.mamixltr){
+            document.querySelector("html").setAttribute("dir","ltr")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.min.css");
+        }
+		let html = document.querySelector("html");
+		if (window.innerWidth < 992) {
+		html.setAttribute("data-toggled", "close");
+		}
+    </script>
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet" >
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet" >
+
+    <!-- SwiperJS Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- nouislider Css -->
+    <link rel="stylesheet" href="../assets/libs/nouislider/nouislider.min.css">
+
+
+</head>
+
+<body class="landing-body">
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="">
+                <p class="switcher-style-head">Theme Color Mode:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-light-theme">
+                                Light
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-light-theme"
+                                checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-dark-theme">
+                                Dark
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-dark-theme">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <p class="switcher-style-head">Directions:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-ltr">
+                                LTR
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-ltr" checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-rtl">
+                                RTL
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-rtl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-colors">
+                <p class="switcher-style-head">Theme Primary:</p>
+                <div class="d-flex align-items-center switcher-style">
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-1" type="radio"
+                            name="theme-primary" id="switcher-primary">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-2" type="radio"
+                            name="theme-primary" id="switcher-primary1">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-3" type="radio" name="theme-primary"
+                            id="switcher-primary2">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-4" type="radio" name="theme-primary"
+                            id="switcher-primary3">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-5" type="radio" name="theme-primary"
+                            id="switcher-primary4">
+                    </div>
+                    <div class="form-check switch-select me-3 ps-0 mt-1 color-primary-light">
+                        <div class="theme-container-primary"></div>
+                        <div class="pickr-container-primary"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="switcher-style-head">reset:</p>
+                <div class="text-center">
+                    <button id="reset-all" class="btn btn-danger mt-3">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="landing-page-wrapper">
+
+         <!-- app-header -->
+        <header class="app-header" id="header">
+
+            <!-- Start::main-header-container -->
+            <div class="main-header-container container-fluid">
+
+                <!-- Start::header-content-left -->
+                <div class="header-content-left">
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <div class="horizontal-logo">
+                            <a href="index.html" class="header-logo">
+                                <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                                <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <!-- Start::header-link -->
+                        <a href="javascript:void(0);" class="sidemenu-toggle header-link" data-bs-toggle="sidebar">
+                            <span class="open-toggle">
+                                <i class="ri-menu-3-line fs-20"></i>
+                            </span>
+                        </a>
+                        <!-- End::header-link -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-left -->
+
+                <!-- Start::header-content-right -->
+                <div class="header-content-right">
+
+                    <!-- Start::header-element -->
+                    <div class="header-element align-items-center">
+                        <!-- Start::header-link|switcher-icon -->
+                        <div class="btn-list d-lg-none d-block">
+                            <a href="sign-up-basic.html" class="btn btn-primary-light">
+                                Sign Up
+                            </a>
+                            <button class="btn btn-icon btn-success switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                                <i class="ri-settings-3-line"></i>
+                            </button>
+                        </div>
+                        <!-- End::header-link|switcher-icon -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-right -->
+
+            </div>
+            <!-- End::main-header-container -->
+
+        </header>
+        <!-- /app-header -->
+
+        <!-- Start::app-sidebar -->
+        <aside class="app-sidebar sticky" id="sidebar">
+
+            <div class="container-xl">
+                <!-- Start::main-sidebar -->
+                <div class="main-sidebar">
+
+                    <!-- Start::nav -->
+                    <nav class="main-menu-container nav nav-pills sub-open">
+                        <div class="landing-logo-container">
+                            <div class="horizontal-logo">
+                                <a href="index.html" class="header-logo">
+                                    <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                                    <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="slide-left" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg></div>
+                        <ul class="main-menu flex-fill">
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a class="side-menu__item active" href="javascript:void(0);">
+                                    <span class="side-menu__label">Home</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Categories</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">All Ads</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide has-sub">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Pages</span>
+                                    <i class="fe fe-chevron-down side-menu__angle"></i>
+                                </a>
+                                <ul class="slide-menu child1">
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Abous Us</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">FAQ</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Services</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Add Details</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Add Post</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">404</a>
+                                    </li>
+                                    <li class="slide has-sub">
+                                        <a href="javascript:void(0);" class="side-menu__item">Level-2
+                                            <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                        <ul class="slide-menu child2">
+                                            <li class="slide">
+                                                <a href="javascript:void(0);" class="side-menu__item">Level-2-1</a>
+                                            </li>
+                                            <li class="slide has-sub">
+                                                <a href="javascript:void(0);" class="side-menu__item">Level-2-2
+                                                    <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                                <ul class="slide-menu child3">
+                                                    <li class="slide">
+                                                        <a href="javascript:void(0);" class="side-menu__item">Level-2-2-1</a>
+                                                    </li>
+                                                    <li class="slide has-sub">
+                                                        <a href="javascript:void(0);" class="side-menu__item">Level-2-2-2</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide has-sub">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Blog</span>
+                                    <i class="fe fe-chevron-down side-menu__angle"></i>
+                                </a>
+                                <ul class="slide-menu child1">
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Blog</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Blog Details</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Blog Post</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Contact Us</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                        </ul>
+                        <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
+                        <div class="d-lg-flex d-none align-items-center">
+                            <!-- Start::header-link -->
+                            <a href="javascript:void(0);" class="me-3" data-bs-toggle="modal" data-bs-target="#searchModal">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" viewBox="0 0 24 24"><path fill="var(--primary-color)" d="M21.71,20.29,18,16.61A9,9,0,1,0,16.61,18l3.68,3.68a1,1,0,0,0,1.42,0A1,1,0,0,0,21.71,20.29ZM11,18a7,7,0,1,1,7-7A7,7,0,0,1,11,18Z"/></svg>
+                            </a>
+                            <!-- End::header-link -->
+                            <!-- Start::dropdown -->
+                            <div class="country-selector dropdown">
+                                <!-- Start::dropdown-toggle -->
+                                <a href="javascript:void(0);" class="btn btn-wave btn-light border btn-country dropdown-toggle me-2" data-bs-toggle="dropdown">
+                                    English
+                                </a>
+                                <!-- End::dropdown-toggle -->
+                                <ul class="main-header-dropdown dropdown-menu py-2" data-popper-placement="none">
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            English
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            Spanish
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            French
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            German
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            Italian
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            Russian
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End::dropdown -->                         
+                            <div class="btn-list d-xl-flex d-none">
+                                <a href="sign-in-basic.html" class="btn btn-wave btn-light border">
+                                    Login / Register
+                                </a>
+                                <button class="btn btn-wave btn-primary">
+                                    <i class="bi bi-plus-circle me-2"></i>Post Your Ad
+                                </button>
+                            </div>
+                            
+                            <a href="javascript:void(0);" class="btn btn-icon btn-secondary-light switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                                <i class="ti ti-settings"></i>
+                            </a>
+                        </div>    
+                    </nav>
+                    <!-- End::nav -->
+
+                </div>
+                <!-- End::main-sidebar -->
+            </div>
+
+        </aside>
+        <!-- End::app-sidebar -->
+
+        <!-- Start::app-content -->
+        <div class="main-content landing-main px-0">
+
+            <!-- Start:: Landing Banner -->
+            <div class="landing-banner ad-search-container">
+                <section class="py-5">
+                    <div class="container main-banner-container">
+                        <div class="row justify-content-center">
+                            <div class="col-xxl-9">
+                                <div class="input-group group-search d-xl-flex">
+                                    <div class="category-dropdown-wrapper">
+                                        <a href="javascript:void(0);" class="btn btn-lg btn-wave btn-white shadow-none categorydropdown border-0" onclick="toggleDropdown(this)">
+                                            <i class="ri-function-line me-2 text-primary"></i>All Categories<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                        </a>
+                                        <ul class="categories-dropdowns">
+                                            <li class="category-dropdown">
+                                                <ul class="main-dropdown" id="dropdown-toggle">
+                                                    <li>
+                                                        <div class="categories-dropdowns__item">
+                                                            <span class="me-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M88,184v24a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V184Z" opacity="0.2"/><path d="M208,184v24a8,8,0,0,1-8,8H176a8,8,0,0,1-8-8V184Z" opacity="0.2"/><rect x="48" y="72" width="160" height="40" opacity="0.2"/><line x1="48" y1="72" x2="208" y2="72" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="48" y1="112" x2="208" y2="112" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M208,184H48V64A24,24,0,0,1,72,40H184a24,24,0,0,1,24,24Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M208,184v24a8,8,0,0,1-8,8H176a8,8,0,0,1-8-8V184" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M88,184v24a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V184" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="92" cy="148" r="12"/><circle cx="164" cy="148" r="12"/><line x1="240" y1="80" x2="240" y2="104" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="16" y1="80" x2="16" y2="104" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                                                            </span>Vehicles
+                                                            <span class="float-end"><i class="bi bi-chevron-right"></i></span>
+                                                        </div>
+                                                        <ul class="category-menu"> 
+                                                            <li><a href="javascript:void(0);" class="category-item">Cars</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Bikes</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Motor Cycles</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Buses</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <div class="categories-dropdowns__item">
+                                                            <span class="me-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M200,48H176v56a8,8,0,0,1-13.12,6.15L128,80,93.12,110.13A8,8,0,0,1,80,104V48H56a8,8,0,0,0-8,8V208a8,8,0,0,0,8,8H200a8,8,0,0,0,8-8V56A8,8,0,0,0,200,48Z" opacity="0.2"/><polygon points="96 32 160 32 128 80 96 32" opacity="0.2"/><path d="M128,80l32-48,16,16v56a8,8,0,0,1-13.12,6.15Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M93.12,110.13A8,8,0,0,1,80,104V48L96,32l32,48Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="128" y1="80" x2="128" y2="216" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M176,48h24a8,8,0,0,1,8,8V208a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V56a8,8,0,0,1,8-8H80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="96" y1="32" x2="160" y2="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                                                            </span>
+                                                            Clothing & Jewellery
+                                                            <span class="float-end"><i class="bi bi-chevron-right"></i></span>
+                                                        </div>
+                                                        <ul class="category-menu">
+                                                            <li><a href="javascript:void(0);" class="category-item">Accessories</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Men Clothing</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Women Clothing</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Men Shoes</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Women Shoes</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <div class="categories-dropdowns__item">
+                                                            <span class="me-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><circle cx="212" cy="108" r="20" opacity="0.2"/><circle cx="44" cy="108" r="20" opacity="0.2"/><circle cx="92" cy="60" r="20" opacity="0.2"/><circle cx="164" cy="60" r="20" opacity="0.2"/><path d="M128,104A36,36,0,0,0,93.43,130a43.49,43.49,0,0,1-20.67,25.9,32,32,0,0,0,27.73,57.62,72.49,72.49,0,0,1,55,0,32,32,0,0,0,27.73-57.62A43.46,43.46,0,0,1,162.57,130,36,36,0,0,0,128,104Z" opacity="0.2"/><circle cx="212" cy="108" r="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="44" cy="108" r="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="92" cy="60" r="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="164" cy="60" r="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M128,104A36,36,0,0,0,93.43,130a43.49,43.49,0,0,1-20.67,25.9,32,32,0,0,0,27.73,57.62,72.49,72.49,0,0,1,55,0,32,32,0,0,0,27.73-57.62A43.46,43.46,0,0,1,162.57,130,36,36,0,0,0,128,104Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                                                            </span>
+                                                            Pets
+                                                            <span class="float-end"><i class="bi bi-chevron-right"></i></span>
+                                                        </div>
+                                                        <ul class="category-menu">
+                                                            <li><a href="javascript:void(0);" class="category-item">Birds</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Cats</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Fish</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Rabbit</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Dogs</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <div class="categories-dropdowns__item">
+                                                            <span class="me-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M136,216V32a8,8,0,0,0-12.44-6.65l-80,53.33A8,8,0,0,0,40,85.35V216Z" opacity="0.2"/><path d="M136,216V32a8,8,0,0,0-12.44-6.65l-80,53.33A8,8,0,0,0,40,85.35V216" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M136,88h72a8,8,0,0,1,8,8V216" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="16" y1="216" x2="240" y2="216" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="104" y1="112" x2="104" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="72" y1="112" x2="72" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="72" y1="168" x2="72" y2="184" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="104" y1="168" x2="104" y2="184" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                                                            </span>
+                                                            Real Estate
+                                                            <span class="float-end"><i class="bi bi-chevron-right"></i></span>
+                                                        </div>
+                                                        <ul class="category-menu">
+                                                            <li><a href="javascript:void(0);" class="category-item">Land</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Flat</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Houses</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Shops</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <div class="categories-dropdowns__item">
+                                                            <span class="me-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M60.06,195.91a96,96,0,0,1-.12-135.65h0a95.7,95.7,0,0,1,28,67.76,95.74,95.74,0,0,1-28,67.77Z" opacity="0.2"/><path d="M196.06,195.91a96,96,0,0,1-.12-135.65h0a96,96,0,0,1,0,135.53Z" opacity="0.2"/><circle cx="128" cy="128" r="96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M60,60.24A95.7,95.7,0,0,1,88,128a95.7,95.7,0,0,1-28,67.76" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M196,60.24a96,96,0,0,0,0,135.52" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="32" y1="128" x2="224" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="128" y1="32" x2="128" y2="224" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                                                            </span>
+                                                            Sports
+                                                            <span class="float-end"><i class="bi bi-chevron-right"></i></span>
+                                                        </div>
+                                                        <ul class="category-menu">
+                                                            <li><a href="javascript:void(0);" class="category-item">Bicycle</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Fishing</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Golf</a></li>
+                                                            <li><a href="javascript:void(0);" class="category-item">Gym & Fitness</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>    
+                                    <div class="custom-form-group flex-grow-1">
+                                        <input type="text" class="form-control form-control-lg shadow-none border-0 border-end border-start" placeholder="Enter Your Keyword Here.." 
+                                            aria-label="Recipient's username">
+                                    </div>
+                                    <div class="custom-form-group flex-grow-1">
+                                        <input type="text" class="form-control form-control-lg shadow-none border-0" id="input-placeholder" placeholder="Search by Location...">
+                                        <div class="custom-form-btn border-0">       
+                                            <a href="javascript:void(0);" class="gps-location"><i class="ti ti-current-location"></i></a>                                     
+                                            <div class="dropdown ad-dropdown">
+                                                <a href="javascript:void(0);" class="btn text-default btn-wave" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    5km<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">0km</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">2km</a></li>
+                                                    <li><a class="dropdown-item active" href="javascript:void(0);">5km</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">10km</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">20km</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">50km</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">100km</a></li>
+                                                </ul>
+                                            </div>  
+                                        </div>
+                                    </div>  
+                                    <button class="btn btn-lg btn-secondary border-0 shadow-sm search-btn" type="button"><i class="bi bi-search"></i></button>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </section> 
+            </div>
+            <!-- End:: Landing Banner -->
+
+            <!-- Start:: Breadcrumb-->
+            <div class="border-bottom py-3">
+                <div class="container">
+                    <div class="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Classifieds</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Search</li>
+                            </ol>
+                        </nav>
+                        <p class="mb-0">
+                            <span class="text-muted">Updated on </span> Yesterday
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- End:: Breadcrumb-->
+
+            <!-- Start:: Section-1 -->
+            <section class="section pt-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card custom-card">
+                                <div class="card-body p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-8">
+                                            <div class="d-flex">
+                                                <h5 class="fw-semibold mb-0"><span class="fw-normal">Showing</span> 3456 Ads</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 text-end">
+                                            <div class="btn-group">
+                                                <button class="btn btn-outline-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Sort By
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Date Published</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Most Relevant</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Price Low to High</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Price High to Low</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Distance</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card custom-card products-navigation-card">
+                                <div class="card-body p-0">
+                                    <div class="p-4 border-bottom">
+                                        <h6 class="fw-semibold mb-0">Categories</h6>
+                                        <div class="px-2 py-3 pb-0">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="c-1" checked>
+                                                <label class="form-check-label" for="c-1">
+                                                    Electronics
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">2,712</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="c-2">
+                                                <label class="form-check-label" for="c-2">
+                                                    Real Estate 
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">536</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="c-3" checked>
+                                                <label class="form-check-label" for="c-3">
+                                                    Sports
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">18,289</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="c-4" checked>
+                                                <label class="form-check-label" for="c-4">
+                                                    Shopping
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">3,453</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="c-5">
+                                                <label class="form-check-label" for="c-5">
+                                                    Jobs
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">7,165</span>
+                                            </div>
+                                            <div class="collapse" id="category-more">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input me-2" type="checkbox" value="" id="c-6">
+                                                    <label class="form-check-label" for="c-6">
+                                                        Vehicles
+                                                    </label>
+                                                    <span class="badge bg-light border text-default fw-500 float-end">5,964</span>
+                                                </div>
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input me-2" type="checkbox" value="" id="c-7">
+                                                    <label class="form-check-label" for="c-7">
+                                                        Pets
+                                                    </label>
+                                                    <span class="badge bg-light border text-default fw-500 float-end">2,123</span>
+                                                </div>
+                                            </div>
+                                            <a class="ecommerce-more-link" data-bs-toggle="collapse" href="#category-more" role="button" aria-expanded="false" aria-controls="category-more">MORE</a>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 border-bottom">
+                                        <h6 class="fw-semibold mb-0">Type</h6>
+                                        <div class="px-2 py-3 pb-0">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="ty-1">
+                                                <label class="form-check-label" for="ty-1">
+                                                    Sell
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">16,563</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="ty-2" checked>
+                                                <label class="form-check-label" for="ty-2">
+                                                    Buy
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">15,234</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="ty-3">
+                                                <label class="form-check-label" for="ty-3">
+                                                    Exchange
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">6,278</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="ty-4" checked>
+                                                <label class="form-check-label" for="ty-4">
+                                                    Job
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">4,531</span>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="ty-5">
+                                                <label class="form-check-label" for="ty-5">
+                                                    To-Let
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">2,405</span>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="ty-6">
+                                                <label class="form-check-label" for="ty-6">
+                                                    Rent
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">2,405</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 border-bottom">
+                                        <h6 class="fw-semibold mb-0">Location</h6>
+                                        <div class="px-2 py-3 pb-0">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="j-1" checked>
+                                                <label class="form-check-label" for="j-1">
+                                                   India
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">512</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="j-2" checked>
+                                                <label class="form-check-label" for="j-2">
+                                                    Germany
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">2,186</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="j-3" checked>
+                                                <label class="form-check-label" for="j-3">
+                                                   London
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">734</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="j-4">
+                                                <label class="form-check-label" for="j-4">
+                                                    USA
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">16</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="j-5">
+                                                <label class="form-check-label" for="j-5">
+                                                    Australia
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">1,432</span>
+                                            </div>
+                                            <div class="collapse" id="sizes-more">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input me-2" type="checkbox" value="" id="s-5">
+                                                    <label class="form-check-label" for="s-5">
+                                                        Spain
+                                                    </label>
+                                                    <span class="badge bg-light border text-default fw-500 float-end">5,946</span>
+                                                </div>
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input me-2" type="checkbox" value="" id="s-6">
+                                                    <label class="form-check-label" for="s-6">
+                                                        Gujarat
+                                                    </label>
+                                                    <span class="badge bg-light border text-default fw-500 float-end">3,267</span>
+                                                </div>
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input me-2" type="checkbox" value="" id="s-7">
+                                                    <label class="form-check-label" for="s-7">
+                                                        Chicago
+                                                    </label>
+                                                    <span class="badge bg-light border text-default fw-500 float-end">578</span>
+                                                </div>
+                                            </div>
+                                            <a class="ecommerce-more-link" data-bs-toggle="collapse" href="#sizes-more" role="button" aria-expanded="false" aria-controls="sizes-more">MORE</a>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 border-bottom">
+                                        <h6 class="fw-semibold mb-0">Price Range</h6>
+                                        <div class="px-2 py-3 pb-0">
+                                            <div id="nonlinear"></div>
+                                            <div class="d-flex mt-4 flex-wrap">
+                                                <div class="fw-semibold h6">$<span id="lower-value"></span></div>
+                                                &nbsp; -- &nbsp; 
+                                                <div class="fw-semibold h6">$<span id="upper-value"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4">
+                                        <h6 class="fw-semibold mb-0">Featured Ads</h6>
+                                        <div class="px-2 py-3 pb-0">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="q-1">
+                                                <label class="form-check-label" for="q-1">
+                                                    Premium
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">16,563</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="q-2" checked>
+                                                <label class="form-check-label" for="q-2">
+                                                    Featured
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">15,234</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="q-3">
+                                                <label class="form-check-label" for="q-3">
+                                                    Top Ads
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">6,278</span>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="q-4" checked>
+                                                <label class="form-check-label" for="q-4">
+                                                    Highlighted
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">4,531</span>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="q-5">
+                                                <label class="form-check-label" for="q-5">
+                                                    Urgent
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">2,405</span>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input me-2" type="checkbox" value="" id="q-6">
+                                                <label class="form-check-label" for="q-6">
+                                                    Price Drop
+                                                </label>
+                                                <span class="badge bg-light border text-default fw-500 float-end">2,405</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="">
+                                        <h5 class="fw-semibold mb-3">Get Latest Ad Alerts</h5>
+                                        <p>Latest Ads updates on the go to recieved direct to your email. Stay updated with your latest new Ads.</p>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Email Here" aria-label="blog-email" aria-describedby="blog-subscribe">
+                                            <button class="btn btn-primary" type="button" id="blog-subscribe">Subscribe</button>
+                                        </div>
+                                        <label class="form-check-label">
+                                            By Subscribing you accept to <a href="javascript:void(0);" class="text-success"><u>privacy policy</u></a>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-9">                            
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <span class="badge bg-warning tag-badge">Featured</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/1.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$2,226.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">4-Bds - 4 Ba - 600ff3</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">4 Beds Duplex House</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden sold-out">
+                                        <span class="badge bg-danger tag-badge">Sold Out</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/2.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$5,321.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2024 - 120,000km</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Cadbo Car kb43</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Banglore</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <span class="badge bg-primary tag-badge">New</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/3.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$56,764.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2022 Oct 04</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Smart Phone H6</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Chennai</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <span class="badge bg-danger tag-badge">Urgent</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/4.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$5,763.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2024 - 120,000km</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Gittbos Bike Mf120</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Pune</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/1.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$2,226.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">4-Bds - 4 Ba - 600ff3</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">4 Beds Duplex House</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/2.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$5,321.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2024 - 120,000km</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Cadbo Car kb43</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Banglore</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/6.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$56,764.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2022 Oct 04</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Laptop F6</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Chennai</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/4.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$5,763.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2024 - 120,000km</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Gittbos Bike Mf120</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Pune</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <span class="badge bg-warning tag-badge">Featured</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/5.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$5,763.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2024 - 4 months</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Adorable Puppy</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Pune</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <span class="badge bg-warning tag-badge">Featured</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/1.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$2,226.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">4-Bds - 4 Ba - 600ff3</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">4 Beds Duplex House</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden sold-out">
+                                        <span class="badge bg-danger tag-badge">Sold Out</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/2.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$5,321.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2024 - 120,000km</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Cadbo Car kb43</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Banglore</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="card custom-card overflow-hidden">
+                                        <span class="badge bg-primary tag-badge">New</span>
+                                        <a href="javascript:void(0)">
+                                            <div class="featured-img">
+                                                <img src="../assets/images/classifieds/featured-adds/3.jpg" class="" alt="...">
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-3 position-relative">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-fill">
+                                                    <h5 class="mb-0 fw-semibold"><span>$56,764.00</span></h5>
+                                                    <p class="mb-1 fw-semibold">2022 Oct 04</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                            </div>
+                                            <h6 class="text-muted">Smart Phone H6</h6>
+                                            <div class="fs-11 text-muted">
+                                                <span class=""><i class="bi bi-geo-alt me-1"></i>Chennai</span>
+                                                <span>,</span>
+                                                <span class="">16 Nov 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <nav aria-label="Page navigation" class="pagination-style-1 float-end">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="javascript:void(0)">
+                                            Prev
+                                        </a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="javascript:void(0)">
+                                            <i class="bi bi-three-dots"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="javascript:void(0)">17</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link text-primary" href="javascript:void(0)">
+                                            next
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-1 -->
+
+            <!-- Start:: Section-2 -->
+            <section class="section bg-banner px-lg-0 px-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="mb-4">
+                            <h3 class="fw-semibold mb-2 text-fixed-white">&#128073; Download our free mobile apps today</h3>
+                        </div>
+                        <h6 class="mb-4 op-9 text-fixed-white">Labore no sed ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore..</h6>
+                        <div class="btn-list">
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/play-store.png" alt="">
+                                Google Play
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/apple-store.png" alt="" class="invert-1">
+                                App Store
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-2 -->
+
+            <!-- Start:: Search Modal -->
+            <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-body p-4">
+                      <span class="input-group">
+                        <input type="text" class="form-control form-control-lg border-0 shadow-none" placeholder="Search" aria-label="Username">
+                        <a href="javascript:void(0);" class="input-group-text border-0" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                      </span>
+                      <div class="mt-4">
+                        <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                        <a href="javascript:void(0);" class="search-tags">Popular Articles</a>
+                        <a href="javascript:void(0);" class="search-tags">Recent Articles</a>
+                        <a href="javascript:void(0);" class="search-tags">News and Updates</a>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <div class="ms-auto">
+                        <button class="btn btn-lg btn-primary">Search</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- End:: Search Modal -->
+
+        </div>
+        <!-- End::app-content -->
+
+        <!-- Start:: Footer -->
+        <div class="landing-main-footer py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 text-lg-start text-center">
+                        <span class="text-fixed-white op-7 fs-14"> © Copyright <span id="year"></span> <a
+                            href="javascript:void(0);" class="text-primary fs-15 fw-semibold">Mamix</a>.
+                        </span>
+                    </div>
+                    <div class="col-lg-6 text-lg-end text-center">
+                        <ul class="list-unstyled fw-normal landing-footer-list mb-0">
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Terms Of Service</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Legal</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Contact</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Report Abuse</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: Footer -->
+
+    </div>
+
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="../assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="../assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- noUiSlider JS -->
+    <script src="../assets/libs/nouislider/nouislider.min.js"></script>
+    <script src="../assets/libs/wnumb/wNumb.min.js"></script>
+
+    <!-- Internal Classifieds Search JS -->
+    <script src="../assets/js/classifieds-search.js"></script>
+
+    <!-- Category Dropdown JS -->
+    <script src="../assets/js/category-dropdown.js"></script>  
+
+    <!-- Internal Landing JS -->
+    <script src="../assets/js/landing.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="../assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky-landing.js"></script> 
+
+</body>
+
+</html>

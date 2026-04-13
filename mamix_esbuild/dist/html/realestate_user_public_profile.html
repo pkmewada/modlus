@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="horizontal" data-nav-style="menu-hover" data-menu-position="fixed" data-theme-mode="light">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> MAMIX - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+    <script>
+        if(localStorage.mamixdarktheme){
+            document.querySelector("html").setAttribute("data-theme-mode","dark")
+        }
+        if(localStorage.mamixrtl){
+            document.querySelector("html").setAttribute("dir","rtl")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+        }
+        if(localStorage.mamixltr){
+            document.querySelector("html").setAttribute("dir","ltr")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.min.css");
+        }
+		let html = document.querySelector("html");
+		if (window.innerWidth < 992) {
+		html.setAttribute("data-toggled", "close");
+		}
+    </script>
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet" >
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet" >
+
+    <!-- SwiperJS Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+</head>
+
+<body class="landing-body">
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="">
+                <p class="switcher-style-head">Theme Color Mode:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-light-theme">
+                                Light
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-light-theme"
+                                checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-dark-theme">
+                                Dark
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-dark-theme">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <p class="switcher-style-head">Directions:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-ltr">
+                                LTR
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-ltr" checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-rtl">
+                                RTL
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-rtl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-colors">
+                <p class="switcher-style-head">Theme Primary:</p>
+                <div class="d-flex align-items-center switcher-style">
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-1" type="radio"
+                            name="theme-primary" id="switcher-primary">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-2" type="radio"
+                            name="theme-primary" id="switcher-primary1">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-3" type="radio" name="theme-primary"
+                            id="switcher-primary2">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-4" type="radio" name="theme-primary"
+                            id="switcher-primary3">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-5" type="radio" name="theme-primary"
+                            id="switcher-primary4">
+                    </div>
+                    <div class="form-check switch-select me-3 ps-0 mt-1 color-primary-light">
+                        <div class="theme-container-primary"></div>
+                        <div class="pickr-container-primary"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="switcher-style-head">reset:</p>
+                <div class="text-center">
+                    <button id="reset-all" class="btn btn-danger mt-3">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="landing-page-wrapper">
+
+        <!-- app-header -->
+       <header class="app-header" id="header">
+
+           <!-- Start::main-header-container -->
+           <div class="main-header-container container-fluid">
+
+               <!-- Start::header-content-left -->
+               <div class="header-content-left">
+
+                   <!-- Start::header-element -->
+                   <div class="header-element">
+                       <div class="horizontal-logo">
+                           <a href="index.html" class="header-logo">
+                               <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                               <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                           </a>
+                       </div>
+                   </div>
+                   <!-- End::header-element -->
+
+                   <!-- Start::header-element -->
+                   <div class="header-element">
+                       <!-- Start::header-link -->
+                       <a href="javascript:void(0);" class="sidemenu-toggle header-link" data-bs-toggle="sidebar">
+                           <span class="open-toggle">
+                               <i class="ri-menu-3-line fs-20"></i>
+                           </span>
+                       </a>
+                       <!-- End::header-link -->
+                   </div>
+                   <!-- End::header-element -->
+
+               </div>
+               <!-- End::header-content-left -->
+
+               <!-- Start::header-content-right -->
+               <div class="header-content-right">
+
+                   <!-- Start::header-element -->
+                   <div class="header-element align-items-center">
+                       <!-- Start::header-link|switcher-icon -->
+                       <div class="btn-list d-lg-none d-block">
+                           <a href="sign-up-basic.html" class="btn btn-primary-light">
+                               Sign Up
+                           </a>
+                           <button class="btn btn-icon btn-success switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                               <i class="ri-settings-3-line"></i>
+                           </button>
+                       </div>
+                       <!-- End::header-link|switcher-icon -->
+                   </div>
+                   <!-- End::header-element -->
+
+               </div>
+               <!-- End::header-content-right -->
+
+           </div>
+           <!-- End::main-header-container -->
+
+       </header>
+       <!-- /app-header -->
+
+       <!-- Start::app-sidebar -->
+       <aside class="app-sidebar sticky" id="sidebar">
+
+           <div class="container-xl px-0">
+               <!-- Start::main-sidebar -->
+               <div class="main-sidebar">
+
+                   <!-- Start::nav -->
+                   <nav class="main-menu-container nav nav-pills sub-open">
+                       <div class="landing-logo-container">
+                           <div class="horizontal-logo">
+                               <a href="index.html" class="header-logo">
+                                   <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                                   <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                               </a>
+                           </div>
+                       </div>
+                       <div class="slide-left" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg></div>
+                       <ul class="main-menu flex-fill ms-lg-5">
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a class="side-menu__item active" href="javascript:void(0);">
+                                   <span class="side-menu__label">Home</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Properties</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Buy</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Rent</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide has-sub">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Pages</span>
+                                   <i class="fe fe-chevron-down side-menu__angle"></i>
+                               </a>
+                               <ul class="slide-menu child1">
+                                   <li class="slide">
+                                       <a href="javascript:void(0);" class="side-menu__item">Abous Us</a>
+                                   </li>
+                                   <li class="slide">
+                                       <a href="javascript:void(0);" class="side-menu__item">Terms & Conditions</a>
+                                   </li>
+                                   <li class="slide">
+                                       <a href="javascript:void(0);" class="side-menu__item">Privacy Policy</a>
+                                   </li>
+                                   <li class="slide has-sub">
+                                       <a href="javascript:void(0);" class="side-menu__item">Level-2
+                                           <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                       <ul class="slide-menu child2">
+                                           <li class="slide">
+                                               <a href="javascript:void(0);" class="side-menu__item">Level-2-1</a>
+                                           </li>
+                                           <li class="slide has-sub">
+                                               <a href="javascript:void(0);" class="side-menu__item">Level-2-2
+                                                   <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                               <ul class="slide-menu child3">
+                                                   <li class="slide">
+                                                       <a href="javascript:void(0);" class="side-menu__item">Level-2-2-1</a>
+                                                   </li>
+                                                   <li class="slide has-sub">
+                                                       <a href="javascript:void(0);" class="side-menu__item">Level-2-2-2</a>
+                                                   </li>
+                                               </ul>
+                                           </li>
+                                       </ul>
+                                   </li>
+                               </ul>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Agents</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                           <!-- Start::slide -->
+                           <li class="slide">
+                               <a href="javascript:void(0);" class="side-menu__item">
+                                   <span class="side-menu__label">Contact Us</span>
+                               </a>
+                           </li>
+                           <!-- End::slide -->
+                       </ul>
+                       <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
+                       <div class="d-lg-flex d-none align-items-center">
+                           <!-- Start::header-link -->
+                           <a href="javascript:void(0);" class="me-3" data-bs-toggle="modal" data-bs-target="#searchModal">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="20px" viewBox="0 0 24 24"><path fill="var(--primary-color)" d="M21.71,20.29,18,16.61A9,9,0,1,0,16.61,18l3.68,3.68a1,1,0,0,0,1.42,0A1,1,0,0,0,21.71,20.29ZM11,18a7,7,0,1,1,7-7A7,7,0,0,1,11,18Z"/></svg>
+                           </a>
+                           <!-- End::header-link -->
+                           <!-- Start::dropdown -->
+                           <div class="country-selector dropdown">
+                               <!-- Start::dropdown-toggle -->
+                               <a href="javascript:void(0);" class="btn btn-wave btn-light border btn-country dropdown-toggle me-2" data-bs-toggle="dropdown">
+                                   English
+                               </a>
+                               <!-- End::dropdown-toggle -->
+                               <ul class="main-header-dropdown dropdown-menu py-2" data-popper-placement="none">
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           English
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           Spanish
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           French
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           German
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           Italian
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="dropdown-item" href="javascript:void(0);">
+                                           Russian
+                                       </a>
+                                   </li>
+                               </ul>
+                           </div>
+                           <!-- End::dropdown -->                         
+                           <div class="btn-list d-xl-flex d-none">
+                               <button class="btn btn-wave btn-light border">
+                                   Login / Register
+                               </button>
+                               <button class="btn btn-wave btn-primary">
+                                   <i class="bi bi-plus-circle me-2"></i>Post Property
+                               </button>
+                           </div>
+                           
+                           <a href="javascript:void(0);" class="btn btn-icon btn-secondary-light switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                               <i class="ti ti-settings"></i>
+                           </a>
+                       </div>    
+                   </nav>
+                   <!-- End::nav -->
+
+               </div>
+               <!-- End::main-sidebar -->
+           </div>
+
+       </aside>
+       <!-- End::app-sidebar -->
+
+        <!-- Start::app-content -->
+        <div class="main-content landing-main">
+
+            <!-- Start:: Breadcrumb-->
+            <div class="border-bottom border-top py-3 bg-white">
+                <div class="container">
+                    <div class="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Real Estate</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">User Public Profile</li>
+                            </ol>
+                        </nav>
+                        <p class="mb-0">
+                            <span class="text-muted">Updated on </span> Yesterday
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- End:: Breadcrumb-->
+
+             <!-- Start:: Landing Banner -->
+             <div class="landing-banner">
+                <section class="py-5">
+                    <div class="container main-banner-container">
+                        <div class="row gy-2">
+                            <div class="col-lg-9 col-md-8">
+                                <div class="d-flex align-items-center flex-wrap gap-3">
+                                    <div>
+                                        <span class="realestate-company-icon">
+                                           <img src="../assets/images/company-logos/1.png" alt="">
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 class="fw-bold mb-0 d-flex align-items-center"><a href="javascript:void(0);"> Ridh Constructions</a></h4>
+                                        <p class="mb-2">Member Since <span class="fw-semibold">2005</span></p>
+                                        <div class="d-flex align-items-center fs-14 mb-2">
+                                            <p class="fs-15 fw-semibold mb-0">Customer Ratings : </p>
+                                            <div class="min-w-fit-content ms-3">
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-half"></i></span>
+                                            </div>
+                                            <p class="mb-0 mx-1 min-w-fit-content text-muted">
+                                                <span>(142)</span>
+                                                <span>Ratings</span>
+                                            </p>
+                                        </div>
+                                        <span class="badge badge-md bg-info-transparent"><i class="bi bi-briefcase-fill me-2"></i>156 Properties</span>
+                                        <span class="badge badge-md bg-danger-transparent"><i class="bi bi-bar-chart-fill me-2"></i>100 Sales</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-4 my-md-auto">
+                                <div class="btn-list">
+                                    <a href="javascript:void(0)" class="btn btn-lg btn-w-lg btn-primary"><i class="bi bi-eye me-1"></i> View Contact</a>
+                                    <a href="javascript:void(0)" class="btn btn-icon btn-lg btn-secondary-light btn-wave">
+                                        <i class="ri-user-follow-line"></i>
+                                    </a>
+                                    <a href="javascript:void(0)" class="btn btn-icon btn-lg btn-success-light btn-wave">
+                                        <i class="ri-share-line"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section> 
+            </div>
+            <!-- End:: Landing Banner -->
+
+            <!-- Start:: Nav Tabs-->
+            <div class="border-bottom bg-white">
+                <div class="container">
+                    <ul class="nav nav-tabs tab-style-8 scaleX custom-nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="#Profile-tab" class="nav-link p-3 active" data-bs-toggle="tab" aria-selected="true" role="tab">Profile</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#properties-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Properties</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#Followers-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Followers</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#Following-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Following</a>
+                        </li>
+                    </ul> 
+                </div>
+            </div>
+            <!-- End:: Nav Tabs-->
+
+            <!-- Start:: Section-1 -->
+            <section class="section py-4">
+                <div class="container"> 
+                    <div class="tab-content">
+                        <div class="tab-pane border-0 p-0 show active" id="Profile-tab" role="tabpanel"> 
+                            <div class="row"> 
+                                <div class="col-lg-8">                                     
+                                    <div class="mb-3">
+                                        <div class="deals-bundle deals-bundle1">
+                                            <span class="icon">
+                                                <img src="../assets/images/company-logos/1.png" alt="" class="img-fluid">
+                                            </span>
+                                            <h4 class="fw-semibold mb-4 text-fixed-white">Ridh Constructions</h4>  
+                                            <div class="row gy-2 text-center justify-content-center">
+                                                <div class="col-md-4">
+                                                    <div class="bg-white-transparent backdrop-blur p-2 rounded shadow-sm">
+                                                        <h5 class="mb-1 fw-semibold text-fixed-white">234+</h5>
+                                                        <h6 class="mb-0 text-fixed-white">Properties</h6>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="bg-white-transparent backdrop-blur p-2 rounded shadow-sm">
+                                                        <h5 class="mb-1 fw-semibold text-fixed-white">342+</h5>
+                                                        <h6 class="mb-0 text-fixed-white">Customers</h6>
+                                                    </div>
+                                                </div>
+                                            </div>                                      
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                About Ridh Constructions
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p>Est amet sit vero sanctus labore no sed ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Aliquyam sed amet. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore.A officiis optio temporibus minima facilis...</p>
+                                            <p>Sit ipsum sanctus ea magna est. Aliquyam sed amet. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore.A officiis optio temporibus minima facilis...</p>
+                                       
+                                            <h6 class="fw-semibold">Deals In Localities :</h6>
+                                            <p>Hyderabad - Adarsh Nagar, Addagutta, Adibatla, Adikmet, Adithya Nagar, Alwal, Amangal, Ankireddypalli</p>
+                                            <h6 class="fw-semibold">Propery Type :</h6>
+                                            <p>Flats/Apartments, Houses/Villas, Builder Floor, Farm House, Residential Plot, Agricultural/Farm Land</p>
+
+                                            <h6 class="fw-semibold">Services Offered :</h6>
+                                            <p class="mb-0">Builders, Real Estate Agents</p>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                Properties Overview
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="fw-semibold fs-14">Properties for Sale :</p>
+                                            <div class="row justify-content-center">
+                                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                    <div class="product-spec mb-2">
+                                                        <i class="ri-building-4-line fs-16 text-primary"></i>
+                                                        <p class="fs-14 fw-semibold mb-0">24+ Flats</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <i class="ri-landscape-line fs-16 text-primary"></i>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            23 Residential Plots
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <i class="ri-compass-line fs-16 text-primary"></i>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            10 Farm Land
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <i class="ri-building-line fs-16 text-primary"></i>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                           6 Farm House
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="fw-semibold fs-14 my-4">Properties for Rent :</p> 
+                                            <div class="row justify-content-center">
+                                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                    <div class="product-spec">
+                                                        <i class="bi bi-shop fs-16 text-primary"></i>
+                                                        <p class="fs-14 fw-semibold mb-0">2 Commercial Shops</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec">
+                                                        <i class="bi bi-buildings fs-16 text-primary"></i>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            2 Duplex Houses for rent
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                Amenities
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row justify-content-center">
+                                                <div class="col-xxl-6 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                                    <div class="product-spec mb-2">
+                                                        <p class="mb-0">
+                                                            <img src="../assets/images/realestate/icons/7.png" alt="">
+                                                        </p>
+                                                        <p class="fs-14 fw-semibold mb-0">24Hr Backup</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <p class="mb-0">                                            
+                                                            <img src="../assets/images/realestate/icons/8.png" alt="">
+                                                        </p>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            Rain Water Harvesting
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <p class="mb-0">                                            
+                                                            <img src="../assets/images/realestate/icons/1.png" alt="">
+                                                        </p>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            Community Hall
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <p class="mb-0">                                            
+                                                            <img src="../assets/images/realestate/icons/9.png" alt="">
+                                                        </p>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            Play Area
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <p class="mb-0">                                            
+                                                            <img src="../assets/images/realestate/icons/10.png" alt="">
+                                                        </p>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            Swimming Pool
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 mt-sm-0 mt-3">
+                                                    <div class="product-spec mb-2">
+                                                        <p class="mb-0">                                            
+                                                            <img src="../assets/images/realestate/icons/11.png" alt="">
+                                                        </p>
+                                                        <p class="fs-14 fw-semibold mb-0">
+                                                            Gymnasium
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card border-0 bg-primary-transparent shadow-none">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between gap-2 flex-wrap align-items-center">
+                                                <div>
+                                                    <h5 class="fw-semibold mb-0">&#128400; Download the Brochure Now!</h5>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" class="btn btn-success" role="button">
+                                                        <i class="ri-download-line me-2"></i>Download
+                                                    </a>
+                                                </div>   
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <div class="row mt-5 g-0">
+                                        <h4 class="fw-semibold mb-0">Top Properties</h4>
+                                        <p class="">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
+                                        <div class="swiper swiper-related-jobs">
+                                            <div class="swiper-wrapper">
+                                                <div class="swiper-slide">
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-danger tag-badge">For Sale</span>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/1.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Joan Hunter</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">House nature</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                                            <span>,</span>
+                                                                            <span class="">16 Nov 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 2BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">7 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">2 Baths</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">6,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$1290</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-warning tag-badge">For Rent</span>
+                                                                <span class="badge bg-danger top-right-badge">20% Off</span>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/2.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Susana Sane</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Trauel Builder</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>Banglore</span>
+                                                                            <span>,</span>
+                                                                            <span class="">20 Dec 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 3BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">10 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">4 Bath</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">9,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$1345</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <div class="badge top-right-badge bg-warning text-fixed-white">
+                                                                    <div class="badge-icon"><i class="ti ti-star-filled fs-14"></i></div>
+                                                                    <div class="badge-text">Featured</div>
+                                                                </div>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/3.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Julia Camo</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Duplex House</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>Hyderabad</span>
+                                                                            <span>,</span>
+                                                                            <span class="">05 Jan 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 5BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">18 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">2 Bath</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">6,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$3456</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="swiper-slide">
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-danger tag-badge">40% Off</span>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/4.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Jack Miller</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Villa House</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>Chennai</span>
+                                                                            <span>,</span>
+                                                                            <span class="">24 Nov 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 4BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">7 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">2 Bath</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">6,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$2345</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-danger tag-badge">For Sale</span>
+                                                                <div class="badge top-right-badge bg-warning text-fixed-white">
+                                                                    <div class="badge-icon"><i class="ti ti-star-filled fs-14"></i></div>
+                                                                    <div class="badge-text">Featured</div>
+                                                                </div>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/5.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Amanda Nanes</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Riddi Houses</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                                            <span>,</span>
+                                                                            <span class="">25 Feb 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 5BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">5 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">3 Baths</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">4,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$7653</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-danger tag-badge">20% Off</span>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/6.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Joan Hunter</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">House nature</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                                            <span>,</span>
+                                                                            <span class="">16 Nov 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 2BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">7 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">2 Bath</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">6,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$1290</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="swiper-slide">
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-warning tag-badge">For Rent</span>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/7.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Hunter Joan</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Johse Houses</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>Chennai</span>
+                                                                            <span>,</span>
+                                                                            <span class="">27 Nov 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 2BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">8 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">4 Bath</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">8,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$8765</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <span class="badge bg-danger tag-badge">For Sale</span>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/8.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Charles Achilles</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Achlles Buildings</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>Kerala</span>
+                                                                            <span>,</span>
+                                                                            <span class="">18 Mar 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 3BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">4 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">2 Baths</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">1,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$9853</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                                            <div class="card custom-card overflow-hidden card-style-2">
+                                                                <div class="badge top-right-badge bg-warning text-fixed-white">
+                                                                    <div class="badge-icon"><i class="ti ti-star-filled fs-14"></i></div>
+                                                                    <div class="badge-text">Featured</div>
+                                                                </div>
+                                                                <a href="realestate_details.html">
+                                                                    <div class="featured-img">
+                                                                        <img src="../assets/images/realestate/properties/popular/3.png" class="w-auto" alt="...">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="card-body p-3 position-relative">
+                                                                    <div class="min-w-fit-content float-end">
+                                                                        <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-light rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Add to wishlist" data-bs-original-title="Add to wishlist"><i class="ri-heart-fill op-3"></i></a>
+                                                                    </div>
+                                                                    <p class="mb-2">By <a href="javascript:void(0);" class="d-inline-block text-primary fs-13 fw-semibold">Julia Camo</a></p>
+                                                                    <h5 class="mb-1 fw-semibold"><a href="realestate_details.html">Duplex House</a></h5>
+                                                                    <div class="d-flex align-items-baseline fs-11 mb-3 flex-wrap gap-2">
+                                                                        <div class="fs-11 text-muted">
+                                                                            <span class=""><i class="bi bi-geo-alt me-1"></i>Hyderabad</span>
+                                                                            <span>,</span>
+                                                                            <span class="">05 Jan 2024</span>
+                                                                        </div>
+                                                                        <span class="text-danger">( 5BHK )</span>
+                                                                    </div>
+                                                                    <div class="popular-tags">
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">18 Beds</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">2 Bath</a>
+                                                                        <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">6,987sqft</a>
+                                                                    </div>
+                                                                    <div class="d-flex align-items-center mt-4 flex-wrap gap-2">
+                                                                        <h4 class="fw-semibold text-primary mb-0 flex-grow-1">$3456</h4>
+                                                                        <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="swiper-button-next"></div>
+                                            <div class="swiper-button-prev"></div>
+                                        </div>
+                                    </div>           
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card overflow-hidden">
+                                        <div class="card-body p-0">
+                                            <div class="d-sm-flex align-items-center p-3 border-bottom">
+                                                <div>
+                                                    <span class="avatar avatar-xl avatar-rounded online me-3">
+                                                        <img src="../assets/images/faces/9.jpg" alt="">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill main-profile-info">
+                                                    <h5 class="fw-semibold mb-1">Jack Miller <i class="bi bi-check-circle-fill text-success fs-14" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" title="Verified User"></i></h5>
+                                                    <p class="mb-0">Member Since <span class="fw-semibold">2005</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="p-4 border-bottom border-block-end-dashed">
+                                                <div class="d-flex mb-0 justify-content-center">
+                                                    <div class="me-4">
+                                                        <h6 class="fw-semibold mb-0">113</h6>
+                                                        <p class="mb-0 fs-12 text-muted">Projects</p>
+                                                    </div>
+                                                    <div class="me-4">
+                                                        <h6 class="fw-semibold mb-0">12.2k</h6>
+                                                        <p class="mb-0 fs-12 text-muted">Followers</p>
+                                                    </div>
+                                                    <div class="me-4">
+                                                        <h6 class="fw-semibold mb-0">128</h6>
+                                                        <p class="mb-0 fs-12 text-muted">Following</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-4 border-bottom border-block-end-dashed text-center">
+                                                <div class="text-center">
+                                                    <div class="d-flex">
+                                                        <div class="input-group flex-grow-1">
+                                                            <div class="input-group-text bg-white">
+                                                                <i class="fe fe-phone"></i>
+                                                            </div>
+                                                            <input type="email" class="form-control" id="inputEmail1" placeholder="*** *** 7654" value="*** *** 7654">
+                                                        </div>
+                                                        <a href="javascript:void(0)" class="btn btn-wave btn-icon btn-primary ms-2">
+                                                            <i class="ri-eye-line"></i>
+                                                        </a> 
+                                                        <a href="javascript:void(0)" class="btn btn-wave btn-icon btn-secondary ms-2">
+                                                            <i class="ri-message-line"></i>
+                                                        </a> 
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            <div class="p-4 d-flex align-items-center flex-wrap gap-3">
+                                                <p class="fs-15 mb-0 fw-semibold">Social :</p>
+                                                <div class="btn-list mb-0">
+                                                    <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-facebook-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-twitter-x-fill"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-warning-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-instagram-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-success-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-github-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-youtube-line"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card overflow-hidden">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                Get in touch with Seller
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row gy-3">
+                                                <div class="col-xl-12">
+                                                    <label for="vendor-username" class="form-label fw-semibold">Username</label> 
+                                                    <input type="text" class="form-control" id="vendor-username" placeholder="Vendor username" value="sprukotechnologies">
+                                                </div>
+                                                <div class="col-xl-12">
+                                                    <label for="email-address" class="form-label fw-semibold">Email Address</label>
+                                                    <input type="text" class="form-control" id="email-address" placeholder="xyz@gmail.com" value="json@gmail.com">
+                                                </div>
+                                                <div class="col-xl-12">
+                                                    <label for="phone-number2" class="form-label fw-semibold">Mobile Number</label>
+                                                    <input type="text" class="form-control" id="phone-number2" placeholder="*** *** ****" value="65432 76765">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-grid">
+                                                <a href="javascript:void(0)" class="btn btn-lg btn-danger">Get Contact Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="properties-tab" role="tabpanel">
+                            <div class="row gy-3"> 
+                                <div class="col-lg-8">                                  
+                                    <div class="d-flex gap-2 mb-4">
+                                        <div class="custom-form-group flex-grow-1">
+                                            <input type="text" class="form-control form-control-lg" placeholder="Search Here.." aria-label="Recipient's username">
+                                            <div class="custom-form-btn">                                            
+                                                <button class="btn btn-primary border-0" type="button"><i class="bi bi-search me-2"></i> Search</button>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-outline-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort By
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0)">Date Published</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0)">Luxury Houses</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0)">Land</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0)">Flat</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-start gy-2">
+                                                <div class="col-sm-3">
+                                                    <div class="featured-img p-0">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="../assets/images/realestate/properties/2.png" alt="img" class="img-fluid w-100 rounded-1">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="flex-grow-1 mb-3">
+                                                            <span class="badge bg-warning-transparent mb-2">For Rent</span>
+                                                            <h5 class="fw-semibold mb-1"><a href="javascript:void(0);">Duplex House</a></h5>
+                                                            <div class="d-flex align-items-baseline mb-2">
+                                                                <div class="me-2">
+                                                                    <span class=""><i class="bi bi-geo-alt me-1"></i>Kerala</span>
+                                                                    <span>,</span>
+                                                                    <span class="">23 May 2024</span>
+                                                                </div>
+                                                                <span class="text-danger">( 2BHK )</span>
+                                                            </div>
+                                                            <div class="popular-tags">
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">10 Beds</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">14 Baths</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">9,987sqft</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">Lift</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">CCTV</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">Gym</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="min-w-fit-content">
+                                                            <div class="">
+                                                                <a href="javascript:void(0);" class="btn btn-wishlist btn-icon rounded-circle" data-bs-toggle="tooltip" aria-label="wishlist" data-bs-original-title="Add to wishlist"><i class="ti ti-heart fs-16"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h4 class="fw-semibold text-primary mb-0">$120</h4>
+                                                        <div class="min-w-fit-content">
+                                                            <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-start gy-2">
+                                                <div class="col-sm-3">
+                                                    <div class="featured-img p-0">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="../assets/images/realestate/properties/3.png" alt="img" class="img-fluid w-100 rounded-1">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="flex-grow-1 mb-3">
+                                                            <span class="badge bg-danger-transparent mb-2">For Sale</span>
+                                                            <h5 class="fw-semibold mb-1"><a href="javascript:void(0);">Land in Kondapur</a></h5>
+                                                            <div class="d-flex align-items-baseline mb-2">
+                                                                <div class="me-2">
+                                                                    <span class=""><i class="bi bi-geo-alt me-1"></i>Hyderabad</span>
+                                                                    <span>,</span>
+                                                                    <span class="">16 Aug 2024</span>
+                                                                </div>
+                                                                <span class="text-danger">( 5BHk )</span>
+                                                            </div>
+                                                            <p class="mb-0">Aliquyam sed amet. Kasd sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore.</p>
+                                                        </div>
+                                                        <div class="min-w-fit-content">
+                                                            <div class="">
+                                                                <a href="javascript:void(0);" class="btn btn-wishlist btn-icon rounded-circle" data-bs-toggle="tooltip" aria-label="wishlist" data-bs-original-title="Add to wishlist"><i class="ti ti-heart fs-16"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h4 class="fw-semibold text-primary mb-0">$150</h4>
+                                                        <div class="min-w-fit-content">
+                                                            <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-start gy-2">
+                                                <div class="col-sm-3">
+                                                    <div class="featured-img p-0">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="../assets/images/realestate/properties/5.png" alt="img" class="img-fluid w-100 rounded-1">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="flex-grow-1 mb-3">
+                                                            <span class="badge bg-warning-transparent mb-2">For Rent</span>
+                                                            <h5 class="fw-semibold mb-1"><a href="javascript:void(0);">Trauel Apartment</a></h5>
+                                                            <div class="d-flex align-items-baseline mb-2">
+                                                                <div class="me-2">
+                                                                    <span class=""><i class="bi bi-geo-alt me-1"></i>Banglore</span>
+                                                                    <span>,</span>
+                                                                    <span class="">20 Dec 2024</span>
+                                                                </div>
+                                                                <span class="text-danger">( 3BHK )</span>
+                                                            </div>
+                                                            <div class="popular-tags">
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">10 Beds</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">14 Baths</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">9,987sqft</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">Lift</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">CCTV</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">Gym</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="min-w-fit-content">
+                                                            <div class="">
+                                                                <a href="javascript:void(0);" class="btn btn-wishlist btn-icon rounded-circle" data-bs-toggle="tooltip" aria-label="wishlist" data-bs-original-title="Add to wishlist"><i class="ti ti-heart fs-16"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h4 class="fw-semibold text-primary mb-0">$250</h4>
+                                                        <div class="min-w-fit-content">
+                                                            <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-start gy-2">
+                                                <div class="col-sm-3">
+                                                    <div class="featured-img p-0">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="../assets/images/realestate/properties/6.png" alt="img" class="img-fluid w-100 rounded-1">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="flex-grow-1 mb-3">
+                                                            <span class="badge bg-danger-transparent mb-2">For Sale</span>
+                                                            <h5 class="fw-semibold mb-1"><a href="javascript:void(0);">Achlles Buildings</a></h5>
+                                                            <div class="d-flex align-items-baseline mb-2">
+                                                                <div class="me-2">
+                                                                    <span class=""><i class="bi bi-geo-alt me-1"></i>USA</span>
+                                                                    <span>,</span>
+                                                                    <span class="">25 Feb 2024</span>
+                                                                </div>
+                                                                <span class="text-danger">( 5BHK )</span>
+                                                            </div>
+                                                            <div class="popular-tags">
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">10 Beds</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">14 Baths</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">9,987sqft</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">Lift</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">CCTV</a>
+                                                                <a href="javascript:void(0);" class="badge rounded-pill bg-light text-default">Gym</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="min-w-fit-content">
+                                                            <div class="">
+                                                                <a href="javascript:void(0);" class="btn btn-wishlist btn-icon rounded-circle" data-bs-toggle="tooltip" aria-label="wishlist" data-bs-original-title="Add to wishlist"><i class="ti ti-heart fs-16"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h4 class="fw-semibold text-primary mb-0">$356</h4>
+                                                        <div class="min-w-fit-content">
+                                                            <a href="realestate_details.html" class="btn btn-primary"><i class="ti ti-phone me-1 d-inline-block"></i>Contact</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <nav aria-label="Page navigation" class="pagination-style-4 float-end">
+                                        <ul class="pagination mb-0">
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="javascript:void(0)">
+                                                    Prev
+                                                </a>
+                                            </li>
+                                            <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="javascript:void(0)">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0)">16</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0)">17</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link text-primary" href="javascript:void(0)">
+                                                    next
+                                                </a>
+                                            </li>
+                                        </ul>  
+                                    </nav>       
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card overflow-hidden">
+                                        <div class="card-body p-0">
+                                            <div class="d-sm-flex align-items-center p-3 border-bottom">
+                                                <div>
+                                                    <span class="avatar avatar-xl avatar-rounded online me-3">
+                                                        <img src="../assets/images/faces/9.jpg" alt="">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill main-profile-info">
+                                                    <h5 class="fw-semibold mb-1">Jack Miller <i class="bi bi-check-circle-fill text-success fs-14" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" title="Verified User"></i></h5>
+                                                    <p class="mb-0">Member Since <span class="fw-semibold">2005</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="p-4 border-bottom border-block-end-dashed">
+                                                <div class="d-flex mb-0 justify-content-center">
+                                                    <div class="me-4">
+                                                        <h6 class="fw-semibold mb-0">113</h6>
+                                                        <p class="mb-0 fs-12 text-muted">Projects</p>
+                                                    </div>
+                                                    <div class="me-4">
+                                                        <h6 class="fw-semibold mb-0">12.2k</h6>
+                                                        <p class="mb-0 fs-12 text-muted">Followers</p>
+                                                    </div>
+                                                    <div class="me-4">
+                                                        <h6 class="fw-semibold mb-0">128</h6>
+                                                        <p class="mb-0 fs-12 text-muted">Following</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-4 border-bottom border-block-end-dashed text-center">
+                                                <div class="text-center">
+                                                    <div class="d-flex">
+                                                        <div class="input-group flex-grow-1">
+                                                            <div class="input-group-text bg-white">
+                                                                <i class="fe fe-phone"></i>
+                                                            </div>
+                                                            <input type="email" class="form-control" id="inputEmail2" placeholder="*** *** 7654" value="*** *** 7654">
+                                                        </div>
+                                                        <a href="javascript:void(0)" class="btn btn-wave btn-icon btn-primary ms-2">
+                                                            <i class="ri-eye-line"></i>
+                                                        </a> 
+                                                        <a href="javascript:void(0)" class="btn btn-wave btn-icon btn-secondary ms-2">
+                                                            <i class="ri-message-line"></i>
+                                                        </a> 
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            <div class="p-4 d-flex align-items-center flex-wrap gap-3">
+                                                <p class="fs-15 mb-0 fw-semibold">Social :</p>
+                                                <div class="btn-list mb-0">
+                                                    <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-facebook-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-twitter-x-fill"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-warning-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-instagram-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-success-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-github-line"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light mb-xl-0">
+                                                        <i class="ri-youtube-line"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card custom-card overflow-hidden">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                Get in touch with Seller
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row gy-3">
+                                                <div class="col-xl-12">
+                                                    <label for="vendor-username2" class="form-label fw-semibold">Username</label> 
+                                                    <input type="text" class="form-control" id="vendor-username2" placeholder="Vendor username" value="sprukotechnologies">
+                                                </div>
+                                                <div class="col-xl-12">
+                                                    <label for="email-address2" class="form-label fw-semibold">Email Address</label>
+                                                    <input type="text" class="form-control" id="email-address2" placeholder="xyz@gmail.com" value="json@gmail.com">
+                                                </div>
+                                                <div class="col-xl-12">
+                                                    <label for="phone-number" class="form-label fw-semibold">Mobile Number</label>
+                                                    <input type="text" class="form-control" id="phone-number" placeholder="*** *** ****" value="65432 76765">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-grid">
+                                                <a href="javascript:void(0)" class="btn btn-danger">Get Contact Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="Followers-tab" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/15.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/1.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/2.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/21.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Shane Watson                                          
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">shanewatson@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            812 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/5.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Devon Convoy                                         
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">devonconvoy@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            345 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/6.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Umag Anige                                        
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">umaganigel89@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            456 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/9.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/10.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/11.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="Following-tab" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/2.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/21.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Shane Watson                                          
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">shanewatson@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            812 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/15.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/1.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/9.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/10.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/5.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Devon Convoy                                         
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">devonconvoy@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            345 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/6.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Umag Anige                                        
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">umaganigel89@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            456 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-2">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/11.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Favourites"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-1 -->
+
+            <!-- Start:: Section-2 -->
+            <section class="section bg-banner px-lg-0 px-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="mb-4">
+                            <h3 class="fw-semibold mb-2 text-fixed-white">&#128073; Download our free mobile apps today</h3>
+                        </div>
+                        <h6 class="mb-4 op-9 text-fixed-white">Labore no sed ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore..</h6>
+                        <div class="btn-list">
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/play-store.png" alt="">
+                                Google Play
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/apple-store.png" alt="" class="invert-1">
+                                App Store
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-2 -->
+
+        </div>
+        <!-- End::app-content -->
+
+        <!-- Start:: Search Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-body p-4">
+                  <span class="input-group">
+                    <input type="text" class="form-control form-control-lg border-0 shadow-none" placeholder="Search" aria-label="Username">
+                    <a href="javascript:void(0);" class="input-group-text border-0" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                  </span>
+                  <div class="mt-4">
+                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                    <a href="javascript:void(0);" class="search-tags">Popular Articles</a>
+                    <a href="javascript:void(0);" class="search-tags">Recent Articles</a>
+                    <a href="javascript:void(0);" class="search-tags">News and Updates</a>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="ms-auto">
+                    <button class="btn btn-lg btn-primary">Search</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- End:: Search Modal -->
+
+        <!-- Start:: Footer -->
+        <div class="landing-main-footer py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 text-lg-start text-center">
+                        <span class="text-fixed-white op-7 fs-14"> © Copyright <span id="year"></span> <a
+                            href="javascript:void(0);" class="text-primary fs-15 fw-semibold">Mamix</a>.
+                        </span>
+                    </div>
+                    <div class="col-lg-6 text-lg-end text-center">
+                        <ul class="list-unstyled fw-normal landing-footer-list mb-0">
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Terms Of Service</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Legal</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Contact</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Report Abuse</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: Footer -->
+
+    </div>
+
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="../assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Internal User Public Profile JS -->
+    <script src="../assets/js/user-public-profile.js"></script>
+
+    <!-- Internal Landing JS -->
+    <script src="../assets/js/landing.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="../assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky-landing.js"></script> 
+
+</body>
+
+</html>

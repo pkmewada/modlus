@@ -1,0 +1,372 @@
+<!-- include mainhead.html"-->
+
+<!-- Dropzone CSS -->
+<link rel="stylesheet" href="../assets/libs/dropzone/dropzone.css">
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">Payment Gateways</h1>
+                        <div class="">
+                            <nav>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Ecommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Payment Gateways</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-primary-light btn-wave me-2">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+                
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                    <h6 class="fw-semibold mb-0">
+                                        Payment Methods
+                                    </h6>
+                                    <div class="d-flex gap-3 align-items-center flex-wrap">
+                                        <div class="custom-form-group flex-grow-1">
+                                            <input type="text" class="form-control" placeholder="Search Payment Options.." aria-label="Recipient's username" aria-describedby="button-addon2">
+                                            <a href="javascript:void(0);" class="text-muted custom-form-btn"><i class="ti ti-search"></i></a>
+                                        </div> 
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-wave" data-bs-toggle="modal" data-bs-target="#addnewpayment">
+                                            <i class="bi bi-plus-circle"></i>  Add New Payment
+                                        </a> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/6.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Paypal</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via PayPal.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/7.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Paytm</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via Paytm.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/9.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Visa</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via Visa Cards.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/3.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Maestro</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via Maestro.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/4.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Master Card</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via Master Card.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/1.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Discover</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via Discover.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/5.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Express</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via American Express Card.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/8.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with PhonePe</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via PhonePe.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="dropdown float-end">
+                                    <button class="btn btn-icon btn-sm border btn-light btn-wave" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-edit-line me-1"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex gap-4 align-items-start flex-wrap">
+                                    <div class="payment-card">
+                                        <img src="../assets/images/payments/2.png" alt="">
+                                    </div>
+                                    <div class="flex-grow-1 w-50">
+                                        <h6 class="fw-semibold mb-1">Payment with Gpay</h6>
+                                        <p class="mb-1 text-muted">Customer can pay directly via Google Pay.</p>
+                                        <p class="mb-0"><span class="fw-semibold">Status :</span> <span class="badge bg-success-transparent">Enabled</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End::row-1 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+          
+
+        <!-- Add Payment Modal -->
+        <div class="modal fade" id="addnewpayment" tabindex="-1" aria-labelledby="addnewpayment" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="exampleModalLabel">Add New Payment</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row gy-4 mb-4">
+                            <div class="col-lg-12">
+                                <label for="Payment-title" class="form-label">Payment Title : </label>
+                                <input type="text" class="form-control" id="Payment-title" placeholder="Payment Title">
+                            </div>
+                            <div class="col-xl-12">
+                                <label for="Payment-id" class="form-label">Payment ID</label>
+                                <input type="text" class="form-control" id="Payment-id" placeholder="Enter Here" value="54327812645fuygfeh">
+                            </div>
+                            <div class="col-xl-12">
+                                <label for="Payment-secret" class="form-label">Payment Secret</label>
+                                <input type="text" class="form-control" id="Payment-secret" placeholder="Enter Here" value="54327812645fuygfeh">
+                            </div>
+                            <div class="col-xl-12">
+                                <label for="Payment-currency" class="form-label">Payment Currency</label>
+                                <input type="text" class="form-control" id="Payment-currency" placeholder="Enter Here" value="USD">
+                            </div>
+                            <div class="col-lg-12">
+                                <label class="form-label">Status</label> 
+                                <select class="form-control" data-trigger name="Status"
+                                    >
+                                    <option value="Choice 1">Enabled</option> 
+                                    <option value="Choice 2">Disabled</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-12">
+                                <label class="form-label">Upload Image : </label>
+                                <form data-single="true" method="post" action="https://httpbin.org/post" class="dropzone"></form>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary">Add Payment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Add Payment Modal -->
+
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- include custom_switcherjs.html"-->
+
+    <!-- Dropzone JS -->
+    <script src="../assets/libs/dropzone/dropzone-min.js"></script>
+
+    <!-- Internal Payment Gateways JS -->
+    <script src="../assets/js/ecommerce-payment-gateways.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>
