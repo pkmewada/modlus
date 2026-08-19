@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="horizontal" data-nav-style="menu-hover" data-menu-position="fixed" data-theme-mode="light">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> MAMIX - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+    <script>
+        if(localStorage.mamixdarktheme){
+            document.querySelector("html").setAttribute("data-theme-mode","dark")
+        }
+        if(localStorage.mamixrtl){
+            document.querySelector("html").setAttribute("dir","rtl")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+        }
+        if(localStorage.mamixltr){
+            document.querySelector("html").setAttribute("dir","ltr")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.min.css");
+        }
+		let html = document.querySelector("html");
+		if (window.innerWidth < 992) {
+		html.setAttribute("data-toggled", "close");
+		}
+    </script>
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet" >
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet" >
+
+    <!-- SwiperJS Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+</head>
+
+<body class="landing-body">
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="">
+                <p class="switcher-style-head">Theme Color Mode:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-light-theme">
+                                Light
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-light-theme"
+                                checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-dark-theme">
+                                Dark
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-dark-theme">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <p class="switcher-style-head">Directions:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-ltr">
+                                LTR
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-ltr" checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-rtl">
+                                RTL
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-rtl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-colors">
+                <p class="switcher-style-head">Theme Primary:</p>
+                <div class="d-flex align-items-center switcher-style">
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-1" type="radio"
+                            name="theme-primary" id="switcher-primary">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-2" type="radio"
+                            name="theme-primary" id="switcher-primary1">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-3" type="radio" name="theme-primary"
+                            id="switcher-primary2">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-4" type="radio" name="theme-primary"
+                            id="switcher-primary3">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-5" type="radio" name="theme-primary"
+                            id="switcher-primary4">
+                    </div>
+                    <div class="form-check switch-select me-3 ps-0 mt-1 color-primary-light">
+                        <div class="theme-container-primary"></div>
+                        <div class="pickr-container-primary"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="switcher-style-head">reset:</p>
+                <div class="text-center">
+                    <button id="reset-all" class="btn btn-danger mt-3">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="landing-page-wrapper">
+
+        <!-- app-header -->
+        <header class="app-header" id="header">
+
+            <!-- Start::main-header-container -->
+            <div class="main-header-container container-fluid">
+
+                <!-- Start::header-content-left -->
+                <div class="header-content-left">
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <div class="horizontal-logo">
+                            <a href="index.html" class="header-logo">
+                                <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                                <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <!-- Start::header-link -->
+                        <a href="javascript:void(0);" class="sidemenu-toggle header-link" data-bs-toggle="sidebar">
+                            <span class="open-toggle">
+                                <i class="ri-menu-3-line fs-20"></i>
+                            </span>
+                        </a>
+                        <!-- End::header-link -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-left -->
+
+                <!-- Start::header-content-right -->
+                <div class="header-content-right">
+
+                    <!-- Start::header-element -->
+                    <div class="header-element align-items-center">
+                        <!-- Start::header-link|switcher-icon -->
+                        <div class="btn-list d-lg-none d-block">
+                            <a href="sign-up-basic.html" class="btn btn-primary-light">
+                                Sign Up
+                            </a>
+                            <button class="btn btn-icon btn-success switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                                <i class="ri-settings-3-line"></i>
+                            </button>
+                        </div>
+                        <!-- End::header-link|switcher-icon -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-right -->
+
+            </div>
+            <!-- End::main-header-container -->
+
+        </header>
+        <!-- /app-header -->
+
+        <!-- Start::app-sidebar -->
+        <aside class="app-sidebar sticky" id="sidebar">
+
+            <div class="container px-0">
+                <!-- Start::main-sidebar -->
+                <div class="main-sidebar">
+
+                    <!-- Start::nav -->
+                    <nav class="main-menu-container nav nav-pills sub-open">
+                        <div class="landing-logo-container">
+                            <div class="horizontal-logo">
+                                <a href="index.html" class="header-logo">
+                                    <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                                    <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="slide-left" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg></div>
+                        <ul class="main-menu flex-fill">
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a class="side-menu__item active" href="javascript:void(0);">
+                                    <span class="side-menu__label">Home</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Categories</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Shop</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide has-sub">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Pages</span>
+                                    <i class="fe fe-chevron-down side-menu__angle"></i>
+                                </a>
+                                <ul class="slide-menu child1">
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Abous Us</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Terms & Conditions</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="javascript:void(0);" class="side-menu__item">Privacy Policy</a>
+                                    </li>
+                                    <li class="slide has-sub">
+                                        <a href="javascript:void(0);" class="side-menu__item">Level-2
+                                            <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                        <ul class="slide-menu child2">
+                                            <li class="slide">
+                                                <a href="javascript:void(0);" class="side-menu__item">Level-2-1</a>
+                                            </li>
+                                            <li class="slide has-sub">
+                                                <a href="javascript:void(0);" class="side-menu__item">Level-2-2
+                                                    <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                                <ul class="slide-menu child3">
+                                                    <li class="slide">
+                                                        <a href="javascript:void(0);" class="side-menu__item">Level-2-2-1</a>
+                                                    </li>
+                                                    <li class="slide has-sub">
+                                                        <a href="javascript:void(0);" class="side-menu__item">Level-2-2-2</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Subscription</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Contact Us</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                        </ul>
+                        <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
+                        <div class="d-lg-flex d-none align-items-center">
+                            <!-- Start::header-link -->
+                            <a href="javascript:void(0);" class="me-3" data-bs-toggle="modal" data-bs-target="#searchModal">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" viewBox="0 0 24 24"><path fill="var(--primary-color)" d="M21.71,20.29,18,16.61A9,9,0,1,0,16.61,18l3.68,3.68a1,1,0,0,0,1.42,0A1,1,0,0,0,21.71,20.29ZM11,18a7,7,0,1,1,7-7A7,7,0,0,1,11,18Z"/></svg>
+                            </a>
+                            <!-- End::header-link -->
+                            <!-- Start::dropdown -->
+                            <div class="country-selector dropdown">
+                                <!-- Start::dropdown-toggle -->
+                                <a href="javascript:void(0);" class="btn btn-wave btn-light border btn-country dropdown-toggle me-2" data-bs-toggle="dropdown">
+                                    English
+                                </a>
+                                <!-- End::dropdown-toggle -->
+                                <ul class="main-header-dropdown dropdown-menu py-2" data-popper-placement="none">
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            English
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            Spanish
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            French
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            German
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            Italian
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            Russian
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End::dropdown -->                         
+                            <div class="btn-list d-xl-flex d-none">
+                                <a href="sign-in-basic.html" class="btn btn-wave btn-light border">
+                                    Login / Register
+                                </a>
+                                <button class="btn btn-wave btn-primary">
+                                    <i class="bi bi-plus-circle me-2"></i>Become A Seller
+                                </button>
+                            </div>
+                            
+                            <a href="javascript:void(0);" class="btn btn-icon btn-secondary-light switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                                <i class="ti ti-settings"></i>
+                            </a>
+                        </div>    
+                    </nav>
+                    <!-- End::nav -->
+
+                </div>
+                <!-- End::main-sidebar -->
+            </div>
+
+        </aside>
+        <!-- End::app-sidebar -->
+
+        <!-- Start::app-content -->
+        <div class="main-content landing-main">
+
+            <!-- Start:: Breadcrumb-->
+            <div class="border-bottom border-top py-3">
+                <div class="container">
+                    <div class="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Marketplace</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">User Details</li>
+                            </ol>
+                        </nav>
+                        <p class="mb-0">
+                            <span class="text-muted">Updated on </span> Yesterday
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- End:: Breadcrumb-->
+
+            <!-- Start:: Landing Banner -->
+            <div class="landing-banner">
+                <section class="py-5">
+                    <div class="container main-banner-container">
+                        <div class="row gy-2">
+                            <div class="col-md-8 col-lg-9">
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <span class="marketplace-company-icon">
+                                       <img src="../assets/images/company-logos/3.png" alt="">
+                                    </span>
+                                    <div class="ms-3">
+                                        <h4 class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);"> sprukotechnologies</a></h4>
+                                        <p class="mb-2">Member Since <span class="fw-semibold">2005</span></p>
+                                        <div class="d-flex align-items-center fs-14 mb-2">
+                                            <p class="fs-15 fw-semibold mb-0">Ratings : </p>
+                                            <div class="min-w-fit-content ms-3">
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star-half"></i></span>
+                                                <span class="text-warning"><i class="bi bi-star"></i></span>
+                                            </div>
+                                            <p class="mb-0 mx-1 min-w-fit-content text-muted">
+                                                <span>(142)</span>
+                                                <span>Ratings</span>
+                                            </p>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-3 my-md-auto text-md-end">
+                                <div class="btn-list mb-2">
+                                    <a href="javascript:void(0)" class="btn btn-lg btn-w-lg btn-primary">View Profile</a>
+                                    <a href="javascript:void(0)" class="btn btn-icon btn-lg btn-secondary-light btn-wave">
+                                        <i class="ri-share-line"></i>
+                                    </a>
+                                </div>
+                                <p class="mb-0"><i class="bi bi-info-circle text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="45 days left"></i> <b>Expires on </b> 28 Dec 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </section> 
+            </div>
+            <!-- End:: Landing Banner -->
+
+            <!-- Start:: Nav Tabs-->
+            <div class="border-bottom">
+                <div class="container">
+                    <ul class="nav nav-tabs tab-style-8 scaleX custom-nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="#Profile-tab" class="nav-link p-3 active" data-bs-toggle="tab" aria-selected="true" role="tab">My Profile</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#mydownloads-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">My Downloads</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#wishlistitems-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Wishlist Items</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#Followers-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Followers</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#Following-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Following</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="#settings-tab" class="nav-link p-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Settings</a>
+                        </li>
+                    </ul> 
+                </div>
+            </div>
+            <!-- End:: Nav Tabs-->
+
+            <!-- Start:: Section-1 -->
+            <section class="section py-4 bg-white">
+                <div class="container"> 
+                    <div class="tab-content">
+                        <div class="tab-pane border-0 p-0 show active" id="Profile-tab" role="tabpanel"> 
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title flex-fill">
+                                       Basic Information
+                                    </div>
+                                    <div>
+                                        <p class="fw-semibold mb-2">Profile 60% completed - <a href="javscript:void(0);" class="text-primary fs-12">Finish now</a></p>
+                                        <div class="progress progress-xs progress-animate">
+                                            <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gy-4 mb-4">
+                                        <div class="col-xl-6">
+                                            <label for="customer-name" class="form-label">Customer Name</label>
+                                            <input type="text" class="form-control" id="customer-name" placeholder="Customer Name" value="Jack Miller">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="customer-username" class="form-label">Customer Username</label> 
+                                            <input type="text" class="form-control" id="customer-username" placeholder="Customer username" value="sprukotechnologies">
+                                        </div> 
+                                        <div class="col-xl-6">
+                                            <label for="email-address" class="form-label">Email Address :</label>
+                                            <input type="text" class="form-control" id="email-address" placeholder="xyz@gmail.com" value="json@gmail.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="phone-number" class="form-label">Mobile Number :</label>
+                                            <input type="text" class="form-control" id="phone-number" placeholder="*** *** ****" value="65432 76765">
+                                        </div>
+                                    </div>
+                                    <div class="row gy-4"> 
+                                        <div class="col-xl-6">
+                                            <label for="Address" class="form-label">Address :</label>
+                                            <input type="text" class="form-control" id="Address" placeholder="Address" value="USA">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Zip-Code" class="form-label">Zip Code :</label>
+                                            <input type="text" class="form-control" id="Zip-Code" placeholder="Zip Code" value="1234">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="facebook" class="form-label">Facebook :</label>
+                                            <input type="text" class="form-control" id="facebook" placeholder="https://" value="https://www.facebook.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Twitter" class="form-label">Twitter :</label>
+                                            <input type="text" class="form-control" id="Twitter" placeholder="https://" value="https://twitter.com"> 
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Pinterest" class="form-label">Pinterest:</label>
+                                            <input type="text" class="form-control" id="Pinterest" placeholder="https://" value="https://in.pinterest.com">
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="Linkedin" class="form-label">Linkedin :</label>
+                                            <input type="text" class="form-control" id="Linkedin" placeholder="https://" value="https://www.linkedin.com">
+                                        </div>
+                                        <div class="col-xl-12">                                            
+                                            <div class="mb-3">
+                                                <span class="avatar avatar-lg avatar-rounded">
+                                                    <img src="../assets/images/faces/9.jpg" alt="" class="w-100 h-100">
+                                                    <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                                </span>
+                                            </div>
+                                            <div class="btn-list">
+                                                <input class="form-control" type="file" id="formFile">
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <label for="bio" class="form-label">Bio :</label>
+                                            <textarea class="form-control" id="bio" rows="7">Lorem ipsum dolor sit amet consectetur adipisicing elit. At sit impedit, officiis non minima saepe voluptates a magnam enim sequi porro veniam ea suscipit dolorum vel mollitia voluptate iste nemo!</textarea>
+                                        </div>
+                                    </div>                                        
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-end">
+                                        <button class="btn btn-primary">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="mydownloads-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header justify-content-between">
+                                    <div class="card-title">
+                                        My Downloads
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div>
+                                            <input class="form-control form-control-sm" type="text" placeholder="Search Here" aria-label=".form-control-sm example">
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-wave waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort By<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);">New</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Popular</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Relevant</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="row">Order ID</th>
+                                                    <th scope="row">Product Name</th>
+                                                    <th scope="row">Author</th>
+                                                    <th scope="row">Status</th>
+                                                    <th scope="row">Download Date</th>
+                                                    <th scope="row">Expired Date</th>
+                                                    <th scope="row">Licence</th>
+                                                    <th scope="row">Price</th>
+                                                    <th scope="row">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2901
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/1.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">HTML Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">HTML</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/4.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Amanda Nanes</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Active</span>
+                                                    </td>
+                                                    <td>03 Jan 2022</td>
+                                                    <td>12 Feb 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Regular</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$56</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="bi bi-arrow-down-circle text-muted"></i>
+                                                            Download
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2902
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/2.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">React Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">React</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/15.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Charles Achilles</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-danger-transparent">Expired</span>
+                                                    </td>
+                                                    <td>12 Feb 2022</td>
+                                                    <td>15 Mar 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-warning-transparent">Extended</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$34</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="bi bi-arrow-down-circle text-muted"></i>
+                                                            Download
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2903
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/3.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">PHP Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">PHP</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/5.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Julia Camo</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Active</span>
+                                                    </td>
+                                                    <td>23 Mar 2022</td>
+                                                    <td>17 Apr 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Regular</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$46</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="bi bi-arrow-down-circle text-muted"></i>
+                                                            Download
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2904
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/4.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Angular Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">Angular</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/12.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Jack Miller</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-danger-transparent">Expired</span>
+                                                    </td>
+                                                    <td>25 Apr 2022</td>
+                                                    <td>16 Jun 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Regular</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$52</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="bi bi-arrow-down-circle text-muted"></i>
+                                                            Download
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-top-0">
+                                    <div class="d-flex align-items-center flex-wrap overflow-auto">
+                                        <div class="mb-2 mb-sm-0">
+                                            Showing <b>1</b> to <b>4</b> of <b>10</b> entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <ul class="pagination mb-0 overflow-auto">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link">Previous</a>
+                                                </li>
+                                                <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">2</a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">4</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">5</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">Next</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="wishlistitems-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header justify-content-between">
+                                    <div class="card-title">
+                                        My Wishlists
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div>
+                                            <input class="form-control form-control-sm" type="text" placeholder="Search Here" aria-label=".form-control-sm example">
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-wave waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort By<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);">New</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Popular</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Relevant</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="row">Product Name</th>
+                                                    <th scope="row">Author</th>
+                                                    <th scope="row">Status</th>
+                                                    <th scope="row">Upload Date</th>
+                                                    <th scope="row">Price</th>
+                                                    <th scope="row">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/1.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">HTML Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">HTML</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/4.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Amanda Nanes</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Active</span>
+                                                    </td>
+                                                    <td>03 Jan 2022</td>
+                                                    <td class="fw-semibold">$56</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-shopping-cart-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/2.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">React Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">React</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/15.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Charles Achilles</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-danger-transparent">Deactive</span>
+                                                    </td>
+                                                    <td>12 Feb 2022</td>
+                                                    <td class="fw-semibold">$34</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-shopping-cart-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/3.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">PHP Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">PHP</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/5.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Julia Camo</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Active</span>
+                                                    </td>
+                                                    <td>23 Mar 2022</td>
+                                                    <td class="fw-semibold">$46</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-shopping-cart-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/4.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Angular Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">Angular</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/12.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Jack Miller</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-danger-transparent">Deactive</span>
+                                                    </td>
+                                                    <td>25 Apr 2022</td>
+                                                    <td class="fw-semibold">$52</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-shopping-cart-line"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-top-0">
+                                    <div class="d-flex align-items-center flex-wrap overflow-auto">
+                                        <div class="mb-2 mb-sm-0">
+                                            Showing <b>1</b> to <b>4</b> of <b>10</b> entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <ul class="pagination mb-0 overflow-auto">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link">Previous</a>
+                                                </li>
+                                                <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">2</a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">4</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">5</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">Next</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="purchased-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header justify-content-between">
+                                    <div class="card-title">
+                                        Downloads
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="me-3">
+                                            <input class="form-control form-control-sm" type="text" placeholder="Search Here" aria-label=".form-control-sm example">
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-wave waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort By<i class="ri-arrow-down-s-line align-middle ms-1"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Month</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">This Year</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="row">Order ID</th>
+                                                    <th scope="row">Product Name</th>
+                                                    <th scope="row">Customer</th>
+                                                    <th scope="row">Status</th>
+                                                    <th scope="row">Download Date</th>
+                                                    <th scope="row">Licence</th>
+                                                    <th scope="row">Price</th>
+                                                    <th scope="row">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2901
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/1.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">HTML Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">HTML</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/4.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Amanda Nanes</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Downloaded</span>
+                                                    </td>
+                                                    <td>03 Jan 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Regular</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$56</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="fe fe-eye text-muted"></i>
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2902
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/2.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">React Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">React</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/15.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Charles Achilles</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-danger-transparent">Refund</span>
+                                                    </td>
+                                                    <td>12 Feb 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-warning-transparent">Extended</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$34</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="fe fe-eye text-muted"></i>
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2903
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/3.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">PHP Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">PHP</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/5.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Julia Camo</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Downloaded</span>
+                                                    </td>
+                                                    <td>23 Mar 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Regular</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$46</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="fe fe-eye text-muted"></i>
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="">
+                                                            #SPK2904
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex"> 
+                                                            <span class="avatar avatar-md avatar-square"><img src="../assets/images/marketplace/new-arrivals/4.png" class="w-100 h-100" alt="..."></span>
+                                                            <div class="ms-2">
+                                                                <p class="fw-semibold mb-0 d-flex align-items-center"><a href="javascript:void(0);">Angular Template</a></p>
+                                                                <p class="badge badge-sm bg-light border text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Category">Angular</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lh-1">
+                                                                <span class="avatar avatar-sm avatar-rounded me-2">
+                                                                    <img src="../assets/images/faces/12.jpg" alt="">
+                                                                </span>
+                                                            </div>
+                                                            <div class="align-items-center">
+                                                                <p class="mb-0 fw-semibold">Jack Miller</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-danger-transparent">Refund</span>
+                                                    </td>
+                                                    <td>25 Apr 2022</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill badge-sm bg-success-transparent">Regular</span>
+                                                    </td>
+                                                    <td class="fw-semibold">$52</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-light btn-wave waves-effect waves-light">
+                                                            <i class="fe fe-eye text-muted"></i>
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer border-top-0">
+                                    <div class="d-flex align-items-center flex-wrap overflow-auto">
+                                        <div class="mb-2 mb-sm-0">
+                                            Showing <b>1</b> to <b>10</b> of <b>10</b> entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <ul class="pagination mb-0 overflow-auto">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link">Previous</a>
+                                                </li>
+                                                <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">2</a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">4</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0)">5</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0)">Next</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="Followers-tab" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/15.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/1.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/2.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/21.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Shane Watson                                          
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">shanewatson@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            812 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/5.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Devon Convoy                                         
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">devonconvoy@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            345 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/6.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Umag Anige                                        
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">umaganigel89@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            456 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/9.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/10.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/11.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-add-line me-1"></i>Follow Back
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-close-fill me-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="Following-tab" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/2.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/21.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Shane Watson                                          
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">shanewatson@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            812 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/15.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/1.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/9.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">
+                                                            Simon Cowall
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">simoncowal111@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            567 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/10.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Melissa Jane                                            
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">melissajane2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            347 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/5.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Devon Convoy                                         
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">devonconvoy@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            345 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/6.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Umag Anige                                        
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">umaganigel89@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            456 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card custom-card">
+                                        <div class="card-body contact-action">
+                                            <div class="contact-overlay"></div>
+                                            <div class="d-flex align-items-top ">
+                                                <div class="d-flex flex-fill flex-wrap gap-3">
+                                                    <div class="avatar avatar-xl avatar-rounded">
+                                                        <img src="../assets/images/faces/11.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 fw-semibold">                                                            
+                                                            Susana Sane                                           
+                                                        </h6>
+                                                        <p class="mb-1 text-muted contact-mail text-truncate">susanasanee2134@gmail.com</p>
+                                                        <p class="fw-semibold mb-2 text-primary">
+                                                            847 Products
+                                                        </p>
+                                                        <div class="btn-list">
+                                                            <button class="btn btn-sm btn-danger-light">
+                                                                <i class="ri-user-forbid-line me-1"></i>Block
+                                                            </button>
+                                                            <button class="btn btn-sm btn-light">
+                                                                <i class="ri-user-unfollow-line me-1"></i>Un Follow
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="javascript:void(0);"><i class="ri-heart-3-line fs-16 text-muted"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane border-0 p-0" id="settings-tab" role="tabpanel">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        Account Settings
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gy-5">
+                                        <div class="col-xl-12">
+                                            <h6 class="mb-3 fw-semibold text-primary">General Settings :</h6>
+                                            <div class="row mb-4">
+                                                <div class="col-xl-3">
+                                                    <span class="fs-14 fw-semibold mb-0">Account Type :</span>
+                                                    <p class="fs-12 mb-0 text-muted">Select the account type</p>
+                                                </div>
+                                                <div class="col-xl-9">
+                                                    <select class="form-control" data-trigger name="account-type-select" id="account-type-select">
+                                                        <option value="Choice 1">Private</option>
+                                                        <option value="Choice 2">Business</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="d-sm-flex d-block align-items-top mb-4 justify-content-between">
+                                                <div>
+                                                    <p class="fs-14 mb-1 fw-semibold">Two Step Verification</p>
+                                                    <p class="fs-12 text-muted mb-0">Two step verificatoin is very secured and restricts in happening faulty practices.</p>
+                                                </div>
+                                                <div class="custom-toggle-switch toggle-sm ms-sm-2 ms-0"> 
+                                                    <input id="two-step" name="toggleswitchsize" type="checkbox" checked=""> 
+                                                    <label for="two-step" class="label-primary mb-1"></label>
+                                                </div>
+                                            </div>
+                                            <div class="d-sm-flex d-block align-items-top mb-4 justify-content-between">
+                                                <div>
+                                                    <p class="fs-14 mb-1 fw-semibold">Recovery Mail</p>
+                                                    <p class="fs-12 text-muted mb-0">Incase of forgetting password mails are sent to  heifo@gmail.com</p>
+                                                </div>
+                                                <div class="custom-toggle-switch toggle-sm ms-sm-2 ms-0"> 
+                                                    <input id="recovery-mail" name="toggleswitchsize" type="checkbox" checked=""> 
+                                                    <label for="recovery-mail" class="label-primary mb-1"></label>
+                                                </div>
+                                            </div>
+                                            <div class="d-sm-flex d-block align-items-top justify-content-between">
+                                                <div>
+                                                    <p class="fs-14 mb-1 fw-semibold">SMS Recovery</p>
+                                                    <p class="fs-12 text-muted mb-0">SMS are sent to 9102312xx in case of recovery</p>
+                                                </div>
+                                                <div class="custom-toggle-switch toggle-sm ms-sm-2 ms-0"> 
+                                                    <input id="sms-recovery" name="toggleswitchsize" type="checkbox" checked=""> 
+                                                    <label for="sms-recovery" class="label-primary mb-1"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <h6 class="mb-3 fw-semibold text-primary">Email Settings</h6>
+                                            <div class="row">
+                                                <div class="col-sm-6 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="itemupdate" checked="">
+                                                        <label class="form-check-label" for="itemupdate">
+                                                            Item Update Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="itemcomment">
+                                                        <label class="form-check-label" for="itemcomment">
+                                                            Item Comment Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-0">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="itemreview">
+                                                        <label class="form-check-label" for="itemreview">
+                                                            Item Review Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 mb-0">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="itembuyerreview" checked="">
+                                                        <label class="form-check-label" for="itembuyerreview">
+                                                            Buyer Review Notifications
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <h6 class="mb-3 fw-semibold text-primary">Change Password</h6>
+                                            <p class="fs-13">Password should be min of <b class="text-success fw-semibold">8 digits<sup>*</sup></b>,atleast <b class="text-success fw-semibold">One Capital letter<sup>*</sup></b> and <b class="text-success fw-semibold">One Special Character<sup>*</sup></b> included.</p>
+                                            <div class="row">
+                                                <div class="col-sm-4 col-12 mb-2">
+                                                    <label for="current-password" class="form-label">Current Password</label>
+                                                    <input type="text" class="form-control" id="current-password" placeholder="Current Password">
+                                                </div>
+                                                <div class="col-sm-4 col-12 mb-2">
+                                                    <label for="new-password" class="form-label">New Password</label>
+                                                    <input type="text" class="form-control" id="new-password" placeholder="New Password">
+                                                </div>
+                                                <div class="col-sm-4 col-12 mb-0">
+                                                    <label for="confirm-password" class="form-label">Confirm Password</label>
+                                                    <input type="text" class="form-control" id="confirm-password" placeholder="Confirm PAssword">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="float-end">
+                                        <button class="btn btn-light m-1">
+                                            Restore Defaults
+                                        </button>
+                                        <button class="btn btn-primary m-1">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-1 -->
+
+            <!-- Start:: Section-2 -->
+            <section class="section bg-banner px-lg-0 px-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7 text-center">
+                        <div class="mb-4">
+                            <h3 class="fw-semibold mb-2 text-fixed-white">&#128073; Browse the top template to build the awesome applications</h3>
+                        </div>
+                        <h6 class="mb-4 op-9 text-fixed-white">Labore no sed ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore..</h6>
+                        <div class="btn-list">
+                            <a href="marketplace_search.html" class="btn btn-lg btn-light"><i class="bi bi-search me-1"></i> Search Products</a>
+                            <a href="javascript:void(0);" class="btn btn-lg btn-danger"><i class="bi bi-send me-1"></i> Signup Now</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-2 -->
+
+        </div>
+        <!-- End::app-content -->
+
+        <!-- Start:: Search Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-body p-4">
+                  <span class="input-group">
+                    <input type="text" class="form-control form-control-lg border-0 shadow-none" placeholder="Search" aria-label="Username">
+                    <a href="javascript:void(0);" class="input-group-text border-0" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                  </span>
+                  <div class="mt-4">
+                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                    <a href="javascript:void(0);" class="search-tags">Popular Articles</a>
+                    <a href="javascript:void(0);" class="search-tags">Recent Articles</a>
+                    <a href="javascript:void(0);" class="search-tags">News and Updates</a>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="ms-auto">
+                    <button class="btn btn-lg btn-primary">Search</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- End:: Search Modal -->
+
+        <!-- Start:: Footer -->
+        <div class="landing-main-footer py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 text-lg-start text-center">
+                        <span class="text-fixed-white op-7 fs-14"> © Copyright <span id="year"></span> <a
+                            href="javascript:void(0);" class="text-primary fs-15 fw-semibold">Mamix</a>.
+                        </span>
+                    </div>
+                    <div class="col-lg-6 text-lg-end text-center">
+                        <ul class="list-unstyled fw-normal landing-footer-list mb-0">
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Terms Of Service</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Legal</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Contact</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="text-fixed-white op-8">Report Abuse</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: Footer -->
+
+    </div>
+
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="../assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Internal Landing JS -->
+    <script src="../assets/js/landing.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="../assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky-landing.js"></script> 
+
+</body>
+
+</html>

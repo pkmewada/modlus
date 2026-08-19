@@ -1,0 +1,509 @@
+<!-- include mainhead.html"-->
+
+<!-- Dropzone CSS -->
+<link rel="stylesheet" href="../assets/libs/dropzone/dropzone.css">
+
+<!-- Quill editor Css -->
+<link rel="stylesheet" href="../assets/libs/quill/quill.snow.css">
+<link rel="stylesheet" href="../assets/libs/quill/quill.bubble.css">
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">Ecommerce Blog</h1>
+                        <div class="">
+                            <nav>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Ecommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Ecommerce Blog</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-primary-light btn-wave me-2">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    All Blogs
+                                </div>
+                                <div class="d-flex gap-3 align-items-center flex-wrap">
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ti ti-sort-descending-2 me-1"></i> Sort By
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Published Date</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Status</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Author</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Category</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Newest</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)">Oldest</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="custom-form-group flex-grow-1">
+                                        <input type="text" class="form-control" placeholder="Search Blog.." aria-label="Recipient's username" aria-describedby="button-addon2">
+                                        <a href="javascript:void(0);" class="text-muted custom-form-btn"><i class="ti ti-search"></i></a>
+                                    </div> 
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                        <i class="bi bi-plus-circle me-1"></i>  Add Blog
+                                    </a> 
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="w-20">Blog Title</th>
+                                                <th scope="col" class="w-25">Description</th>
+                                                <th scope="col">Author</th>
+                                                <th scope="col">Published Date</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Comments</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-75.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">Touring excites in winter !</a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-primary-transparent">Tourism</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>The holographic principle, theorized to be a property of quantum gravity, postulates that the description.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/1.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Brenda Simpson</a>
+                                                            <p class="fs-12 text-muted mb-0">Brenda Enterprises</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>12 Oct 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>14</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-72.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">Boat manufacutrers are in debt !</a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-secondary-transparent">Industry</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>Rising Sun is a 1993 American buddy cop crime thriller film directed by Philip Kaufman.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/3.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Dwayne Stort</a>
+                                                            <p class="fs-12 text-muted mb-0">Dwayne Indutries</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>15 Nov 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>21</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-74.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">Beautiful beach on a sunny day !</a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-success-transparent">Whether</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>Sky map showing the night sky tonight from any location. What planets are visible tonight?.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/4.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Jasmine Kova</a>
+                                                            <p class="fs-12 text-muted mb-0">Jasmine Stores</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>21 Jan 2024</td>
+                                                <td><span class="badge bg-danger-transparent">Inactive</span></td>
+                                                <td>16</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-76.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">Night Sky is pleasent to watch.</a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-orange-transparent">Nightsky</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>Want to have something different but healthy to drink? Then look no further!! Strawberry Juice is rich in vitamin.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/5.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Kiara Advain</a>
+                                                            <p class="fs-12 text-muted mb-0">Kiara Stores</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>30 Mar 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>19</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-78.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">Is fashion industry growing ? </a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-info-transparent">Fashion</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>The holographic principle, theorized to be a property of quantum gravity, postulates that the description.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/6.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Jack Miller</a>
+                                                            <p class="fs-12 text-muted mb-0">Taylor Johns Clothing</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>25 April 2024</td>
+                                                <td><span class="badge bg-danger-transparent">Inactive</span></td>
+                                                <td>24</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-60.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">Raising sun is a blessing </a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-warning-transparent">Raising</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>Rising Sun is a 1993 American buddy cop crime thriller film directed by Philip Kaufman.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/8.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Diego Sanch</a>
+                                                            <p class="fs-12 text-muted mb-0">Deigo Enterprises</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>16 May 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>14</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar bg-light avatar-square">
+                                                                <img src="../assets/images/media/media-53.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="javascript:void(0);" class="fw-semibold">How to get a job. </a>
+                                                            <div class="clearfix"></div>
+                                                            <span class="badge bg-danger-transparent">Jobs</span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <td>The holographic principle, theorized to be a property of quantum gravity, postulates that the description.</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-2">
+                                                            <span class="avatar avatar-md p-1 bg-light avatar-rounded">
+                                                                <img src="../assets/images/faces/9.jpg" alt="">
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href="ecommerce_admin_vendordetails.html" class="fw-semibold mb-0">Brenda Simpson</a>
+                                                            <p class="fs-12 text-muted mb-0">Brenda Fashions</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>21 June 2024</td>
+                                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                                <td>45</td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-info-light btn-wave" data-bs-toggle="offcanvas" data-bs-target="#addnewblog">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-light btn-wave">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>  
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer border-top-0">
+                                <nav aria-label="Page navigation" class="pagination-style-4 float-end">
+                                    <ul class="pagination mb-0">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="javascript:void(0)">
+                                                Prev
+                                            </a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="javascript:void(0)">
+                                                <i class="bi bi-three-dots"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0)">16</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0)">17</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link text-primary" href="javascript:void(0)">
+                                                next
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        <!-- Start::Add New Blog -->
+        <div class="offcanvas offcanvas-end custom-offcanvas" tabindex="-1" id="addnewblog">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Add New Blog</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">   
+                <div class="row gy-4">
+                    <div class="col-lg-12">
+                        <label for="Blog-Title" class="form-label">Blog Title : </label>
+                        <input type="text" class="form-control" id="Blog-Title" placeholder="Blog-Title" value="Touring excites in winter !">
+                    </div>
+                    <div class="col-xl-12">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" data-trigger name="Category"
+                            >
+                            <option value="Choice 1">Clothing</option> 
+                            <option value="Choice 2">Fashion</option>
+                            <option value="Choice 3">Electronics</option>
+                            <option value="Choice 4">Home Appliances</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-12">
+                        <label class="form-label">Blog Description</label> 
+                        <div id="editor" class="ecommerce-blog-description">
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <label class="form-label">Upload Image</label> 
+                        <form data-single="true" method="post" action="https://httpbin.org/post" class="dropzone"></form>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="d-flex align-items-center flex-wrap justify-content-between">
+                            <div class="fw-medium h6 mb-0">Status :</div>
+                            <div class="toggle on mb-0">
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-end canvas-footer p-3 border-top shadow-sm">
+                <div class="btn-list">
+                    <div class="btn btn-w-md btn-info">Draft</div>
+                    <div class="btn btn-w-md btn-primary">Publish</div>
+                </div>
+            </div>
+        </div>
+        <!-- End::Add New Blog -->
+        
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- include custom_switcherjs.html"-->
+
+    <!-- Dropzone JS -->
+    <script src="../assets/libs/dropzone/dropzone-min.js"></script>
+
+    <!-- Quill Editor JS -->
+    <script src="../assets/libs/quill/quill.min.js"></script>
+
+    <!-- Internal Admin Blog JS -->
+    <script src="../assets/js/ecommerce-admin-blog.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>

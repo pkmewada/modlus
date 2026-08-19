@@ -1,0 +1,1 @@
+<?php $host="127.0.0.1"; $user="root"; $pass=""; $db="modlus"; $con=mysqli_connect($host,$user,$pass,$db,3307); if(!$con){echo "DBERR"; exit(1);} $res=mysqli_query($con,"SELECT id FROM candidateRecord LIMIT 1"); $row=mysqli_fetch_assoc($res); if(!$row){echo "NOID"; exit(1);} echo $row["id"]; ?>

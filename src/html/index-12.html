@@ -1,0 +1,554 @@
+<!-- include mainhead.html"-->
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Start::page-header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">POS System</h1>
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0);">
+                                     Dashboards
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">POS System</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary-light btn-wave me-2 waves-effect waves-light">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0 waves-effect waves-light">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- End::page-header -->
+
+                <!-- Start:: row-1 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-medium mb-0">CATEGORY</h6>
+                            <a href="javascript:void(0);" class="fs-12 text-muted"> View All<i class="ti ti-arrow-narrow-right ms-1"></i> </a>
+                        </div>
+                        <div class="row pos-category" id="filter">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="card custom-card active">
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" class="stretched-link categories" data-filter="*">
+                                            <div class="text-center">
+                                                <span class="avatar avatar-xl">
+                                                    <img src="../assets/images/pos-system/1.png" alt="">
+                                                </span>
+                                                <div>
+                                                    <span class="fw-medium">All Menu</span>
+                                                    <span class="fs-12 d-block fw-medium text-muted">180 Items</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" class="stretched-link categories" data-filter=".Main-Courses">
+                                            <div class="text-center">
+                                                <span class="avatar avatar-xl">
+                                                    <img src="../assets/images/pos-system/2.png" alt="">
+                                                </span>
+                                                <div>
+                                                    <span class="fw-medium">Main Courses</span>
+                                                    <span class="fs-12 d-block fw-medium text-muted">36 Items</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" class="stretched-link categories" data-filter=".Beverages">
+                                            <div class="text-center">
+                                                <span class="avatar avatar-xl">
+                                                    <img src="../assets/images/pos-system/3.png" alt="">
+                                                </span>
+                                                <div>
+                                                    <span class="fw-medium">Beverages</span>
+                                                    <span class="fs-12 d-block fw-medium text-muted">25 Items</span>
+                                                </div>
+                                            </div>
+                                        </a>    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" class="stretched-link categories" data-filter=".Desserts">
+                                            <div class="text-center">
+                                                <span class="avatar avatar-xl">
+                                                    <img src="../assets/images/pos-system/4.png" alt="">
+                                                </span>
+                                                <div>
+                                                    <span class="fw-medium">Desserts</span>
+                                                    <span class="fs-12 d-block fw-medium text-muted">43 Items</span>
+                                                </div>
+                                            </div>
+                                        </a>    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" class="stretched-link categories" data-filter=".Salads">
+                                            <div class="text-center">
+                                                <span class="avatar avatar-xl">
+                                                    <img src="../assets/images/pos-system/5.png" alt="">
+                                                </span>
+                                                <div>
+                                                    <span class="fw-medium">Salads</span>
+                                                    <span class="fs-12 d-block fw-medium text-muted">58 Items</span>
+                                                </div>
+                                            </div>
+                                        </a>    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="card custom-card">
+                                    <div class="card-body">
+                                        <a href="javascript:void(0);" class="stretched-link categories" data-filter=".Cakes">
+                                            <div class="text-center">
+                                                <span class="avatar avatar-xl">
+                                                    <img src="../assets/images/pos-system/6.png" alt="">
+                                                </span>
+                                                <div>
+                                                    <span class="fw-medium">Cakes</span>
+                                                    <span class="fs-12 d-block fw-medium text-muted">38 Items</span>
+                                                </div>
+                                            </div>
+                                        </a>    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-1 -->
+
+                <!-- Start:: row-2 -->
+                <div class="row">
+                    <div class="col-xl-8">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-medium mb-0">SELECT ITEM</h6>
+                            <a href="javascript:void(0);" class="fs-12 text-muted"> View All<i class="ti ti-arrow-narrow-right ms-1"></i> </a>
+                        </div>
+                        <div class="row list-wrapper">
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Desserts" data-category="Desserts">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/16.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Blueberry Bliss Burst</a>
+                                            <span class="fs-12 text-muted d-block">Ice Creams</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$4.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$5.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Salads" data-category="Salads">
+                                <div class="card custom-card out-of-stock">
+                                    <img src="../assets/images/pos-system/17.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Garden Delights</a>
+                                            <span class="fs-12 text-muted d-block">Main Course</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$29.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$34.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart" disabled><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Desserts" data-category="Desserts">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/19.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Temptation Tidbits</a>
+                                            <span class="fs-12 text-muted d-block">Desserts</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$7.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$9.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Main-Courses" data-category="Main-Courses">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/18.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Herbivore Haven</a>
+                                            <span class="fs-12 text-muted d-block">Main Course</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$19.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$24.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Cakes" data-category="Cakes">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/11.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Strawberry Symphony</a>
+                                            <span class="fs-12 text-muted d-block">Cakes</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$34.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$49.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Main-Courses" data-category="Main-Courses">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/15.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Veggie Delight Fusion</a>
+                                            <span class="fs-12 text-muted d-block">Sandwich</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$2.79</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$2.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Beverages" data-category="Beverages">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/13.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Iced Cinnamon Swirl</a>
+                                            <span class="fs-12 text-muted d-block">Beverages</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$1.29</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$1.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Salads" data-category="Salads">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/14.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Culinary Greens</a>
+                                            <span class="fs-12 text-muted d-block">Main Course</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$24.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$29.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 card-item Beverages" data-category="Beverages">
+                                <div class="card custom-card">
+                                    <img src="../assets/images/pos-system/10.jpg" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <a href="javascript:void(0);" class="fw-medium fs-16">Berry Basil Fizz</a>
+                                            <span class="fs-12 text-muted d-block">Beverages</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h5 class="fw-semibold mb-0">$3.99</h5>
+                                                <span class="text-muted fs-13 text-decoration-line-through">$4.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-icon btn-sm btn-wave" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Add To Cart"><i class="ri-add-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0 float-end mb-4">
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="javascript:void(0);">2</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="javascript:void(0);">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-xl-4">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    ORDER SUMMARY
+                                </div>
+                                <span class="badge bg-info-transparent rounded-pill">
+                                    05 Items
+                                </span>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="list-group mb-0 border-0 rounded-0">
+                                    <li class="list-group-item border-top-0 border-start-0 border-end-0">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <div class="me-2 lh-1">
+                                                <span class="avatar avatar-md bg-light">
+                                                    <img src="../assets/images/pos-system/10.jpg" alt="">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill">
+                                                <p class="mb-0 fw-medium">Berry Basil Fizz</p>
+                                                <p class="mb-0 text-muted fs-12">Quantity : 1  <span class="badge bg-success-transparent ms-3">30% Off</span></p>
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 text-end">
+                                                    <a aria-label="anchor" href="javascript:void(0)">
+                                                        <i class="ri-close-line fs-16 text-muted"></i>
+                                                    </a>
+                                                </p>
+                                                <p class="mb-0 fs-14 fw-medium">$3.99<span class="ms-1 text-muted fs-11 d-inline-block"><s>$4.99</s></span></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item  border-bottom border-block-end-dashed border-start-0 border-end-0">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <div class="me-2 lh-1">
+                                                <span class="avatar avatar-lg bg-light">
+                                                    <img src="../assets/images/pos-system/15.jpg" alt="">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill">
+                                                <p class="mb-0 fw-medium">Veggie Delight Fusion</p>
+                                                <p class="mb-0 text-muted fs-12">Quantity : 2  <span class="badge bg-success-transparent ms-3">10% Off</span></p>
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 text-end">
+                                                    <a aria-label="anchor" href="javascript:void(0)">
+                                                        <i class="ri-close-line fs-16 text-muted"></i>
+                                                    </a>
+                                                </p>
+                                                <p class="mb-0 fs-14 fw-medium">$2.79<span class="ms-1 text-muted fs-11 d-inline-block"><s>$2.99</s></span></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item  border-bottom border-block-end-dashed border-start-0 border-end-0">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <div class="me-2 lh-1">
+                                                <span class="avatar avatar-lg bg-light">
+                                                    <img src="../assets/images/pos-system/11.jpg" alt="">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill">
+                                                <p class="mb-0 fw-medium">Strawberry Symphony</p>
+                                                <p class="mb-0 text-muted fs-12">Quantity : 1  <span class="badge bg-success-transparent ms-3">10% Off</span></p>
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 text-end">
+                                                    <a aria-label="anchor" href="javascript:void(0)">
+                                                        <i class="ri-close-line fs-16 text-muted"></i>
+                                                    </a>
+                                                </p>
+                                                <p class="mb-0 fs-14 fw-medium">$34.99<span class="ms-1 text-muted fs-11 d-inline-block"><s>$49.99</s></span></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item  border-bottom border-block-end-dashed border-start-0 border-end-0">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <div class="me-2 lh-1">
+                                                <span class="avatar avatar-lg bg-light">
+                                                    <img src="../assets/images/pos-system/16.jpg" alt="">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill">
+                                                <p class="mb-0 fw-medium">Blueberry Bliss Burst</p>
+                                                <p class="mb-0 text-muted fs-12">Quantity : 2  <span class="badge bg-success-transparent ms-3">10% Off</span></p>
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 text-end">
+                                                    <a aria-label="anchor" href="javascript:void(0)">
+                                                        <i class="ri-close-line fs-16 text-muted"></i>
+                                                    </a>
+                                                </p>
+                                                <p class="mb-0 fs-14 fw-medium">$4.99<span class="ms-1 text-muted fs-11 d-inline-block"><s>$5.99</s></span></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item  border-bottom border-block-end-dashed border-start-0 border-end-0">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <div class="me-2 lh-1">
+                                                <span class="avatar avatar-lg bg-light">
+                                                    <img src="../assets/images/pos-system/13.jpg" alt="">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill">
+                                                <p class="mb-0 fw-medium">Iced Cinnamon Swirl</p>
+                                                <p class="mb-0 text-muted fs-12">Quantity : 1  <span class="badge bg-success-transparent ms-3">10% Off</span></p>
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 text-end">
+                                                    <a aria-label="anchor" href="javascript:void(0)">
+                                                        <i class="ri-close-line fs-16 text-muted"></i>
+                                                    </a>
+                                                </p>
+                                                <p class="mb-0 fs-14 fw-medium">$1.29 <span class="ms-1 text-muted fs-11 d-inline-block"><s>$1.99</s></span></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="p-3 border-bottom border-block-end-dashed">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                        <div class="fs-12 fw-medium bg-primary-transparent p-1 px-2 rounded">SPRUKO25</div>
+                                        <div class="text-success">COUPON APPLIED</div>
+                                    </div>
+                                </div>
+                                <div class="p-3 border-bottom border-block-end-dashed">
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="text-muted">Sub Total</div>
+                                        <div class="fw-medium fs-14">$318</div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="text-muted">Discount</div>
+                                        <div class="fw-medium fs-14">10% - $31.8</div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="text-muted">Delivery Charges</div>
+                                        <div class="fw-medium fs-14">- $29</div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="text-muted">Service Tax (18%)</div>
+                                        <div class="fw-medium fs-14">- $45.29</div>
+                                    </div>
+                                </div>
+                                <div class="p-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="fs-15">Total :</div>
+                                        <div class="fw-semibold fs-16 text-dark"> $1,387</div>
+                                    </div>
+                                    <div class="btn-list d-grid mt-4">
+                                        <button class="btn btn-secondary-light btn-wave">Save For Later</button>
+                                        <button class="btn btn-primary btn-wave">Pay Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-2 -->
+                
+            </div>
+        </div> 
+        <!-- End::app-content -->
+
+
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Isotope-layout JS -->
+    <script src="../assets/libs/isotope-layout/isotope.pkgd.min.js"></script>
+
+    <!-- Internal POS-Dashboard JS -->
+    <script src="../assets/js/pos-dashboard.js"></script>
+ 
+    <!-- include custom_switcherjs.html"-->
+    
+</body>
+
+</html> 

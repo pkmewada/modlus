@@ -1,0 +1,246 @@
+<!-- include mainhead.html"-->
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">Add Product</h1>
+                        <div class="">
+                            <nav>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Apps</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Ecommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Product</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <button class="btn btn-primary-light btn-wave me-2">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+
+                 <!-- Start::row-1 -->
+                 <div class="row">
+                    <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-7 col-12">
+                        <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title flex-grow-1">
+                                    Add Product
+                                </div>
+                                <a href="ecommerce_admin_products.html" class="btn btn-outline-light btn-wave waves-effect waves-light">
+                                    <i class="bi bi-arrow-right"></i> Go Back
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row gy-4"> 
+                                    <div class="col-xl-6">
+                                        <label for="Product-name" class="form-label">Product Name</label>
+                                        <input type="text" class="form-control" id="Product-name" placeholder="Product Name" value="SoundSync Headphones">
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <label class="form-label">Product Category</label> 
+                                        <select class="form-control" data-trigger name="Category-select"
+                                            >
+                                            <option value="Choice 1">Electronic</option>
+                                            <option value="Choice 2">Clothing</option>
+                                            <option value="Choice 3">Jewellery</option>
+                                            <option value="Choice 4">Home Appliances</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-6">
+                                        <label class="form-label">Brand</label> 
+                                        <select class="form-control" data-trigger name="Brand"
+                                            >
+                                            <option value="Choice 1">Accusam Brand</option>
+                                            <option value="Choice 2">Vellintn Brand</option>
+                                            <option value="Choice 3">Erat Brand</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-6">
+                                        <label class="form-label">Property Address</label> 
+                                        <select class="form-control" data-trigger name="address"
+                                            >
+                                            <option value="Choice 1">Chennai</option>
+                                            <option value="Choice 2">Banglore</option>
+                                            <option value="Choice 3">Hyderabad</option>
+                                            <option value="Choice 4">USA</option>
+                                            <option value="Choice 5">Nellore</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-6">
+                                        <label class="form-label">Stock QTY</label> 
+                                        <select class="form-control" data-trigger name="stockqty"
+                                            >
+                                            <option value="Choice 1">10</option>
+                                            <option value="Choice 2">20</option>
+                                            <option value="Choice 3">30</option>
+                                            <option value="Choice 4">40</option>
+                                            <option value="Choice 5">50</option>
+                                            <option value="Choice 6">60</option>
+                                            <option value="Choice 7">70</option>
+                                            <option value="Choice 8">80</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-6">
+                                        <label class="form-label">Taxes</label> 
+                                        <select class="form-control" data-trigger name="Taxes"
+                                            >
+                                            <option value="Choice 1">VAT (10%)</option>
+                                            <option value="Choice 2">None (0%)</option>
+                                            <option value="Choice 3">Import Taxes (15%)</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-6">
+                                        <label class="form-label">Shipping Days</label> 
+                                        <select class="form-control" data-trigger name="Bathrooms"
+                                            >
+                                            <option value="Choice 1">1</option>
+                                            <option value="Choice 2">2</option>
+                                            <option value="Choice 3">3</option>
+                                            <option value="Choice 4">4</option>
+                                            <option value="Choice 5">5</option>
+                                            <option value="Choice 6">6</option>
+                                            <option value="Choice 7" selected>7</option>
+                                            <option value="Choice 8">8</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-6">
+                                        <label for="discount" class="form-label">Discount (%)</label>
+                                        <input type="text" class="form-control" id="discount" placeholder="Discount">
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <label for="SKU" class="form-label">SKU</label>
+                                        <input type="text" class="form-control" id="SKU" placeholder="SKU" value="#SPK147">
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <label for="tags-name" class="form-label">Tags</label>
+                                        <input class="form-control" id="tags-name" type="text" placeholder="tags">
+                                    </div>
+                                    <div class="col-xl-8">
+                                        <label class="form-label">Payment Options</label> 
+                                        <select class="form-control" data-trigger name="Payment" id="payment" multiple>
+                                            <option value="Choice 1">Cash On Delivery</option>
+                                            <option value="Choice 2">Net Banking</option>
+                                            <option value="Choice 3">Credit Card</option>
+                                            <option value="Choice 4">ATM Card</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xl-4">
+                                        <label for="Price" class="form-label">Price</label>
+                                        <input type="text" class="form-control" id="Price" placeholder="Price" value="$3654">
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <label for="Ad-description" class="form-label">Product Description :</label>
+                                        <textarea class="form-control" id="Ad-description" rows="7">Lorem ipsum dolor sit amet consectetur adipisicing elit. At sit impedit, officiis non minima saepe voluptates a magnam enim sequi porro veniam ea suscipit dolorum vel mollitia voluptate iste nemo!</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="float-end">
+                                    <button class="btn btn-primary">
+                                        Add Product
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-5 col-12">
+                        <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title">Vendor Profile</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-xl-12">                                            
+                                    <div class="mb-3">
+                                        <span class="avatar avatar-lg avatar-rounded">
+                                            <img src="../assets/images/faces/9.jpg" alt="" class="w-100 h-100">
+                                            <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                        </span>
+                                    </div>
+                                    <div class="btn-list">
+                                        <input class="form-control" type="file" id="formFile1">
+                                    </div>
+                                </div>                               
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title">Product Images </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row gy-3">
+                                    <div class="col-xl-12">                                          
+                                        <div class="mb-3">
+                                            <span class="avatar avatar-lg avatar-rounded me-2 bg-light">
+                                                <img src="../assets/images/ecommerce/png/13.png" alt="" class="w-100 h-100">
+                                                <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                            </span>
+                                            <span class="avatar avatar-lg avatar-rounded me-2 bg-light">
+                                                <img src="../assets/images/ecommerce/png/14.png" alt="" class="w-100 h-100">
+                                                <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                            </span>
+                                            <span class="avatar avatar-lg avatar-rounded me-2 bg-light">
+                                                <img src="../assets/images/ecommerce/png/15.png" alt="" class="w-100 h-100">
+                                                <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                            </span>
+                                            <span class="avatar avatar-lg avatar-rounded me-2 bg-light">
+                                                <img src="../assets/images/ecommerce/png/16.png" alt="" class="w-100 h-100">
+                                                <a href="javascript:void(0);" class="badge rounded-pill bg-danger avatar-badge"><i class="fe fe-x"></i></a>
+                                            </span>
+                                        </div>
+                                        <label for="formFile" class="form-label">Upload Image</label> 
+                                        <input class="form-control mb-2" type="file" id="formFile">
+                                        <p class="mb-0 fs-12 text-muted">Minimum of 6 images are need to be uploaded,make sure the image size match the proper background size and all images should be uniformly maintained with width and height.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- include custom_switcherjs.html"-->
+
+    <!-- Add Product JS -->
+    <script src="../assets/js/add-products.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>

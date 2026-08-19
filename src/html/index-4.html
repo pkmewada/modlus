@@ -1,0 +1,923 @@
+<!-- include mainhead.html"-->
+
+</head>
+
+<body>
+
+    <!-- include switcher.html"-->
+    <!-- include loader.html"-->
+
+    <div class="page">
+        <!-- include header.html"-->
+        <!-- include sidebar.html"-->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Start::page-header -->
+                <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title fw-medium fs-18 mb-2">Crypto</h1>
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0);">
+                                     Dashboards
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Crypto</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary-light btn-wave me-2 waves-effect waves-light">
+                            <i class="bx bx-crown align-middle"></i> Plan Upgrade
+                        </button>
+                        <button class="btn btn-secondary-light btn-wave me-0 waves-effect waves-light">
+                            <i class="ri-upload-cloud-line align-middle"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+                <!-- End::page-header -->
+
+                <!-- Start:: row-1 -->
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="card custom-card overflow-hidden card-bg-primary border-0">
+                            <div class="card-body p-0">
+                                <div class="p-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="d-flex align-items-center w-100">
+                                            <div class="me-2">
+                                                <span class="avatar avatar-sm avatar-rounded p-1 bg-white-transparent"> 
+                                                    <img src="../assets/images/crypto-currencies/crypto-icons/bitcoin-btc-logo.svg" alt=""> 
+                                                </span>
+                                            </div>
+                                            <div class="mb-0 fw-medium flex-fill">
+                                                Bitcoin - BTC
+                                            </div>
+                                            <div class="dropdown"> 
+                                                <a aria-label="anchor" href="javascript:void(0);" data-bs-toggle="dropdown"> 
+                                                    <i class="ri-more-fill fs-5 text-fixed-white lh-1"></i>
+                                                </a> 
+                                                <ul class="dropdown-menu" role="menu"> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Week</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Day</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Year</a></li> 
+                                                </ul> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-end">
+                                        <div>
+                                            <p class="mb-1">BTC / USD</p>
+                                            <h4 class="mb-0 text-fixed-white"> 0.8531 BTC </h4>
+                                        </div>
+                                        <div class="ms-auto text-end">
+                                            <p class="mb-0">$0.04</p>
+                                            <p class="mb-0"><span>Vol:</span>(+2.33%)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="btc-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="card custom-card overflow-hidden card-bg-secondary border-0">
+                            <div class="card-body p-0">
+                                <div class="p-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="d-flex align-items-center w-100">
+                                            <div class="me-2">
+                                                <span class="avatar avatar-sm avatar-rounded p-1 bg-white-transparent"> 
+                                                    <img src="../assets/images/crypto-currencies/crypto-icons/ethereum-eth-logo.svg" alt=""> 
+                                                </span>
+                                            </div>
+                                            <div class="mb-0 fw-medium flex-fill">
+                                                Etherium - ETH
+                                            </div>
+                                            <div class="dropdown"> 
+                                                <a aria-label="anchor" href="javascript:void(0);" data-bs-toggle="dropdown"> 
+                                                    <i class="ri-more-fill fs-5 lh-1 text-fixed-white"></i>
+                                                </a> 
+                                                <ul class="dropdown-menu" role="menu"> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Week</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Day</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Year</a></li> 
+                                                </ul> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-end">
+                                        <div>
+                                            <p class="mb-1">BTC / USD</p>
+                                            <h4 class="mb-0 text-fixed-white"> 3.28353 ETH </h4>
+                                        </div>
+                                        <div class="ms-auto text-end">
+                                            <p class="mb-0">$0.04</p>
+                                            <p class="mb-0"><span>Vol:</span>(+2.33%)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="eth-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="card custom-card overflow-hidden card-bg-success border-0">
+                            <div class="card-body p-0">
+                                <div class="p-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="d-flex align-items-center w-100">
+                                            <div class="me-2">
+                                                <span class="avatar avatar-sm avatar-rounded p-1 bg-white-transparent"> 
+                                                    <img src="../assets/images/crypto-currencies/crypto-icons/tether-usdt-logo.svg" alt=""> 
+                                                </span>
+                                            </div>
+                                            <div class="mb-0 fw-medium flex-fill">
+                                                Tether - USDT
+                                            </div>
+                                            <div class="dropdown"> 
+                                                <a aria-label="anchor" href="javascript:void(0);" data-bs-toggle="dropdown"> 
+                                                    <i class="ri-more-fill fs-5 text-fixed-white lh-1"></i>
+                                                </a> 
+                                                <ul class="dropdown-menu" role="menu"> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Week</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Day</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Year</a></li> 
+                                                </ul> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-end">
+                                        <div>
+                                            <p class="mb-1">BTC / USD</p>
+                                            <h4 class="mb-0 text-fixed-white"> 302.15 USDT </h4>
+                                        </div>
+                                        <div class="ms-auto text-end">
+                                            <p class="mb-0">$0.04</p>
+                                            <p class="mb-0"><span>Vol:</span>(+2.33%)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tether-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="card custom-card overflow-hidden card-bg-orange border-0">
+                            <div class="card-body p-0">
+                                <div class="p-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="d-flex align-items-center w-100">
+                                            <div class="me-2">
+                                                <span class="avatar avatar-sm avatar-rounded p-1 bg-white-transparent"> 
+                                                    <img src="../assets/images/crypto-currencies/crypto-icons/solana-sol-logo.svg" alt=""> 
+                                                </span>
+                                            </div>
+                                            <div class="mb-0 fw-medium flex-fill">
+                                                Solana - SOL
+                                            </div>
+                                            <div class="dropdown"> 
+                                                <a aria-label="anchor" href="javascript:void(0);" data-bs-toggle="dropdown"> 
+                                                    <i class="ri-more-fill fs-5 text-fixed-white lh-1"></i>
+                                                </a> 
+                                                <ul class="dropdown-menu" role="menu"> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Week</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Day</a></li> 
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Year</a></li> 
+                                                </ul> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-end">
+                                        <div>
+                                            <p class="mb-1">SOL / USD</p>
+                                            <h4 class="mb-0 text-fixed-white"> 2452.234 SOL </h4>
+                                        </div>
+                                        <div class="ms-auto text-end">
+                                            <p class="mb-0">$0.04</p>
+                                            <p class="mb-0"><span>Vol:</span>(+2.33%)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="solana-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-1 -->
+
+                <!-- Start:: row-2 -->
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    COIN STATISTICS
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic example"> 
+                                        <button type="button" class="btn btn-primary btn-sm btn-wave">1D</button>
+                                        <button type="button" class="btn btn-primary-light btn-sm btn-wave">1W</button> 
+                                        <button type="button" class="btn btn-primary-light btn-sm btn-wave">1M</button> 
+                                        <button type="button" class="btn btn-primary-light btn-sm btn-wave">1Y</button> 
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-light border btn-sm dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="avatar avatar-xs avatar-rounded me-2 align-middle"><img src="../assets/images/crypto-currencies/crypto-icons/bitcoin-btc-logo.svg" alt=""></span>Bitcoin
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="javascript:void(0);"><span class="avatar avatar-xs avatar-rounded me-2 align-middle"><img src="../assets/images/crypto-currencies/crypto-icons/ethereum-eth-logo.svg" alt=""></span>Etherium</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);"><span class="avatar avatar-xs avatar-rounded me-2 align-middle"><img src="../assets/images/crypto-currencies/crypto-icons/tether-usdt-logo.svg" alt=""></span>Tether</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);"><span class="avatar avatar-xs avatar-rounded me-2 align-middle"><img src="../assets/images/crypto-currencies/crypto-icons/xrp-xrp-logo.svg" alt=""></span>XRP</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);"><span class="avatar avatar-xs avatar-rounded me-2 align-middle"><img src="../assets/images/crypto-currencies/crypto-icons/tron-trx-logo.svg" alt=""></span>TRON</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="p-3 d-flex align-items-center gap-4 border border-dashed rounded flex-wrap">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <span class="avatar avatar-sm">
+                                            <img src="../assets/images/crypto-currencies/crypto-icons/bitcoin-btc-logo.svg" alt="">
+                                        </span>
+                                        <div><span class="fw-medium">Bitcoin</span> - <span class="text-muted">BTC</span></div>
+                                    </div>
+                                    <h6 class="fw-medium mb-0">$42,761.32 USD<span class="text-success mx-2">0.14%</span>(24H)</h6>
+                                    <div class="d-flex gap-4 align-items-center flex-wrap">
+                                        <div>Open - <span class="text-success fw-medium">6612.98</span></div>
+                                        <div>High - <span class="text-success fw-medium">6625.97</span></div>
+                                        <div>Low - <span class="text-danger fw-medium">6612.34</span></div>
+                                        <div>Close - <span class="text-success fw-medium">6623.45</span></div>
+                                    </div>
+                                </div>
+                                <div id="coin-statistics"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    MY ASSETS
+                                </div>
+                                <div class="dropdown"> 
+                                    <a href="javascript:void(0);" class="p-2 fs-12 text-muted" data-bs-toggle="dropdown" aria-expanded="true"> Sort By <i class="ri-arrow-down-s-line align-middle ms-1 d-inline-block"></i> </a> 
+                                    <ul class="dropdown-menu" role="menu" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 28px);" data-popper-placement="bottom-end"> 
+                                        <li><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                                         <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a></li> 
+                                         <li><a class="dropdown-item" href="javascript:void(0);">This Month</a></li> 
+                                    </ul> 
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="assets" class="p-3 border-bottom"></div>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <div class="d-flex align-items-start flex-wrap gap-2 lh-1">
+                                                <div class="lh-1">
+                                                    <span class="avatar avatar-sm">
+                                                        <img src="../assets/images/crypto-currencies/crypto-icons/bitcoin-btc-logo.svg" alt="">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <span class="d-block fw-medium mb-1">Bitcoin</span>
+                                                    <span class="text-muted fs-12">BTC</span>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="fw-semibold d-block mb-1">4.2891 - BTC</span>
+                                                    <span class="text-success fs-12">2.19%</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="d-flex align-items-start flex-wrap gap-2 lh-1">
+                                                <div class="lh-1">
+                                                    <span class="avatar avatar-sm">
+                                                        <img src="../assets/images/crypto-currencies/crypto-icons/tether-usdt-logo.svg" alt="">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <span class="d-block fw-medium mb-1">Tether</span>
+                                                    <span class="text-muted fs-12">USDT</span>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="fw-semibold d-block mb-1">12.533 - USDT</span>
+                                                    <span class="text-success fs-12">1.67%</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="d-flex align-items-start flex-wrap gap-2 lh-1">
+                                                <div class="lh-1">
+                                                    <span class="avatar avatar-sm">
+                                                        <img src="../assets/images/crypto-currencies/crypto-icons/dogecoin-doge-logo.svg" alt="">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <span class="d-block fw-medium mb-1">Dogecoin</span>
+                                                    <span class="text-muted fs-12">DOGE</span>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="fw-semibold d-block mb-1">78.890 - DOGE</span>
+                                                    <span class="text-success fs-12">21.35%</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="d-flex align-items-start flex-wrap gap-2 lh-1">
+                                                <div class="lh-1">
+                                                    <span class="avatar avatar-sm">
+                                                        <img src="../assets/images/crypto-currencies/crypto-icons/solana-sol-logo.svg" alt="">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <span class="d-block fw-medium mb-1">Solana</span>
+                                                    <span class="text-muted fs-12">SOL</span>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="fw-semibold d-block mb-1">67.700 - SOL</span>
+                                                    <span class="text-danger fs-12">77.53%</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-2 -->
+
+                <!-- Start:: row-3 -->
+                <div class="row">
+                    <div class="col-xl-3">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    TRANSACTIONS
+                                </div>
+                                <a href="javascript:void(0);" class="btn btn-light btn-sm"> View All<i class="ti ti-arrow-narrow-right ms-1"></i> </a>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0 my-assets-list">
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        <span class="avatar avatar-sm">
+                                                            <img src="../assets/images/crypto-currencies/square-color/Bitcoin.svg" alt="">
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 fw-medium">Bitcoin</p>
+                                                        <p class="mb-0 fs-12">Today</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <p class="mb-0 fw-medium text-success">
+                                                        +$19,123
+                                                    </p>
+                                                    <p class="mb-0 text-muted fs-12">
+                                                        BTC 0.0823.45
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        <span class="avatar avatar-sm">
+                                                            <img src="../assets/images/crypto-currencies/square-color/Ethereum.svg" alt="">
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 fw-medium">Etherium</p>
+                                                        <p class="mb-0 fs-12">10,Jan 2024</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <p class="mb-0 fw-medium text-danger">
+                                                        -$1,430
+                                                    </p>
+                                                    <p class="mb-0 text-muted fs-12">
+                                                        ETH 10,783.23
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        <span class="avatar avatar-sm">
+                                                            <img src="../assets/images/crypto-currencies/square-color/Dash.svg" alt="">
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 fw-medium">Dash</p>
+                                                        <p class="mb-0 fs-12">25,Jan 2024</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <p class="mb-0 fw-medium text-success">
+                                                        +$5,236
+                                                    </p>
+                                                    <p class="mb-0 text-muted fs-12">
+                                                        DASH 12,456.98
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        <span class="avatar avatar-sm">
+                                                            <img src="../assets/images/crypto-currencies/square-color/Bytecoin.svg" alt="">
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 fw-medium">Bytecoin</p>
+                                                        <p class="mb-0 fs-12">Yesterday</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <p class="mb-0 fw-medium text-danger">
+                                                        -$1,810
+                                                    </p>
+                                                    <p class="mb-0 text-muted fs-12">
+                                                        BYTE 8,154.00
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        <span class="avatar avatar-sm">
+                                                            <img src="../assets/images/crypto-currencies/square-color/Golem.svg" alt="">
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 fw-medium">Golem</p>
+                                                        <p class="mb-0 fs-12">18,Feb 2024</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <p class="mb-0 fw-medium text-success">
+                                                        +$5,046
+                                                    </p>
+                                                    <p class="mb-0 text-muted fs-12">
+                                                        GLM 9,384.73
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    CURRENCY EXCHANGE
+                                </div>  
+                            </div>
+                            <div class="card-body">
+                                <label class="form-label">Select Coin</label>
+                                <div class="input-group mb-4 d-flex flex-nowrap">
+                                    <input type="text" class="form-control form-control-sm crypto-buy-sell-input" aria-label="crypto buy select" placeholder="Select Currency">
+                                    <select class="form-control" data-trigger id="choices-single-default">
+                                        <option value="Choice 1">BTC</option>
+                                        <option value="Choice 2">ETH</option>
+                                        <option value="Choice 3">XRP</option>
+                                        <option value="Choice 4">DASH</option>
+                                        <option value="Choice 5">NEO</option>
+                                        <option value="Choice 6">LTC</option>
+                                        <option value="Choice 7">BSD</option>
+                                    </select>
+                                </div>
+                                <label class="form-label">Select Currency</label>
+                                <div class="input-group mb-4 d-flex flex-nowrap">
+                                    <input type="text" class="form-control form-control-sm crypto-buy-sell-input" aria-label="crypto buy select" placeholder="36,335.00">
+                                   <select class="form-control" data-trigger id="choices-single-default1">
+                                        <option value="Choice 1">USD</option>
+                                        <option value="Choice 2">AED</option>
+                                        <option value="Choice 3">AUD</option>
+                                        <option value="Choice 4">ARS</option>
+                                        <option value="Choice 5">AZN</option>
+                                        <option value="Choice 6">BGN</option>
+                                        <option value="Choice 7">BRL</option>
+                                    </select>
+                                </div>
+                                <span class="d-block text-muted fw-normal fs-12 mb-1">Track real-time crypto prices and seamlessly exchange currencies here..</span>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-grid">
+                                    <button type="button" class="btn btn-primary btn-wave">CONVERT</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    MY BALANCE
+                                </div>
+                                <a href="javascript:void(0);" class="fs-12 text-muted"> View All<i class="ti ti-arrow-narrow-right ms-1"></i> </a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Currency</th>
+                                                <th scope="col">Coins Possessed</th>
+                                                <th scope="col">USD Price</th>
+                                                <th scope="col">24H change</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="avatar avatar-xs avatar-rounded">
+                                                            <img src="../assets/images/crypto-currencies/crypto-icons/bitcoin-btc-logo.svg" alt="">
+                                                        </span>
+                                                        <a href="javascript:void(0);" class="fw-medium">Bitcoin - <span class="text-muted">BTC</span></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    2.5 BTC
+                                                </td>
+                                                <td>
+                                                    <span class="fw-medium fs-14">$96,000 </span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">+3.50%</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="avatar avatar-xs avatar-rounded">
+                                                            <img src="../assets/images/crypto-currencies/crypto-icons/tether-usdt-logo.svg" alt="">
+                                                        </span>
+                                                        <a href="javascript:void(0);" class="fw-medium">Tether - <span class="text-muted">USDT</span></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    10,000 USDT 
+                                                </td>
+                                                <td>
+                                                    <span class="fw-medium fs-14">$1.00</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger">-0.20%</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="avatar avatar-xs avatar-rounded">
+                                                            <img src="../assets/images/crypto-currencies/crypto-icons/dogecoin-doge-logo.svg" alt="">
+                                                        </span>
+                                                        <a href="javascript:void(0);" class="fw-medium">Dogecoin - <span class="text-muted">DOGE</span></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    50,000 DOGE
+                                                </td>
+                                                <td>
+                                                    <span class="fw-medium fs-14">$0.25</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">+5.80%</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="avatar avatar-xs avatar-rounded">
+                                                            <img src="../assets/images/crypto-currencies/crypto-icons/solana-sol-logo.svg" alt="">
+                                                        </span>
+                                                        <a href="javascript:void(0);" class="fw-medium">Solana - <span class="text-muted">SOL</span></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    100 SOL
+                                                </td>
+                                                <td>
+                                                    <span class="fw-medium fs-14">$150.00</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger">-1.75%</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="avatar avatar-xs avatar-rounded">
+                                                            <img src="../assets/images/crypto-currencies/crypto-icons/binance-usd-busd-logo.svg" alt="">
+                                                        </span>
+                                                        <a href="javascript:void(0);" class="fw-medium">Binance Coin - <span class="text-muted">BNB</span></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    20 BNB
+                                                </td>
+                                                <td>
+                                                    <span class="fw-medium fs-14">$300.00</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">+2.00%</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="avatar avatar-xs avatar-rounded">
+                                                            <img src="../assets/images/crypto-currencies/crypto-icons/usd-coin-usdc-logo.svg" alt="">
+                                                        </span>
+                                                        <a href="javascript:void(0);" class="fw-medium">USD Coin - <span class="text-muted">USDC</span></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    5,000 USDC
+                                                </td>
+                                                <td>
+                                                    <span class="fw-medium fs-14">$1.00</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">+0.10%</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-3 -->
+
+                <!-- Start:: row-4 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between flex-wrap">
+                                <div class="card-title mb-2 mb-sm-0">
+                                    CRYPTO RANKINGS
+                                </div>
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-primary btn-sm btn-wave">1D</button>
+                                    <button type="button" class="btn btn-primary-light btn-sm btn-wave">1W</button>
+                                    <button type="button" class="btn btn-primary-light btn-sm btn-wave">1M</button>
+                                    <button type="button" class="btn btn-primary-light btn-sm btn-wave">3M</button>
+                                    <button type="button" class="btn btn-primary-light btn-sm btn-wave">6M</button>
+                                    <button type="button" class="btn btn-primary-light btn-sm btn-wave">1Y</button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">S.No</th>
+                                                <th>Coin Name</th>
+                                                <th>Price</th>
+                                                <th>Market Cap</th>
+                                                <th>Price Change</th>
+                                                <th>Price Graph</th>
+                                                <th>Volume</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center">1</td>
+                                                <td>
+                                                    <div class="lh-1 d-flex align-items-center">
+                                                        <span class="avatar avatar-xs avatar-rounded me-1">
+                                                            <img src="../assets/images/crypto-currencies/regular/Bitcoin.svg" alt="">
+                                                        </span>Bitcoin
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    $45,839.10
+                                                </td>
+                                                <td>
+                                                    $324.01B
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">0.30%</span>
+                                                </td>
+                                                <td>
+                                                    <div id="bitcoin-price-graph"></div>
+                                                </td>
+                                                <td>
+                                                    14,674,311,168
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">2</td>
+                                                <td>
+                                                    <div class="lh-1 d-flex align-items-center">
+                                                        <span class="avatar avatar-xs avatar-rounded me-1">
+                                                            <img src="../assets/images/crypto-currencies/regular/Ethereum.svg" alt="">
+                                                        </span>Etherium
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    $1,217.96
+                                                </td>
+                                                <td>
+                                                    $149,316,232,699
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">0.30%</span>
+                                                </td>
+                                                <td>
+                                                    <div id="etherium-price-graph"></div>
+                                                </td>
+                                                <td>
+                                                    $4,758,554,801
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">3</td>
+                                                <td>
+                                                    <div class="lh-1 d-flex align-items-center">
+                                                        <span class="avatar avatar-xs avatar-rounded me-1">
+                                                            <img src="../assets/images/crypto-currencies/regular/Dash.svg" alt="">
+                                                        </span>Dash
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    $43.49
+                                                </td>
+                                                <td>
+                                                    $480,799,847
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">0.45%</span>
+                                                </td>
+                                                <td>
+                                                    <div id="dash-price-graph"></div>
+                                                </td>
+                                                <td>
+                                                    $52,626,563
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">4</td>
+                                                <td>
+                                                    <div class="lh-1 d-flex align-items-center">
+                                                        <span class="avatar avatar-xs avatar-rounded me-1">
+                                                            <img src="../assets/images/crypto-currencies/regular/Ripple.svg" alt="">
+                                                        </span>Ripple
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    $0.3531
+                                                </td>
+                                                <td>
+                                                    $17,791,969,465
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">0.97%</span>
+                                                </td>
+                                                <td>
+                                                    <div id="ripple-price-graph"></div>
+                                                </td>
+                                                <td>
+                                                    $511,598,941
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">5</td>
+                                                <td>
+                                                    <div class="lh-1 d-flex align-items-center">
+                                                        <span class="avatar avatar-xs avatar-rounded me-1">
+                                                            <img src="../assets/images/crypto-currencies/regular/IOTA.svg" alt="">
+                                                        </span>Iota
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    $0.169741
+                                                </td>
+                                                <td>
+                                                    $471,800,600
+                                                </td>
+                                                <td>
+                                                    <span class="text-success">0.93%</span>
+                                                </td>
+                                                <td>
+                                                    <div id="iota-price-graph"></div>
+                                                </td>
+                                                <td>
+                                                    $5,524,385
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">6</td>
+                                                <td>
+                                                    <div class="lh-1 d-flex align-items-center">
+                                                        <span class="avatar avatar-xs avatar-rounded me-1">
+                                                            <img src="../assets/images/crypto-currencies/regular/Neo.svg" alt="">
+                                                        </span>Neo
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    $6.43
+                                                </td>
+                                                <td>
+                                                    $453,601,667
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger">0.49%</span>
+                                                </td>
+                                                <td>
+                                                    <div id="neo-price-graph"></div>
+                                                </td>
+                                                <td>
+                                                    $12,904,320
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer border-top-0">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        Showing 6 Entries <i class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <nav aria-label="Page navigation" class="pagination-style-4">
+                                            <ul class="pagination mb-0">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" href="javascript:void(0);">
+                                                        Prev
+                                                    </a>
+                                                </li>
+                                                <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link text-primary" href="javascript:void(0);">
+                                                        next
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-4 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+
+        <!-- include footer.html"-->
+        <!-- include responsive-search-modal.html"-->
+
+    </div>
+
+    <!-- include commonjs.html"-->
+
+    <!-- Apex Charts JS -->
+    <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- Crypto Dashboard --> 
+    <script src="../assets/js/crypto-dashboard.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+ 
+    <!-- include custom_switcherjs.html"-->
+    
+</body>
+
+</html> 

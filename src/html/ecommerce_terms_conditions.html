@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="horizontal" data-nav-style="menu-hover" data-menu-position="fixed" data-theme-mode="light">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> MAMIX - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+    <script>
+        if(localStorage.mamixdarktheme){
+            document.querySelector("html").setAttribute("data-theme-mode","dark")
+        }
+        if(localStorage.mamixrtl){
+            document.querySelector("html").setAttribute("dir","rtl")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+        }
+        if(localStorage.mamixltr){
+            document.querySelector("html").setAttribute("dir","ltr")
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.min.css");
+        }
+		let html = document.querySelector("html");
+		if (window.innerWidth < 992) {
+		html.setAttribute("data-toggled", "close");
+		}
+    </script>
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet" >
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet" >
+
+    <!-- SwiperJS Css -->
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+
+</head>
+
+<body class="landing-body ecommerce-landing">
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="">
+                <p class="switcher-style-head">Theme Color Mode:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-light-theme">
+                                Light
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-light-theme"
+                                checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-dark-theme">
+                                Dark
+                            </label>
+                            <input class="form-check-input" type="radio" name="theme-style" id="switcher-dark-theme">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <p class="switcher-style-head">Directions:</p>
+                <div class="row switcher-style g-0">
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-ltr">
+                                LTR
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-ltr" checked>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-check switch-select">
+                            <label class="form-check-label" for="switcher-rtl">
+                                RTL
+                            </label>
+                            <input class="form-check-input" type="radio" name="direction" id="switcher-rtl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-colors">
+                <p class="switcher-style-head">Theme Primary:</p>
+                <div class="d-flex align-items-center switcher-style">
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-1" type="radio"
+                            name="theme-primary" id="switcher-primary">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-2" type="radio"
+                            name="theme-primary" id="switcher-primary1">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-3" type="radio" name="theme-primary"
+                            id="switcher-primary2">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-4" type="radio" name="theme-primary"
+                            id="switcher-primary3">
+                    </div>
+                    <div class="form-check switch-select me-3">
+                        <input class="form-check-input color-input color-primary-5" type="radio" name="theme-primary"
+                            id="switcher-primary4">
+                    </div>
+                    <div class="form-check switch-select me-3 ps-0 mt-1 color-primary-light">
+                        <div class="theme-container-primary"></div>
+                        <div class="pickr-container-primary"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="switcher-style-head">reset:</p>
+                <div class="text-center">
+                    <button id="reset-all" class="btn btn-danger mt-3">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="landing-page-wrapper">
+         <!-- Start::about-header -->
+        <div class="top-header">
+            <div class="container top-header-container">
+                <div class="d-flex align-items-center justify-content-between flex-wrap">
+                    <div class="flex-grow-1">
+                        <ul class="nav list-unstyled align-items-center">
+                            <li><a href="javascript:void(0);" class="nav-link ps-0">About Us</a></li>
+                            <li><a href="javascript:void(0);" class="nav-link">Contact Us</a></li>
+                            <li><a href="javascript:void(0);" class="nav-link">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="min-w-fit-content">
+                        <ul class="nav list-unstyled align-items-center">
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="nav-link" data-bs-toggle="dropdown">USD <i class="ti ti-chevron-down"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:void(0);" class="dropdown-item">INR</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item">MBP</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item">EU</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="nav-link" data-bs-toggle="dropdown">English <i class="ti ti-chevron-down"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:void(0);" class="dropdown-item">French</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item">Spanish</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item">Arabic</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="nav-link main-menu__item-link pe-0" data-bs-toggle="dropdown"><i class="ti ti-map-pin me-1 fs-16 d-inline-block"></i>California, USA <i class="ti ti-chevron-down"></i></a>
+                                <ul class="dropdown-menu max-w-15rem">
+                                    <li><a href="javascript:void(0);" class="dropdown-item text-truncate" title="Venizula, 212, MS">Venizula, 212, MS</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item text-truncate" title="Vicecity, GTX">Vicecity, GTX</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item text-truncate" title="Paradox, 12, LN">Paradox, 12, LN</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::about-header -->
+
+        <!-- Start::ecommerce-brand-header -->
+        <div class="ecommerce-brand-header sticky" id="header">
+            <div class="container brand-header-container gap-lg-5 gap-3 flex-wrap py-lg-0 py-3">
+
+                <div class="flex-grow-1 d-flex align-items-center gap-lg-4 gap-2 flex-wrap">
+                    <!-- End::header-element -->
+                    <div class="landing-logo-container"> 
+                        <div class="horizontal-logo">
+                            <a href="index.html" class="header-logo">
+                                <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                                <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Start::header-element -->
+                    <div class="header-element mx-lg-0 mx-2 d-lg-none d-block">
+                        <a aria-label="Hide Sidebar" class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle" data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
+                    </div>
+                    <!-- End::header-element -->
+                    <div class="allcategory-input-group flex-grow-1">
+                        <div class="dropdown allcategory-addon start-0">
+                            <a href="javascript:void(0);" class="" data-bs-toggle="dropdown">All Categories <i class="ti ti-chevron-down ms-1"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:void(0);" class="dropdown-item">Vegetables & Fruits</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Egg & Meat</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Snacks</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Beverages</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Household</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Baby Care</a></li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control form-control-lg addon-end-input addon-start-input pe-5" placeholder="Search...">
+                        <a href="javascript:void(0);" class="text-muted allcategory-addon end-0"><i class="ti ti-search"></i></a>
+                    </div>
+                </div>
+
+                <div class="min-w-fit-content">
+                    <ul class="nav list-unstyled align-items-center gap-3 mb-0">
+                        <li>
+                            <a href="ecommerce-search.html" class="categories-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M54,40H202a8,8,0,0,1,7.69,5.8L224,96H32L46.34,45.8A8,8,0,0,1,54,40Z" opacity="0.2"/><path d="M96,96v16a32,32,0,0,1-64,0V96Z" opacity="0.2"/><path d="M224,96v16a32,32,0,0,1-64,0V96Z" opacity="0.2"/><polyline points="48 139.59 48 216 208 216 208 139.59" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M54,40H202a8,8,0,0,1,7.69,5.8L224,96H32L46.34,45.8A8,8,0,0,1,54,40Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M96,96v16a32,32,0,0,1-64,0V96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M160,96v16a32,32,0,0,1-64,0V96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M224,96v16a32,32,0,0,1-64,0V96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ecommerce_customer_compare.html" class="categories-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><circle cx="56" cy="64" r="24" opacity="0.2"/><circle cx="200" cy="192" r="24" opacity="0.2"/><path d="M200,168V110.63a16,16,0,0,0-4.69-11.32L144,48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="144 96 144 48 192 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M56,88v57.37a16,16,0,0,0,4.69,11.32L112,208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="112 160 112 208 64 208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="56" cy="64" r="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="200" cy="192" r="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#viewOffCanvas3" class="categories-icon" data-bs-toggle="offcanvas">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M56,104a72,72,0,0,1,144,0c0,35.82,8.3,64.6,14.9,76A8,8,0,0,1,208,192H48a8,8,0,0,1-6.88-12C47.71,168.6,56,139.81,56,104Z" opacity="0.2"/><path d="M96,192a32,32,0,0,0,64,0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M56,104a72,72,0,0,1,144,0c0,35.82,8.3,64.6,14.9,76A8,8,0,0,1,208,192H48a8,8,0,0,1-6.88-12C47.71,168.6,56,139.81,56,104Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="dropdown main-header-dropdown d-flex">
+                                <a href="javascript:void(0);" class="categories-icon avatar avatar-sm avatar-rounded p-0" data-bs-toggle="dropdown"><img src="../assets/images/faces/11.jpg" alt="img" class="min-w-fit-content rounded-circle h-100 w-100"></a>
+                                <ul class="dropdown-menu dropdown-width-1">
+                                    <li><a href="ecommerce_customer.html" class="dropdown-item"><i class="ti ti-user fs-16 me-2 d-inline-block"></i>My Account</a></li>
+                                    <li><a href="ecommerce_customer.html" class="dropdown-item"><i class="ti ti-box fs-16 me-2 d-inline-block"></i>My Orders</a></li>
+                                    <li><a href="ecommerce_customer_wishlist.html" class="dropdown-item"><i class="ti ti-heart fs-16 me-2 d-inline-block"></i>Wishlist</a></li>
+                                    <li><a href="ecommerce_customer_ordertracking.html" class="dropdown-item"><i class="ti ti-route fs-16 me-2 d-inline-block"></i>Order Tracking</a></li>
+                                    <li><a href="ecommerce_customer_coupons.html" class="dropdown-item"><i class="ti ti-discount fs-16 me-2 d-inline-block"></i>Coupons</a></li>
+                                    <li><a href="ecommerce_customer_settings.html" class="dropdown-item"><i class="ti ti-settings fs-16 me-2 d-inline-block"></i>Settings</a></li>
+                                    <li><a href="sign-in-cover.html" class="dropdown-item"><i class="ti ti-logout fs-16 me-2 d-inline-block"></i>Sign Out</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="#viewOffCanvas2" class="categories-icon" data-bs-toggle="offcanvas">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M70.55,144H196.1a16,16,0,0,0,15.74-13.14L224,64H56Z" opacity="0.2"/><path d="M188,184H91.17a16,16,0,0,1-15.74-13.14L48.73,24H24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="92" cy="204" r="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="188" cy="204" r="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M70.55,144H196.1a16,16,0,0,0,15.74-13.14L224,64H56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ecommerce-search.html" class="categories-icon switcher-icon" data-bs-toggle="offcanvas" data-bs-target="#switcher-canvas">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path d="M207.86,123.18l16.78-21a99.14,99.14,0,0,0-10.07-24.29l-26.7-3a81,81,0,0,0-6.81-6.81l-3-26.71a99.43,99.43,0,0,0-24.3-10l-21,16.77a81.59,81.59,0,0,0-9.64,0l-21-16.78A99.14,99.14,0,0,0,77.91,41.43l-3,26.7a81,81,0,0,0-6.81,6.81l-26.71,3a99.43,99.43,0,0,0-10,24.3l16.77,21a81.59,81.59,0,0,0,0,9.64l-16.78,21a99.14,99.14,0,0,0,10.07,24.29l26.7,3a81,81,0,0,0,6.81,6.81l3,26.71a99.43,99.43,0,0,0,24.3,10l21-16.77a81.59,81.59,0,0,0,9.64,0l21,16.78a99.14,99.14,0,0,0,24.29-10.07l3-26.7a81,81,0,0,0,6.81-6.81l26.71-3a99.43,99.43,0,0,0,10-24.3l-16.77-21A81.59,81.59,0,0,0,207.86,123.18ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z" opacity="0.2"/><circle cx="128" cy="128" r="40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M41.43,178.09A99.14,99.14,0,0,1,31.36,153.8l16.78-21a81.59,81.59,0,0,1,0-9.64l-16.77-21a99.43,99.43,0,0,1,10.05-24.3l26.71-3a81,81,0,0,1,6.81-6.81l3-26.7A99.14,99.14,0,0,1,102.2,31.36l21,16.78a81.59,81.59,0,0,1,9.64,0l21-16.77a99.43,99.43,0,0,1,24.3,10.05l3,26.71a81,81,0,0,1,6.81,6.81l26.7,3a99.14,99.14,0,0,1,10.07,24.29l-16.78,21a81.59,81.59,0,0,1,0,9.64l16.77,21a99.43,99.43,0,0,1-10,24.3l-26.71,3a81,81,0,0,1-6.81,6.81l-3,26.7a99.14,99.14,0,0,1-24.29,10.07l-21-16.78a81.59,81.59,0,0,1-9.64,0l-21,16.77a99.43,99.43,0,0,1-24.3-10l-3-26.71a81,81,0,0,1-6.81-6.81Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <!-- End::ecommerce-brand-header -->
+    
+        <!-- Start::app-sidebar -->
+        <aside class="app-sidebar" id="sidebar">
+
+            <div class="container p-0">
+                <!-- Start::main-sidebar -->
+                <div class="main-sidebar">
+
+                    <!-- Start::nav -->
+                    <nav class="main-menu-container nav nav-pills sub-open">
+                        <div class="categories-menu min-w-fit-content">
+                            <a href="#viewOffCanvas1" class="categories-menu-link" data-bs-toggle="offcanvas">
+                                <span class="categories-icon"><i class="ti ti-menu-2"></i></span>
+                            </a>
+                        </div>
+                        <div class="slide-left" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg></div>
+                        <ul class="main-menu flex-fill">
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a class="side-menu__item" href="ecommerce-landing.html">
+                                    <span class="side-menu__label">Home</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="ecommerce_aboutus.html" class="side-menu__item">
+                                    <span class="side-menu__label">About</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide has-sub">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Shop</span>
+                                    <i class="fe fe-chevron-down side-menu__angle"></i>
+                                </a>
+                                <ul class="slide-menu child1">
+                                    <li class="slide">
+                                        <a href="ecommerce-search.html" class="side-menu__item">Shop</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce-details.html" class="side-menu__item">Product Details</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_customer_wishlist.html" class="side-menu__item">Wishlist</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_customer_cart.html" class="side-menu__item">Cart</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_customer_coupons.html" class="side-menu__item">Coupons</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_customer_checkout.html" class="side-menu__item">Checkout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="ecommerce_vendor.html" class="side-menu__item">
+                                    <span class="side-menu__label">Vendors</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide has-sub">
+                                <a href="javascript:void(0);" class="side-menu__item">
+                                    <span class="side-menu__label">Pages</span>
+                                    <i class="fe fe-chevron-down side-menu__angle"></i>
+                                </a>
+                                <ul class="slide-menu child1">
+                                    <li class="slide">
+                                        <a href="ecommerce_customer.html" class="side-menu__item">My Account</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_customer_settings.html" class="side-menu__item">Settings</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_terms_conditions.html" class="side-menu__item">Terms Of Conditions</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_privacy_policies.html" class="side-menu__item">Privacy Policy</a>
+                                    </li>
+                                    <li class="slide">
+                                        <a href="ecommerce_customer_compare.html" class="side-menu__item">Compare Products</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="ecommerce_contactus.html" class="side-menu__item">
+                                    <span class="side-menu__label">Contact</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                        </ul>
+                        <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
+                        <a href="javascript:void(0);" class="btn btn-primary menu-btn">Become A Seller <i class="ti ti-arrow-right ms-1 d-inline-block"></i></a>
+                    </nav>
+                    <!-- End::nav -->
+
+                </div>
+                <!-- End::main-sidebar -->
+            </div>
+
+        </aside>
+        <!-- End::app-sidebar -->
+
+        <!-- Start::Notifications-offcanvas -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="viewOffCanvas3">
+            <div class="offcanvas-body offcanvas-custom-body p-0">
+                <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0 fw-semibold">Notifications</h5>
+                    <button class="btn btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <ul class="list-group list-group-flush mb-0 scroll-items-container">
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon rounded-indicator bg-success-transparent"><i class="ti ti-truck-delivery"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Your order has been shipped</p>
+                                    <span class="fs-12">5 min</span>
+                                </div>
+                                <p class="mb-0 text-muted">Your order <a href="ecommerce_customer.html" class="text-primary fw-medium">#1289456</a> has been shipped.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-warning-transparent rounded-indicator"><i class="ti ti-phone-off"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Delivery partner tried to reach you</p>
+                                    <span class="fs-12">1 hr</span>
+                                </div>
+                                <p class="mb-0 text-muted">Your order <a href="ecommerce_customer.html" class="text-primary fw-medium">#1289456</a> has been delivered and delivery partner waiting at your doorstep.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon rounded-indicator bg-danger-transparent"><i class="ti ti-package-off"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Your order has been cancelled</p>
+                                    <span class="fs-12">3 hr</span>
+                                </div>
+                                <p class="mb-0 text-muted">Your order <a href="ecommerce_customer.html" class="text-primary fw-medium">#1289456</a> has been cancelled successfully.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-secondary-transparent rounded-indicator"><i class="ti ti-discount-2"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Discount on selected produts!</p>
+                                    <span class="fs-12">1 d</span>
+                                </div>
+                                <p class="mb-0 text-muted">Shop now and get min 50% Off on selected products. <a href="javascript:void(0);" class="text-primary fw-medium">Click Here</a>.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-info-transparent"><i class="ti ti-package"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">New products added</p>
+                                    <span class="fs-12 text-muted">1 d</span>
+                                </div>
+                                <p class="mb-0 text-muted">Shopping list has been updated by new products. <a href="javascript:void(0);" class="text-primary fw-medium">Click Here</a> to see now.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-success-transparent"><i class="ti ti-check"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Order Placed successfully!</p>
+                                    <span class="fs-12 text-muted">2 d</span>
+                                </div>
+                                <p class="mb-0 text-muted">Order <a href="ecommerce_customer.html" class="text-primary fw-medium">#12567845</a> has been placed succefully.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-pink-transparent"><i class="ti ti-ticket"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Coupons added!</p>
+                                    <span class="fs-12 text-muted">5 d</span>
+                                </div>
+                                <p class="mb-0 text-muted">You have won 2 new coupons. <a href="ecommerce_customer.html" class="text-primary fw-medium">Check Now</a>.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-secondary-transparent"><i class="ti ti-discount-2"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Discount on selected products!</p>
+                                    <span class="fs-12 text-muted">1 W</span>
+                                </div>
+                                <p class="mb-0 text-muted">Shop now and get min 50% Off on selected products. <a href="javascript:void(0);" class="text-primary fw-medium">Click Here</a>.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-warning-transparent"><i class="ti ti-phone-off"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Delivery partner tried to reach you</p>
+                                    <span class="fs-12 text-muted">1 W</span>
+                                </div>
+                                <p class="mb-0 text-muted">Your order <a href="ecommerce_customer.html" class="text-primary fw-medium">#1289456</a> has been delivered and delivery partner waiting at your doorstep.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="min-w-fit-content">
+                                <span class="notify-icon bg-success-transparent"><i class="ti ti-truck-delivery"></i></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <p class="mb-0 fw-medium">Your order has been shipped</p>
+                                    <span class="fs-12 text-muted">1 W</span>
+                                </div>
+                                <p class="mb-0 text-muted">Your order <a href="ecommerce_customer.html" class="text-primary fw-medium">#1289456</a> has been shipped.</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="p-3 d-flex align-items-center gap-2">
+                    <a href="javascript:void(0);" class="flex-grow-1 btn btn-outline-light"><i class="ti ti-x me-1"></i> Clear all</a>
+                    <a href="javascript:void(0);" class="flex-grow-1 btn btn-primary"><i class="ti ti-checks me-1"></i> Mark all as read</a>
+                </div>
+            </div>
+        </div>
+        <!-- End::Notifications-offcanvas -->
+
+        <!-- Start::Cart-offcanvs -->
+        <div class="offcanvas offcanvas-2 offcanvas-end" tabindex="-1" id="viewOffCanvas2">
+            <div class="offcanvas-body offcanvas-custom-body p-0">
+                <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0 fw-semibold">Cart</h5>
+                    <button class="btn btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="p-3 border-bottom d-flex align-items-center justify-content-between fw-medium">
+                    <div class="flex-grow-1 d-flex align-items-center gap-2 overflow-hidden">
+                        <span class="min-w-fit-content text-muted">Deliver to :</span>
+                        <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+                            <div class="lh-1">
+                                <span class="avatar avatar-xs avatar-rounded"><img src="../assets/images/faces/1.jpg" alt="img"></span>
+                            </div>
+                            <div>
+                                <span class="flex-grow-1 text-truncate" title="Rubt Disousa">Ruby D</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end ms-3">
+                        <div class="dropdown">
+                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="w-50 text-truncate"><i class="ti ti-map-pin me-1 fs-16 d-inline-block"></i>California, USA <i class="ti ti-chevron-down"></i></a>
+                            <ul class="dropdown-menu max-w-12rem">
+                                <li><a href="javascript:void(0);" class="dropdown-item text-truncate" title="Venizula, 212, MS">Venizula, 212, MS</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item text-truncate" title="Vicecity, GTX">Vicecity, GTX</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item text-truncate" title="Paradox, 12, LN">Paradox, 12, LN</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-items-container">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/1.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Flower Pot</a></p>
+                                        <div class="min-w-fit-content">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Yellow<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">1</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$12.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="1" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/4.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Kiwi Fruit</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Pink<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">2</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$25.05</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="2" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/3.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Camera</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Blue<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">1</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$49.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="1" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/5.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Donut</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Size: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">10<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">11</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">10</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Blue<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">1</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$42.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="1" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/2.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Head Phones</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Pink<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">2</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$39.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="2" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/6.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Cactus Plant</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Yellow<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">3</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$25.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="3" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/7.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Wooden Chair</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Blue<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">5</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$19.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="5" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="rounded">
+                                    <a href="ecommerce-details.html" class="avatar avatar-xxl"><img src="../assets/images/ecommerce/jpg/8.jpg" alt="img" class="w-100 img-fluid"></a>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <p class="fs-14 fw-semibold mb-0 flex-grow-1 text-truncate"><a href="ecommerce-details.html">Showcase Pot</a></p>
+                                        <div class="min-w-fit-content ms-3">
+                                            <a href="javascript:void(0);" class="op-7"><i class="ti ti-x fs-16"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 text-muted ">
+                                        <p class="mb-0">Color: </p>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" data-bs-toggle="dropdown" class="text-primary">Blue<i class="ti ti-chevron-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Yellow</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Black</a></li>
+                                                <li><a href="javascript:void(0);" class="dropdown-item">Blue</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="flex-grow-1 w-75 d-flex align-items-end gap-1 overflow-hidden">
+                                            <div class=" text-muted"><span class="me-1">4</span>&times;</div>
+                                            <div class="flex-grow-1 h6 fs-14 mb-0 overflow-hidden text-truncate">$55.00</div>
+                                        </div>
+                                        <div class="counter-group-1 justify-content-end" role="group">
+                                            <button type="button" class="counter-btn btn-decrement min-w-fit-content"><i class="ti ti-minus"></i></button>
+                                            <input type="text" class="counter-input" value="4" readonly>
+                                            <button type="button" class="counter-btn btn-increment min-w-fit-content"><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-3 border-bottom  d-flex align-items-center justify-content-between fw-medium">
+                    <div class="min-w-fit-content">
+                        <span class="text-muted">Total Items:</span>
+                        <span class="ms-2">8</span>
+                    </div>
+                    <div class="min-w-fit-content">
+                        <a href="javascript:void(0);" class="text-primary">Shop More <i class="ti ti-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="p-3 border-bottom border-bottom-dashed">
+                    <p class="mb-2 text-muted">Have a coupon code? Enter below</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Coupon code">
+                        <a href="javascript:void(0);" class="btn btn-primary btn-wave">Check</a>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between fw-semibold mb-2">
+                        <span>Sub total</span>
+                        <span>$624</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-2  text-muted">
+                        <span>Delivery Charges:</span>
+                        <span>+$5.03</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between  text-muted">
+                        <span>Discount:</span>
+                        <span>-$10.08</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between text-primary px-3 py-2 fw-semibold fs-18">
+                    <span>Total:</span>
+                    <span>$773.00</span>
+                </div>
+                <div class="p-3 border-top">
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="ecommerce_customer_cart.html" class="flex-grow-1 btn btn-light">View Cart <i class="ti ti-shopping-cart ms-1"></i></a>
+                        <a href="ecommerce_customer_checkout.html" class="flex-grow-1 btn btn-primary">Checkout <i class="ti ti-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::Cart-offcanvs -->
+
+        <!-- Start::categories-offcanvas -->
+        <div class="offcanvas offcanvas-start offcanvas-category" tabindex="-1" id="viewOffCanvas1">
+            <div class="offcanvas-body offcanvas-custom-body p-0">
+                <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0 fw-semibold">All Categories</h5>
+                    <button class="btn btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="p-3">
+                    <ul class="list-unstyled column-list mb-0 scroll-items-container border-bottom-0">
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-eggs"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Egg, Fish & Meat">Egg, Fish & Meat</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-salad"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Vegetables & Fruits">Vegetables & Fruits</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-cookie"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Snacks">Snacks</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-baguette"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Bakery Food">Bakery Food</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-bottle"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Beverages">Beverages</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-baby-carriage"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Baby care">Baby care</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-health-recognition"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Health Care">Health Care</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-paw"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Pets & Animals">Pets & Animals</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-home"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Household">Household</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-hanger-2"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Fashion & Lifestyle">Fashion & Lifestyle</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-device-mobile"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Mobiles & Electronics">Mobiles & Electronics</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-device-laptop"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Laptops & Computers">Laptops & Computers</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-headphones"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Electrical Accessories">Electrical Accessories</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-item">
+                            <a href="javascript:void(0);" class="stretched-link"></a>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="min-w-fit-content">
+                                    <span class="category-icon"><i class="ti ti-book"></i></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-semibold text-truncate" title="Books">Books</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </div>
+        <!-- End::categories-offcanvs -->
+
+        <!-- Start::app-content -->
+        <div class="main-content landing-main ecommerce-main">
+
+            <!-- Start:: Breadcrumb-->
+            <div class="border-bottom py-3">
+                <div class="container">
+                    <div class="d-md-flex d-block align-items-center justify-content-between page-header-breadcrumb">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0)"><i class="bi bi-house"></i> Home</a></li>
+                                <li class="breadcrumb-item">Ecommerce</li>
+                                <li class="breadcrumb-item active" aria-current="page">Terms & Conditions</li>
+                            </ol>
+                        </nav>
+                        <p class="mb-0">
+                            <span class="text-muted">Updated on </span> Yesterday
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- End:: Breadcrumb-->
+
+            <!-- Start:: Section-1 -->
+            <section class="section py-4">
+                <div class="container"> 
+                    <div class="row justify-content-center">   
+                        <div class="col-xl-12">
+                            <div class="card custom-card overflow-hidden">
+                                <div class="card-header">
+                                    <div class="card-title">Terms & Conditions</div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="p-4">
+                                        <div class="mb-5">
+                                            <p class="mb-3">
+                                                <span class="fw-semibold text-default op-8">If you stay in the USA </span>the Product <a class="text-primary" href="javascript:void(0);"><u>Terms and Conditions</u></a> consists of below rules and <a class="text-primary" href="javascript:void(0);"><u>User Agreements</u></a> consists of below policies <a class="text-primary" href="javascript:void(0);"><u>Product Rules & Privacy Policies</u></a> incorporated with the below conditions.
+                                            </p>
+                                            <p class="mb-0">
+                                                <span class="fw-semibold text-default op-8">If you stay any where in the world other than USA </span>the Product <a class="text-primary" href="javascript:void(0);"><u>Terms and Conditions</u></a> consists of below rules and <a class="text-primary" href="javascript:void(0);"><u>User Agreements</u></a> consists of below policies <a class="text-primary" href="javascript:void(0);"><u>Product Rules & Privacy Policies</u></a> incorporated with the below conditions.
+                                            </p>
+                                        </div>
+                                        <h6 class="fw-semibold pb-3 text-default"><span class="terms-heading">Terms & Services :</span></h6>
+                                        <div class="mb-4">
+                                            <p class="fw-semibold mb-2 fs-14">1 - Lorem ipsum dolor sit amet.</p>
+                                            <p class="op-7 mb-0">
+                                                Note that you'll sometimes see this agreement referred to as a Terms of Use, User Agreement or Terms of Service agreement. These terms are interchangeable and refer to the same type of agreement
+                                            </p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="fw-semibold mb-2 fs-14">2 - Consectetur adipisicing elit.</p>
+                                            <p class="op-7 mb-2">
+                                                While they are not legally required, terms and conditions set the stage for any successful business relationship. By making it clear and putting these guidelines in writing, business owners can avoid misunderstandings with their customers.
+                                            </p>
+                                            <p class="op-7">
+                                            It also allows you to decide what you consider acceptable and which type of conduct could lead you to terminate a relationship with a user.
+                                            </p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="fw-semibold mb-2 fs-14">3 - There are many variations.</p>
+                                            <p class="op-7">
+                                                Limitation of liability disclaimers is one of the main reasons why business owners take the time to include terms and conditions on their websites. When reasonable and drafted adequately, such clauses can help protect your business against claims and lawsuits and limit the amount of money that you would have to pay in damages.
+                                            </p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <p class="fw-semibold mb-2 fs-14">4 - If you allow your users to share.</p>
+                                            <p class="op-7 mb-2">
+                                                If you allow your users to share comments or photos on your website or leave reviews of the products that you sell, you will want to have a section in your terms that governs their conduct and sets out what is acceptable and what isn’t.
+                                            </p>
+                                            <p class="op-7 mb-2">
+                                                In this clause, you could reserve the right to monitor the user-generated content shared on your website and remove anything that goes against your guidelines. You could expressly ask your users not to post anything that contains obscene language or any material that could be considered harmful or violent or infringes on someone else’s copyright.
+                                            </p>
+                                        </div>
+                                        <div class="mb-0">
+                                            <p class="fw-semibold mb-2 fs-14">5 - You could also make it clear.</p>
+                                            <p class="op-7 mb-2">
+                                                You could also make it clear that you reserve the right to suspend or delete the accounts of repeat infringers. This will help you make your website a safe space where people can feel comfortable sharing their opinions, which is especially important if you operate a news site, blog, or forum.
+                                            </p>
+                                            <p class="op-7 mb-0">
+                                                From a business point of view, you could reserve the right to use the submitted content for marketing purposes which a lot of big box stores and eCommerce retailers do in order to promote products that get rave reviews. It’s important for your customers to know that you plan on doing so, otherwise they could be surprised to see their words or photo used in a commercial!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-sm-flex d-block align-items-center justify-content-between ">
+                                    <div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="privacy-policy">
+                                            <label class="form-check-label" for="privacy-policy">
+                                                I agree with the <a href="javascript:void(0);" class="fw-semibold"><u>Privacy Policy</u></a>
+                                            </label>
+                                        </div>
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input" type="checkbox" value="" id="terms_conditions">
+                                            <label class="form-check-label" for="terms_conditions">
+                                                I agree with the <a href="javascript:void(0);" class="fw-semibold"><u>Terms & Conditions</u></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="btn-list mt-sm-0 mt-2">
+                                        <button class="btn btn-outline-danger btn-lg btn-wave">DECLINE</button>
+                                        <button class="btn btn-primary btn-lg btn-wave">ACCEPT</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section> 
+            <!-- End:: Section-1 -->
+
+            <!-- Start:: Section-2 -->
+			<section class="section bg-banner px-lg-0 px-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="mb-4">
+                            <h3 class="fw-semibold mb-2 text-fixed-white">&#128073; Download our free mobile apps today</h3>
+                        </div>
+                        <h6 class="mb-4 op-9 text-fixed-white">Labore no sed ipsum ipsum nonumy. Sit ipsum sanctus ea magna est. Kasd diam rebum sit ipsum ipsum erat et kasd.Est amet sit vero sanctus labore no sed ipsum ipsum nonumy vero sanctus labore..</h6>
+                        <div class="btn-list">
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/play-store.png" alt="">
+                                Google Play
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-dark app-store">
+                                <img src="../assets/images/media/apps/apple-store.png" alt="" class="invert-1">
+                                App Store
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End:: Section-2 -->
+
+        </div>
+        <!-- End::app-content -->
+		
+		<!-- Start::Footer -->
+		<div class="landing-main-footer py-3 mt-auto">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 text-lg-start text-center">
+						<span class="text-fixed-white op-7 fs-14"> © Copyright <span id="year"></span> <a
+							href="javascript:void(0);" class="text-primary fs-15 fw-semibold">Mamix</a>.
+						</span>
+					</div>
+					<div class="col-lg-6 text-lg-end text-center">
+						<ul class="list-unstyled fw-normal landing-footer-list mb-0">
+							<li>
+								<a href="javascript:void(0);" class="text-fixed-white op-8">Terms Of Service</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" class="text-fixed-white op-8">Privacy Policy</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" class="text-fixed-white op-8">Legal</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" class="text-fixed-white op-8">Contact</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" class="text-fixed-white op-8">Report Abuse</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End::Footer -->
+
+    </div>
+
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="../assets/libs/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Simplebar JS -->
+    <script src="../assets/libs/simplebar/simplebar.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Internal Landing JS -->
+    <script src="../assets/js/landing.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky-landing.js"></script>
+
+</body>
+
+</html>

@@ -1,26 +1,42 @@
 Options -Indexes
 
 RewriteEngine On
-RewriteBase /
 
-RewriteRule ^$ index.php [L]
-RewriteRule ^mamix_esbuild/?$ /login [R=302,L,NC]
+# ==================================================
+# BLOCK SENSITIVE FOLDERS
+# ==================================================
+RewriteRule ^includes/ - [F,L]
+RewriteRule ^vendor/ - [F,L]
 
-# Serve existing files and directories directly.
+# ==================================================
+# CENTRAL API PERMISSION GATEWAY
+# Unmapped APIs pass through without a permission check.
+# ==================================================
+RewriteRule ^api/.+\.php$ api-gateway.php [L,QSA,NC]
+
+# ==================================================
+# ALLOW REAL FILES & DIRECTORIES FIRST
+# VERY IMPORTANT
+# ==================================================
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Redirect explicit PHP page requests to clean auth URLs.
-RewriteRule ^mamix_esbuild/pages/(login|signup|verifyotp|dashboard|addlead|leads|setup|logout)\.php$ /$1 [R=302,L,NC]
+# ==================================================
+# REMOVE .php EXTENSION
+# EXCLUDE API DIRECTORY
+# ==================================================
+# Remove .php extension (exclude api folder)
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^(.+)\.php$ $1 [R=301,L]
 
-# Route clean app URLs into the app router.
-RewriteRule ^(login|signup|verifyotp|dashboard|addlead|leads|setup|logout)/?$ mamix_esbuild/routes.php [L,QSA,NC]
+# ==================================================
+# EXCLUDE API FROM routes.php
+# ==================================================
+RewriteRule ^api/ - [L]
 
-# Protect deploy webhook to POST requests only.
-<Files "deploy.php">
-    <If "%{REQUEST_METHOD} != 'POST'">
-        Require all denied
-    </If>
-</Files>
-
+# ==================================================
+# ROUTE EVERYTHING ELSE
+# ==================================================
+RewriteRule ^ routes.php [L,QSA]

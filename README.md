@@ -445,3 +445,190 @@ MAMIX currently has a solid base for a CRM project:
 - routing and shared layout are set up
 
 The next major step is to convert the current development-ready foundation into a production-ready CRM by tightening configuration, aligning the OTP workflow, and connecting dashboard data to real business metrics.
+
+
+
+## 🚀 LEAVE MANAGEMENT MODULE — SUMMARY
+🔹 1. Core Features Implemented
+✅ Employee Side
+Apply leave via modal (no page reload)
+View all applied leaves in table (live load)
+Cancel leave (with SweetAlert confirmation)
+Toast notifications for all actions (no SweetAlert spam)
+Live validation preview before submit:
+Leave days calculation
+Balance check
+Rule validation
+✅ Admin Side
+View all employee leaves
+Approve / Reject leave
+Status flow:
+pending → approved / rejected
+pending → cancelled (by employee)
+🔹 2. API STRUCTURE
+Employee APIs
+getLeaveSetup.php     → Load settings + leave types
+applyLeave.php        → Apply leave with validations
+getMyLeaves.php       → Fetch employee leaves
+cancelLeave.php       → Cancel leave
+getLeaveBalance.php   → Fetch live balance
+Admin APIs
+getAllLeaves.php        → All employee leaves
+updateLeaveStatus.php   → Approve / Reject leave
+🔹 3. DATABASE STRUCTURE
+Main Tables
+🟦 leaveApplications
+id (PRIMARY KEY ✅ fixed)
+employeeId
+leaveTypeId
+fromDate, toDate
+totalDays
+reason
+status → pending | approved | rejected | cancelled
+createdAt
+🟦 leaveTypes
+name, code
+totalLeaves
+isActive
+rules:
+allowHalfDay
+maxConsecutiveDays
+applicableGender
+allowNegative
+🟦 leaveSettings
+workingDays
+weekendPolicy
+sandwichRule
+maxLeavesPerRequest
+minNoticeDays
+carryForward
+etc.
+🟦 leaveBalances
+employeeId
+leaveTypeId
+totalLeaves
+usedLeaves
+remainingLeaves
+🟦 employeeusers (IMPORTANT)
+fullName
+emailAddress
+gender
+used for:
+validation
+email notifications
+🔹 4. VALIDATION ENGINE
+✅ Phase 1
+Required fields
+Date validation
+Working days calculation
+✅ Phase 2
+Max leaves per request
+Min notice period
+Max consecutive days
+Gender validation
+Overlap check
+Leave balance check
+🔹 5. LEAVE BALANCE SYSTEM
+Auto-create balance (getOrCreateBalance)
+Deduction only on:
+✅ approval (admin)
+No deduction on:
+pending
+rejected
+cancelled
+🔹 6. ADMIN APPROVAL FLOW
+Employee Apply → status = pending
+        ↓
+Admin Action:
+    → approved → deduct balance
+    → rejected → no deduction
+        ↓
+Employee Cancel (only pending)
+    → status = cancelled
+🔹 7. UI BEHAVIOR
+Apply Leave
+Modal based
+No confirmation popup
+Toast only
+Cancel Leave
+SweetAlert confirmation
+Then API call
+Table
+Live reload (no refresh)
+Status badges:
+approved → green
+rejected → red
+cancelled → grey
+pending → yellow
+🔹 8. EMAIL SYSTEM (INTEGRATED)
+Uses centralized mailer.php
+Uses sendLoggedMail() system
+Logs stored in:
+DB → eventMailLog
+File → logs/mail.log
+Events:
+Leave Applied
+Leave Approved / Rejected
+🔹 9. LOGGING SYSTEM
+
+Example:
+
+LEAVE APPLY: Sending mail to xyz@gmail.com
+LEAVE APPLY SUCCESS: Mail sent
+LEAVE APPLY ERROR: Email missing
+🔹 10. SESSION DECISION (IMPORTANT)
+
+Current state:
+
+❌ No strict session system
+❌ No companyId enforcement
+✅ Simplified flow (temporary)
+
+Reason:
+
+Avoid complexity due to dual login system (candidate + admin)
+
+🔹 11. KNOWN DESIGN DECISIONS
+No role-based system (yet)
+Admin has full access
+Candidate/Employee restrictions exist separately
+CompanyId logic temporarily relaxed
+🔹 12. UPCOMING FEATURES (PLANNED)
+Carry forward automation
+Monthly accruals
+Email SMTP enhancements
+Reports / analytics dashboard
+Role-based access control (future module)
+🔥 FINAL FLOW (COMPLETE)
+SETUP (Admin)
+    ↓
+Leave Types + Settings
+
+EMPLOYEE
+    ↓
+Apply Leave (Modal)
+    ↓
+Validation Engine
+    ↓
+Saved as "pending"
+    ↓
+Admin Review
+    ↓
+Approve / Reject
+    ↓
+Balance Update (only if approved)
+    ↓
+Notification Sent
+✅ STATUS: MODULE COMPLETED (PRODUCTION-READY BASE)
+
+✔ APIs stable
+✔ UI smooth (no reload)
+✔ Validation strong
+✔ Balance system working
+✔ Admin flow working
+✔ Mail system integrated
+
+If you start next chat, just paste this — we can directly continue from:
+👉 Reports / Analytics
+👉 Accrual system
+👉 Role-based permissions
