@@ -11,13 +11,17 @@
 |
 */
 
+require_once __DIR__ . '/deliverableEngine.php';
+
 class CalendarEngine
 {
     private $con;
+    private $deliverableEngine;
 
     public function __construct($con)
     {
         $this->con = $con;
+        $this->deliverableEngine = new DeliverableEngine($con);
     }
 
     /**
@@ -25,14 +29,14 @@ class CalendarEngine
      *
      * @param int|null $clientId
      * @param int|null $platformId
-     * @param int      $monthIndex (0 = current month)
+     * @param int      $monthIndex (0 = current month, negative = past, positive = future)
      * @return array
      */
     public function getCalendarData($clientId = null, $platformId = null, $monthIndex = 0)
     {
         $currentDate = new DateTime();
-        if ($monthIndex > 0) {
-            $currentDate->modify("+{$monthIndex} months");
+        if ($monthIndex !== 0) {
+            $currentDate->modify("{$monthIndex} months");
         }
         $yearMonth = $currentDate->format('Y-m'); // e.g., "2026-08"
 
@@ -89,49 +93,13 @@ class CalendarEngine
     }
 
     /**
-     * Get deliverables (platform + feature + plannedCount) for a client
+     * Get deliverables (platform + feature + plannedCount) for a client.
+     * Delegates to DeliverableEngine so the "set up once, carries forward"
+     * rule matches the client-deliverable page exactly.
      */
     private function getClientDeliverables($clientId, $platformId, $yearMonth)
     {
-        $sql = "SELECT 
-                    cd.platformId,
-                    cd.featureId,
-                    cd.plannedCount,
-                    dp.platformName,
-                    dp.icon,
-                    df.featureName
-                FROM clientDeliverables cd
-                INNER JOIN deliverablePlatforms dp ON dp.id = cd.platformId
-                INNER JOIN deliverableFeatures df ON df.id = cd.featureId
-                WHERE cd.clientMasterId = " . (int)$clientId . "
-                  AND cd.month = '" . mysqli_real_escape_string($this->con, $yearMonth) . "'";
-        if ($platformId) {
-            $sql .= " AND cd.platformId = " . (int)$platformId;
-        }
-        $sql .= " ORDER BY dp.displayOrder, df.displayOrder";
-
-        $result = mysqli_query($this->con, $sql);
-        if (!$result) return [];
-
-        $platformMap = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $pid = $row['platformId'];
-            if (!isset($platformMap[$pid])) {
-                $platformMap[$pid] = [
-                    'platform_id' => $pid,
-                    'platform_name' => $row['platformName'],
-                    'icon' => $row['icon'] ?: 'ri-apps-line',
-                    'features' => []
-                ];
-            }
-            $platformMap[$pid]['features'][] = [
-                'feature_id' => $row['featureId'],
-                'feature_name' => $row['featureName'],
-                'plannedCount' => (int)$row['plannedCount']
-            ];
-        }
-
-        return array_values($platformMap);
+        return $this->deliverableEngine->getClientDeliverablesGrouped($clientId, $yearMonth, $platformId);
     }
 
     /**
@@ -139,9 +107,9 @@ class CalendarEngine
      */
     private function getSavedPlans($clientId, $month)
     {
-        $sql = "SELECT platformId, featureId, selectedDates, isEdited
-                FROM clientCalendarPlans 
-                WHERE clientId = " . (int)$clientId . " 
+        $sql = "SELECT platformId, featureId, selectedDates, removedDates, isEdited
+                FROM clientCalendarPlans
+                WHERE clientId = " . (int)$clientId . "
                   AND month = '" . mysqli_real_escape_string($this->con, $month) . "'";
         $result = mysqli_query($this->con, $sql);
         if (!$result) return [];
@@ -150,15 +118,25 @@ class CalendarEngine
         while ($row = mysqli_fetch_assoc($result)) {
             $key = $row['platformId'] . '_' . $row['featureId'];
             $plans[$key] = [
-                'dates' => json_decode($row['selectedDates'], true) ?: [],
+                'dates' => $row['selectedDates'] ? (json_decode($row['selectedDates'], true) ?: []) : [],
+                'removedDates' => $row['removedDates'] ? (json_decode($row['removedDates'], true) ?: []) : [],
                 'isEdited' => $row['isEdited'] // 'yes' or 'no'
             ];
         }
         return $plans;
     }
-    
-    
-    
+
+    /**
+     * Get a single client's deliverables + saved calendar dates for one month.
+     * Used to refresh the Plan modal when the month is switched.
+     */
+    public function getClientCalendarPlan($clientId, $month, $platformId = null)
+    {
+        return [
+            'platforms' => $this->getClientDeliverables($clientId, $platformId, $month),
+            'saved_plans' => $this->getSavedPlans($clientId, $month)
+        ];
+    }
 
         /**
          * Log calendar activity
@@ -220,16 +198,20 @@ class CalendarEngine
     
                 if ($existing) {
                     // Old values
-                    $oldDates = json_decode($existing['selectedDates'], true) ?: [];
+                    $oldDates = $existing['selectedDates'] ? (json_decode($existing['selectedDates'], true) ?: []) : [];
                     $oldIsEdited = $existing['isEdited'];
-    
+
+                    // Dates that were dropped in this edit (shown as a red capsule)
+                    $removedDates = array_values(array_diff($oldDates, $newDates));
+
                     // Update
                     $datesJson = json_encode($newDates);
-                    $sql = "UPDATE clientCalendarPlans 
-                            SET selectedDates = ?, isEdited = ?, updatedAt = NOW() 
+                    $removedDatesJson = json_encode($removedDates);
+                    $sql = "UPDATE clientCalendarPlans
+                            SET selectedDates = ?, removedDates = ?, isEdited = ?, updatedAt = NOW()
                             WHERE id = ?";
                     $stmt = mysqli_prepare($this->con, $sql);
-                    mysqli_stmt_bind_param($stmt, 'ssi', $datesJson, $newIsEdited, $existing['id']);
+                    mysqli_stmt_bind_param($stmt, 'sssi', $datesJson, $removedDatesJson, $newIsEdited, $existing['id']);
                     $success = mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
     

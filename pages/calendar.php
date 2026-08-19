@@ -81,6 +81,17 @@ include __DIR__ . '/../includes/sidebar.php';
     margin:0 6px;
 }
 
+.date-chip{
+    display:inline-block;
+    background:#ffffff;
+    border:1px solid currentColor;
+    border-radius:20px;
+    padding:1px 8px;
+    margin:2px 4px 2px 0;
+    font-weight:500;
+    font-size:11px;
+}
+
 .activity-table{
     margin-bottom:0;
 }
@@ -197,7 +208,7 @@ include __DIR__ . '/../includes/sidebar.php';
                     </label>
                     <select class="form-select month-selector" id="monthSelector" style="max-width: 220px; border-radius: 40px; border: 1px solid #e2eaf5; padding: 0.4rem 1.2rem;"></select>
                     <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
-                        <i class="ri-checkbox-circle-fill text-primary me-1"></i> current + upcoming
+                        <i class="ri-checkbox-circle-fill text-primary me-1"></i> past, current & upcoming
                     </span>
                 </div>
 
@@ -278,17 +289,6 @@ include __DIR__ . '/../includes/sidebar.php';
         border-color: #7da0f0;
         box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
         outline: none;
-    }
-    .module-selected-dates {
-        font-size: 0.75rem;
-        color: #2563eb;
-        background: #f0f7ff;
-        padding: 0.1rem 0.9rem;
-        border-radius: 30px;
-        display: inline-block;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        min-width: 80px;
     }
     .platform-header {
         font-weight: 600;
@@ -531,19 +531,30 @@ include __DIR__ . '/../includes/sidebar.php';
     }
     
     .module-selected-dates {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        max-width: 100%;
+    }
+
+    .date-capsule {
+        display: inline-block;
         font-size: 0.72rem;
-        color: #2563eb;
-        background: #f0f7ff;
+        color: #1e293b;
+        background: #ffffff;
         padding: 0.1rem 0.6rem;
         border-radius: 30px;
+        border: 1px solid #000000;
         font-weight: 500;
-        white-space: normal;          /* Allow wrapping */
-        word-wrap: break-word;
-        overflow: visible;            /* No truncation */
-        max-width: 100%;
-        line-height: 1.4;
+        white-space: nowrap;
     }
-    
+
+    .date-capsule-removed {
+        color: #dc2626;
+        border-color: #dc2626;
+        text-decoration: line-through;
+    }
+
     .min-label {
         font-size: 0.65rem;
         color: #94a3b8;
@@ -602,16 +613,21 @@ $(document).ready(function() {
     function initializeMonthSelectors() {
         const now = new Date();
         const months = [];
-        for (let i = 0; i < 6; i++) {
+        for (let i = -2; i <= 4; i++) {
             const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
             const yyyymm = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
             const label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
             months.push({ value: yyyymm, label: label });
         }
         const monthOptions = months.map((m, idx) =>
-            `<option value="${m.value}" ${idx === 0 ? 'selected' : ''}>${m.label}</option>`
+            `<option value="${m.value}" ${m.value === currentYearMonth() ? 'selected' : ''}>${m.label}</option>`
         ).join('');
         $('#monthFilter, #monthSelector').html(monthOptions);
+    }
+
+    function currentYearMonth() {
+        const now = new Date();
+        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
     }
     initializeMonthSelectors();
 
@@ -660,8 +676,10 @@ $(document).ready(function() {
                 features.forEach((feature) => {
                     const plannedCount = feature.plannedCount || 0;
                     const planKey = platformId + '_' + feature.feature_id;
-                    let selectedDates = (savedPlans && savedPlans[planKey]) ? savedPlans[planKey].dates : [];
-                    const isEdited = (savedPlans && savedPlans[planKey]) ? savedPlans[planKey].isEdited : 'yes';
+                    const plan = (savedPlans && savedPlans[planKey]) ? savedPlans[planKey] : null;
+                    let selectedDates = plan ? plan.dates.slice().sort() : [];
+                    let removedDates = plan ? (plan.removedDates || []).slice().sort() : [];
+                    const isEdited = plan ? plan.isEdited : 'yes';
                     const dateStr = selectedDates.join(', ');
                     const displayId = `display_${platformId}_${feature.feature_id}`;
     
@@ -683,8 +701,9 @@ $(document).ready(function() {
                                    data-min-dates="${plannedCount}"
                                    value="${dateStr}"
                                    placeholder="Select dates">
-                            <span class="module-selected-dates" id="${displayId}" title="${selectedDates.map(d => formatDateShort(d)).join(', ')}">
-                                ${selectedDates.map(d => formatDateShort(d)).join(', ')}
+                            <span class="module-selected-dates" id="${displayId}">
+                                ${selectedDates.map(d => `<span class="date-capsule">${formatDateShort(d)}</span>`).join('')}
+                                ${removedDates.map(d => `<span class="date-capsule date-capsule-removed">${formatDateShort(d)}</span>`).join('')}
                             </span>
                             <span class="min-label">${plannedCount}</span>
                         </div>
@@ -705,11 +724,13 @@ $(document).ready(function() {
                 input._flatpickr.destroy();
             }
             const minDates = parseInt(input.dataset.minDates) || 0;
+            const existingDates = input.value.split(',').map(d => d.trim()).filter(Boolean);
             flatpickr(input, {
                 mode: 'multiple',
                 dateFormat: 'Y-m-d',
                 enableTime: false,
                 minDate: new Date(),
+                defaultDate: existingDates,
                 onClose: function(selectedDates) {
                     const featureId = input.dataset.featureId;
                     const platformId = input.dataset.platform;
@@ -721,12 +742,14 @@ $(document).ready(function() {
                         );
                     }
                     if (displaySpan) {
-                        const dates = selectedDates.map(d => {
+                        const dates = selectedDates.slice().sort((a, b) => a - b).map(d => {
                             const day = String(d.getDate()).padStart(2, '0');
                             const month = d.toLocaleString('en', { month: 'short' });
                             return day + ' ' + month;
                         });
-                        displaySpan.textContent = dates.length ? dates.join(', ') : '—';
+                        displaySpan.innerHTML = dates.length
+                            ? dates.map(d => `<span class="date-capsule">${d}</span>`).join('')
+                            : '—';
                     }
                 },
                 onChange: function(selectedDates) {
@@ -734,12 +757,14 @@ $(document).ready(function() {
                     const platformId = input.dataset.platform;
                     const displaySpan = document.getElementById(`display_${platformId}_${featureId}`);
                     if (displaySpan) {
-                        const dates = selectedDates.map(d => {
+                        const dates = selectedDates.slice().sort((a, b) => a - b).map(d => {
                             const day = String(d.getDate()).padStart(2, '0');
                             const month = d.toLocaleString('en', { month: 'short' });
                             return day + ' ' + month;
                         });
-                        displaySpan.textContent = dates.length ? dates.join(', ') : '—';
+                        displaySpan.innerHTML = dates.length
+                            ? dates.map(d => `<span class="date-capsule">${d}</span>`).join('')
+                            : '—';
                     }
                 }
             });
@@ -833,8 +858,7 @@ $(document).ready(function() {
             const now = new Date();
             const parts = selectedMonth.split('-');
             const selectedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
-            const diffMonths = (selectedDate.getFullYear() - now.getFullYear()) * 12 + (selectedDate.getMonth() - now.getMonth());
-            monthIndex = diffMonths >= 0 ? diffMonths : 0;
+            monthIndex = (selectedDate.getFullYear() - now.getFullYear()) * 12 + (selectedDate.getMonth() - now.getMonth());
         }
         // But we already set monthFilter options to YYYY-MM, the API expects month as integer index.
         // So we pass the index.
@@ -890,10 +914,6 @@ $(document).ready(function() {
                     </span>`
                 ).join('')
                 : '<span class="text-muted small">No platforms</span>';
-            const buttonData = {
-                platforms: client.platforms || [],
-                saved_plans: client.saved_plans || {}
-            };
             html += `
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                     <div class="client-card d-flex flex-column align-items-center text-center">
@@ -905,7 +925,6 @@ $(document).ready(function() {
                             <button class="btn btn-plan btn-plan-primary open-calendar-btn"
                                     data-client="${clientName}"
                                     data-client-id="${client.id}"
-                                    data-platforms='${JSON.stringify(buttonData)}'
                                     data-bs-toggle="modal"
                                     data-bs-target="#calendarPlannerModal">
                                 <i class="ri-calendar-event-line"></i> Plan
@@ -962,30 +981,48 @@ $(document).ready(function() {
     // ============================================
     // 10. MODAL OPEN HANDLER
     // ============================================
+    function loadModalPlan(clientId, month) {
+        $('#socialPlatformsContainer').html(`
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `);
+        $.ajax({
+            url: 'api/get-client-calendar-plan.php',
+            type: 'GET',
+            data: { clientId: clientId, month: month },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    $('#socialPlatformsContainer').html(buildPlatformsHTML(response.platforms, response.saved_plans));
+                    initFlatpickr();
+                } else {
+                    showToast(response.message || 'Failed to load plan', 'error');
+                }
+            },
+            error: function() {
+                showToast('Network error loading plan', 'error');
+            }
+        });
+    }
+
     $('#calendarPlannerModal').on('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         if (!button) return;
         currentClientId = button.getAttribute('data-client-id');
         currentClientName = button.getAttribute('data-client') || 'Client';
         $('#clientNameModal').text(currentClientName);
-        let clientPlatforms = [];
-        let savedPlans = {};
-        try {
-            const platformsJson = button.getAttribute('data-platforms');
-            if (platformsJson && platformsJson !== 'null') {
-                const data = JSON.parse(platformsJson);
-                if (data.saved_plans) savedPlans = data.saved_plans;
-                if (data.platforms && Array.isArray(data.platforms)) {
-                    clientPlatforms = data.platforms;
-                } else if (Array.isArray(data)) {
-                    clientPlatforms = data;
-                }
-            }
-        } catch (e) {
-            console.error('Error parsing platforms data:', e);
+        $('#monthSelector').val($('#monthFilter').val());
+        loadModalPlan(currentClientId, $('#monthSelector').val());
+    });
+
+    // Refresh the modal's data whenever the month inside it is changed
+    $('#monthSelector').on('change', function() {
+        if (currentClientId) {
+            loadModalPlan(currentClientId, $(this).val());
         }
-        $('#socialPlatformsContainer').html(buildPlatformsHTML(clientPlatforms, savedPlans));
-        initFlatpickr();
     });
 
     // ============================================
@@ -1238,24 +1275,24 @@ $(document).ready(function() {
             const removedDates = oldDates.filter(d => !newDates.includes(d));
     
             let changes = '';
-    
-            addedDates.forEach(date => {
+
+            if (addedDates.length) {
                 changes += `
                     <div class="change-item">
                         <span class="field-name text-success">Added:</span>
-                        <span class="new-value">${formatShortDate(date)}</span>
+                        ${addedDates.map(date => `<span class="new-value date-chip">${formatShortDate(date)}</span>`).join('')}
                     </div>
                 `;
-            });
-    
-            removedDates.forEach(date => {
+            }
+
+            if (removedDates.length) {
                 changes += `
                     <div class="change-item">
                         <span class="field-name text-danger">Removed:</span>
-                        <span class="old-value">${formatShortDate(date)}</span>
+                        ${removedDates.map(date => `<span class="old-value date-chip">${formatShortDate(date)}</span>`).join('')}
                     </div>
                 `;
-            });
+            }
     
             if (log.oldIsEdited !== log.newIsEdited) {
                 changes += `

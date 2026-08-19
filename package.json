@@ -26,7 +26,6 @@
     "dragula": "^3.7.3",
     "dropzone": "^6.0.0-beta.2",
     "dual-listbox": "^2.0.0",
-    "echarts": "^5.5.1",
     "fg-emoji-picker": "^1.0.1",
     "filepond": "^4.31.1",
     "filepond-plugin-file-encode": "^2.1.13",
@@ -61,7 +60,6 @@
     "sortablejs": "^1.15.2",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.10.1",
-    "swiper": "^11.1.9",
     "toastify-js": "^1.12.0",
     "vanilla-wizard": "^0.0.7",
     "wnumb": "^1.2.0"

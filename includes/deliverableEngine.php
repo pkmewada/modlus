@@ -297,12 +297,15 @@ class DeliverableEngine
         $clients = $this->getClientsWithFilter($clientId);
         if (empty($clients)) return [];
 
+        // Fetch every planned row (all months) for these clients so we can
+        // resolve the effective value per platform/feature below.
         $sql = "
-            SELECT 
+            SELECT
                 cd.clientMasterId,
                 cd.platformId,
                 cd.featureId,
                 cd.plannedCount,
+                cd.month,
                 dp.platformName,
                 df.featureName
             FROM clientDeliverables cd
@@ -313,12 +316,17 @@ class DeliverableEngine
         if ($clientId > 0) {
             $sql .= " AND cd.clientMasterId = " . (int)$clientId;
         }
-        if (!empty($month)) {
-            $sql .= " AND cd.month = '" . mysqli_real_escape_string($this->con, $month) . "'";
-        }
 
         $result = mysqli_query($this->con, $sql);
         if (!$result) return [];
+
+        // Group rows by clientMasterId + platform_feature key so we can pick
+        // the effective value (exact month, or the original setup as a fallback).
+        $grouped = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $key = $row['platformName'] . '_' . $row['featureName'];
+            $grouped[$row['clientMasterId']][$key][] = $row;
+        }
 
         $pivotData = [];
         foreach ($clients as $id => $client) {
@@ -328,20 +336,119 @@ class DeliverableEngine
                 'clientName'        => $client['clientName'],
                 'allowedPlatformIds' => $this->getClientAllowedPlatforms($id)
             ];
+
+            if (!empty($month) && isset($grouped[$id])) {
+                foreach ($grouped[$id] as $key => $rows) {
+                    $value = $this->resolveEffectiveDeliverable($rows, $month);
+                    if ($value !== null) {
+                        $row[$key] = $value;
+                    }
+                }
+            }
+
             $pivotData[] = $row;
         }
 
+        return $pivotData;
+    }
+
+    /**
+     * Same resolution rule as getDeliverables(), but for a single client and
+     * grouped by platform (with icon) — the shape the calendar page needs.
+     */
+    public function getClientDeliverablesGrouped($clientId, $month, $platformId = null)
+    {
+        $sql = "
+            SELECT
+                cd.platformId,
+                cd.featureId,
+                cd.plannedCount,
+                cd.month,
+                dp.platformName,
+                dp.icon,
+                dp.displayOrder AS platformOrder,
+                df.featureName,
+                df.displayOrder AS featureOrder
+            FROM clientDeliverables cd
+            INNER JOIN deliverablePlatforms dp ON dp.id = cd.platformId
+            INNER JOIN deliverableFeatures df ON df.id = cd.featureId
+            WHERE cd.clientMasterId = " . (int)$clientId;
+        if ($platformId) {
+            $sql .= " AND cd.platformId = " . (int)$platformId;
+        }
+
+        $result = mysqli_query($this->con, $sql);
+        if (!$result) return [];
+
+        $grouped = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            $key = $row['platformName'] . '_' . $row['featureName'];
-            foreach ($pivotData as &$pivotRow) {
-                if ($pivotRow['clientMasterId'] == $row['clientMasterId']) {
-                    $pivotRow[$key] = (int)$row['plannedCount'];
-                    break;
-                }
+            $key = $row['platformId'] . '_' . $row['featureId'];
+            $grouped[$key][] = $row;
+        }
+
+        $platformMap = [];
+        foreach ($grouped as $rows => $featureRows) {
+            $value = $this->resolveEffectiveDeliverable($featureRows, $month);
+            if ($value === null) {
+                continue;
+            }
+            $first = $featureRows[0];
+            $pid = $first['platformId'];
+            if (!isset($platformMap[$pid])) {
+                $platformMap[$pid] = [
+                    'platform_id' => $pid,
+                    'platform_name' => $first['platformName'],
+                    'icon' => $first['icon'] ?: 'ri-apps-line',
+                    'displayOrder' => (int)$first['platformOrder'],
+                    'features' => []
+                ];
+            }
+            $platformMap[$pid]['features'][] = [
+                'feature_id' => $first['featureId'],
+                'feature_name' => $first['featureName'],
+                'plannedCount' => $value,
+                'displayOrder' => (int)$first['featureOrder']
+            ];
+        }
+
+        $platforms = array_values($platformMap);
+        usort($platforms, function ($a, $b) { return $a['displayOrder'] <=> $b['displayOrder']; });
+        foreach ($platforms as &$p) {
+            usort($p['features'], function ($a, $b) { return $a['displayOrder'] <=> $b['displayOrder']; });
+            foreach ($p['features'] as &$f) {
+                unset($f['displayOrder']);
+            }
+            unset($p['displayOrder']);
+        }
+
+        return $platforms;
+    }
+
+    /**
+     * A deliverable is set up once and carries forward to every later month.
+     * A specific month keeps its own value if it was explicitly edited;
+     * otherwise it falls back to the earliest (original setup) value.
+     */
+    private function resolveEffectiveDeliverable($rows, $month)
+    {
+        $exact = null;
+        $earliest = null;
+        foreach ($rows as $r) {
+            if ($r['month'] === $month) {
+                $exact = $r;
+            }
+            if ($earliest === null || $r['month'] < $earliest['month']) {
+                $earliest = $r;
             }
         }
 
-        return $pivotData;
+        if ($exact) {
+            return (int)$exact['plannedCount'];
+        }
+        if ($earliest && $earliest['month'] <= $month) {
+            return (int)$earliest['plannedCount'];
+        }
+        return null;
     }
 
     // ------------------------------------------------------------
