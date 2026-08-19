@@ -112,14 +112,14 @@ $(function () {
             }
         });
 
-        // Load Months
+        // Load Months: 2 past, current, and 4 future months
         let monthOptions = '';
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
-        for (let i = 0; i < 12; i++) {
-            let d = new Date(currentYear, currentMonth - i, 1);
+        for (let i = -2; i <= 4; i++) {
+            let d = new Date(currentYear, currentMonth + i, 1);
             let month = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
             let label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
             monthOptions += `<option value="${month}">${label}</option>`;
