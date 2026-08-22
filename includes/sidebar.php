@@ -111,6 +111,14 @@ $menuGroups = [
             ['route' => 'calendar', 'label' => 'Calendar'],
         ],
     ],
+    [
+        'category' => 'Automation',
+        'label' => 'Automation',
+        'icon' => 'ti ti-settings-automation',
+        'items' => [
+            ['route' => 'instagram-automation', 'label' => 'Instagram Automation'],
+        ],
+    ],
 ];
 
 $renderMenuGroup = static function (array $group) use ($canRenderMenuRoute, $isActiveRoute): void {
