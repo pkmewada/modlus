@@ -1,4 +1,6 @@
-<?php require_once __DIR__ . '/config.php';
+<?php
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/Csrf.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -66,6 +68,7 @@ ini_set('display_errors', 1);
         const BASE_URL = "<?= BASE_URL ?>";
         const API_BASE = BASE_URL + '/api';
         const UPLOAD_URL = BASE_URL + '/uploads';
+        const CSRF_TOKEN = "<?= htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8') ?>";
     </script>
     <style>
         .table-responsive {
