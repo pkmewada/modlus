@@ -1752,6 +1752,279 @@ class AttendanceEngine
     }
     
     // =============================
+    // AUTO PUNCH OUT FORGOTTEN ATTENDANCE
+    // =============================
+    public function autoPunchOutForgottenAttendance()
+    {
+        // =========================
+        // AUTO PUNCH OUT TIME
+        // =========================
+        $autoPunchOutTime = '19:30:00';
+
+        $currentTime =
+            strtotime(
+                date('H:i:s')
+            );
+
+        if (
+            $currentTime <
+            strtotime($autoPunchOutTime)
+        ) {
+            return [
+                'success' => false,
+                'message' => 'Auto punch out time not reached yet'
+            ];
+        }
+
+        // =========================
+        // LOAD SETTINGS
+        // =========================
+        $settings =
+            $this->getSettings();
+
+        if (!$settings) {
+
+            return [
+                'success' => false,
+                'message' => 'Attendance setup not configured'
+            ];
+        }
+
+        $halfDaySeconds =
+            ((float)$settings['halfDayHours']) * 3600;
+
+        // =========================
+        // LOAD FORGOTTEN PUNCH-INS
+        // =========================
+        $stmt = mysqli_prepare(
+
+            $this->con,
+
+            "SELECT *
+
+             FROM employeeAttendance
+
+             WHERE attendanceStatus='in_progress'
+
+             AND punchInTime IS NOT NULL
+
+             AND punchOutTime IS NULL"
+        );
+
+        mysqli_stmt_execute($stmt);
+
+        $result =
+            mysqli_stmt_get_result($stmt);
+
+        $attendanceRows = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $attendanceRows[] = $row;
+        }
+
+        mysqli_stmt_close($stmt);
+
+        $processed = [];
+        $failed = [];
+
+        // =========================
+        // PROCESS EACH RECORD
+        // =========================
+        foreach ($attendanceRows as $attendance) {
+
+            mysqli_begin_transaction(
+                $this->con
+            );
+
+            try {
+
+                // =====================
+                // AUTO END ACTIVE BREAK
+                // =====================
+                $activeBreak =
+                    $this->getActiveBreak(
+                        $attendance['id']
+                    );
+
+                if ($activeBreak) {
+
+                    $breakDurationSeconds =
+                        $this->calculateSeconds(
+                            $activeBreak['breakStartTime'],
+                            $autoPunchOutTime
+                        );
+
+                    $stmt = mysqli_prepare(
+                        $this->con,
+                        "UPDATE attendanceBreakLogs SET
+
+                            breakEndTime=?,
+                            breakDurationSeconds=?
+
+                         WHERE id=?"
+                    );
+
+                    mysqli_stmt_bind_param(
+                        $stmt,
+                        "sii",
+                        $autoPunchOutTime,
+                        $breakDurationSeconds,
+                        $activeBreak['id']
+                    );
+
+                    mysqli_stmt_execute($stmt);
+
+                    mysqli_stmt_close($stmt);
+                }
+
+                // =====================
+                // TOTAL BREAK INTO SECONDS
+                // =====================
+                $stmt = mysqli_prepare(
+                    $this->con,
+                    "SELECT
+                        SUM(breakDurationSeconds)
+                            AS totalBreakSeconds
+
+                     FROM attendanceBreakLogs
+
+                     WHERE attendanceId=?"
+                );
+
+                mysqli_stmt_bind_param(
+                    $stmt,
+                    "i",
+                    $attendance['id']
+                );
+
+                mysqli_stmt_execute($stmt);
+
+                $breakResult =
+                    mysqli_stmt_get_result($stmt)
+                        ->fetch_assoc();
+
+                mysqli_stmt_close($stmt);
+
+                $totalBreakSeconds =
+                    (int)(
+                        $breakResult['totalBreakSeconds']
+                        ?? 0
+                    );
+
+                // =====================
+                // WORKING CALCULATION
+                // =====================
+                $totalWorkingSeconds =
+                    $this->calculateSeconds(
+                        $attendance['punchInTime'],
+                        $autoPunchOutTime
+                    );
+
+                $netWorkingSeconds =
+                    max(
+                        0,
+                        $totalWorkingSeconds -
+                        $totalBreakSeconds
+                    );
+
+                // =====================
+                // ATTENDANCE STATUS
+                // =====================
+                $attendanceStatus = 'present';
+
+                if ($netWorkingSeconds < $halfDaySeconds) {
+
+                    $attendanceStatus =
+                        'half_day';
+                }
+
+                // =====================
+                // UPDATE ATTENDANCE
+                // =====================
+                $remarks =
+                    'Auto punched out by system (forgot to punch out)';
+
+                $stmt = mysqli_prepare(
+                    $this->con,
+                    "UPDATE employeeAttendance SET
+
+                        punchOutTime=?,
+                        attendanceStatus=?,
+                        totalBreakSeconds=?,
+                        totalWorkingSeconds=?,
+                        remarks=?
+
+                     WHERE id=?"
+                );
+
+                mysqli_stmt_bind_param(
+                    $stmt,
+                    "ssiisi",
+                    $autoPunchOutTime,
+                    $attendanceStatus,
+                    $totalBreakSeconds,
+                    $netWorkingSeconds,
+                    $remarks,
+                    $attendance['id']
+                );
+
+                $success =
+                    mysqli_stmt_execute($stmt);
+
+                mysqli_stmt_close($stmt);
+
+                if (!$success) {
+
+                    throw new Exception(
+                        'Failed to update attendance'
+                    );
+                }
+
+                mysqli_commit(
+                    $this->con
+                );
+
+                $processed[] = [
+                    'attendanceId' => $attendance['id'],
+                    'employeeId' => $attendance['employeeId'],
+                    'punchOutTime' => $autoPunchOutTime,
+                    'attendanceStatus' => $attendanceStatus,
+                    'totalWorkingSeconds' => $netWorkingSeconds,
+                    'totalBreakSeconds' => $totalBreakSeconds
+                ];
+
+            } catch (Exception $e) {
+
+                mysqli_rollback(
+                    $this->con
+                );
+
+                error_log(
+                    'AttendanceEngine::autoPunchOutForgottenAttendance() failed for attendanceId ' .
+                    $attendance['id'] . ': ' .
+                    $e->getMessage()
+                );
+
+                $failed[] = [
+                    'attendanceId' => $attendance['id'],
+                    'employeeId' => $attendance['employeeId'],
+                    'error' => $e->getMessage()
+                ];
+            }
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Auto punch out completed',
+            'totalFound' => count($attendanceRows),
+            'totalProcessed' => count($processed),
+            'totalFailed' => count($failed),
+            'processed' => $processed,
+            'failed' => $failed
+        ];
+    }
+
+    // =============================
     // LIVE BREAK SECONDS
     // =============================
     public function getLiveBreakSeconds($attendanceId, $attendanceDate)

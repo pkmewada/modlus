@@ -37,3 +37,8 @@ if (!defined('SITE_URL')) {
         BASE_URL
     );
 }
+
+if (!defined('ENCRYPTION_KEY')) {
+    // Override in production via the MODLUS_ENCRYPTION_KEY environment variable.
+    define('ENCRYPTION_KEY', getenv('MODLUS_ENCRYPTION_KEY') ?: 'default_key_123');
+}

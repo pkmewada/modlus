@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../../includes/auth-functions.php';
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../../includes/sendOtp.php';
+require_once __DIR__ . '/../../includes/Csrf.php';
 
 class AuthController
 {
@@ -38,6 +39,7 @@ class AuthController
                         redirectTo('verifyotp?email=' . urlencode($emailValue));
                     } else {
                         session_regenerate_id(true);
+                        regenerateCsrfToken();
 
                         unset(
                             $_SESSION['candidateId'],

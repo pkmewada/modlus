@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../includes/auth-functions.php';
 require_once __DIR__ . '/../models/CandidateModel.php';
 require_once __DIR__ . '/../../includes/mailer.php';
+require_once __DIR__ . '/../../includes/Csrf.php';
 
 class CandidateAuthController
 {
@@ -41,6 +42,7 @@ class CandidateAuthController
                 } else {
 
                     session_regenerate_id(true);
+                    regenerateCsrfToken();
 
                     unset(
                         $_SESSION['userId'],

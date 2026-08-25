@@ -1,0 +1,413 @@
+<?php include __DIR__ . '/../includes/auth.php'; ?>
+<?php include __DIR__ . '/../includes/header.php'; ?>
+<?php include __DIR__ . '/../includes/sidebar.php'; ?>
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h1 class="page-title fw-medium fs-18 mb-2" id="pageTitle">Create Instagram Post</h1>
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="dashboard">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">Automation</li>
+                    <li class="breadcrumb-item">
+                        <a href="instagram-scheduled-posts">Instagram Posts</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page" id="breadcrumbCurrent">Create Post</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="alert alert-warning d-none" id="postLockedAlert">
+            This post has already been published or is currently publishing and can no longer be edited.
+        </div>
+
+        <div class="alert alert-warning d-none" id="noAccountWarning">
+            No Instagram account is connected yet. <a href="instagram-automation">Connect an account</a> before scheduling posts.
+        </div>
+
+        <form id="instagramPostForm" autocomplete="off">
+            <?= getCsrfInput() ?>
+            <input type="hidden" id="postId" name="postId" value="">
+
+            <div class="row g-4">
+                <div class="col-xl-8">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Post Content</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="clientSelect">Client</label>
+                                    <select class="form-select" id="clientSelect" name="clientId" required>
+                                        <option value="">Select Client</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="accountSelect">Instagram Account</label>
+                                    <select class="form-select" id="accountSelect" name="instagramAccountId" required disabled>
+                                        <option value="">Select a client first</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="mediaType">Post Type</label>
+                                    <select class="form-select" id="mediaType" name="mediaType">
+                                        <option value="image">Image Post</option>
+                                        <option value="reel">Reel (Video)</option>
+                                        <option value="carousel">Carousel (2-10 Images)</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" id="mediaInputLabel" for="mediaFiles">Media</label>
+                                    <input type="file" class="form-control" id="mediaFiles" name="media[]" accept="image/jpeg">
+                                    <div class="form-text" id="mediaInputHint">JPG or PNG, up to 8 MB.</div>
+                                    <div id="existingMediaNote" class="form-text text-muted d-none">Leave empty to keep the existing media.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div id="mediaPreview" class="d-flex flex-wrap gap-2"></div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="caption">Caption</label>
+                                    <textarea class="form-control" id="caption" name="caption" rows="5" maxlength="2200"></textarea>
+                                    <div class="form-text"><span id="captionCount">0</span>/2200 characters</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="card custom-card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Publish</h5>
+                        </div>
+
+                        <div class="card-body d-flex flex-column gap-3">
+                            <div>
+                                <label class="form-label" for="scheduledAt">Schedule Date &amp; Time</label>
+                                <input type="datetime-local" class="form-control" id="scheduledAt" name="scheduledAt">
+                                <div class="form-text">Leave empty to publish as soon as the scheduler next runs.</div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-secondary" id="saveDraftBtn">
+                                Save as Draft
+                            </button>
+
+                            <button type="button" class="btn btn-primary" id="schedulePostBtn">
+                                Schedule Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+const existingMediaTypeHints = {
+    image: { accept: 'image/jpeg', multiple: false, hint: 'JPEG (.jpg), up to 8 MB.' },
+    reel: { accept: 'video/mp4,video/quicktime', multiple: false, hint: 'MP4 or MOV, up to 100 MB.' },
+    carousel: { accept: 'image/jpeg', multiple: true, hint: 'JPEG (.jpg), 2-10 images, up to 8 MB each.' },
+};
+
+let currentPost = null;
+
+$(function() {
+    applyMediaTypeUi($('#mediaType').val());
+    loadInstagramClients();
+
+    $('#clientSelect').on('change', function() {
+        loadInstagramAccountsForClient($(this).val());
+    });
+
+    $('#mediaType').on('change', function() {
+        applyMediaTypeUi($(this).val());
+        $('#mediaFiles').val('');
+        $('#mediaPreview').empty();
+
+        // Existing media only carries forward when the type is unchanged —
+        // switching type always requires a fresh upload (mirrors the
+        // server-side rule in saveInstagramPost.php).
+        if (currentPost && currentPost.mediaType === $(this).val()) {
+            $('#existingMediaNote').removeClass('d-none');
+        } else {
+            $('#existingMediaNote').addClass('d-none');
+        }
+    });
+
+    $('#mediaFiles').on('change', function() {
+        previewSelectedMedia(this.files);
+    });
+
+    $('#caption').on('input', function() {
+        $('#captionCount').text($(this).val().length);
+    });
+
+    $('#saveDraftBtn').on('click', function() {
+        submitInstagramPost('draft');
+    });
+
+    $('#schedulePostBtn').on('click', function() {
+        submitInstagramPost('schedule');
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('postId');
+
+    if (postId) {
+        loadInstagramPostForEdit(postId);
+    }
+});
+
+function loadInstagramClients() {
+    $.ajax({
+        url: API_BASE + '/getClients.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            const clients = (response && response.data) || [];
+            let options = '<option value="">Select Client</option>';
+
+            clients.forEach(function(client) {
+                options += `<option value="${client.id}">${$('<div>').text(client.fullName + ' (' + client.clientCode + ')').html()}</option>`;
+            });
+
+            $('#clientSelect').html(options);
+
+            if (currentPost && currentPost.clientId) {
+                $('#clientSelect').val(String(currentPost.clientId)).trigger('change');
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to load clients.');
+        }
+    });
+}
+
+function loadInstagramAccountsForClient(clientId, preselectAccountId) {
+    const $accountSelect = $('#accountSelect');
+
+    if (!clientId) {
+        $accountSelect.html('<option value="">Select a client first</option>').prop('disabled', true);
+        $('#noAccountWarning').addClass('d-none');
+        return;
+    }
+
+    $accountSelect.html('<option value="">Loading accounts...</option>').prop('disabled', true);
+
+    $.getJSON(API_BASE + '/getInstagramSettings.php', { clientId: clientId })
+        .done(function(res) {
+            const allAccounts = (res && res.data && res.data.instagramAccounts) || [];
+            const connected = allAccounts.filter(a => a.status === 'connected');
+
+            $('#noAccountWarning').toggleClass('d-none', connected.length > 0);
+
+            if (!connected.length) {
+                $accountSelect.html('<option value="">No connected account for this client</option>').prop('disabled', true);
+                return;
+            }
+
+            let options = '<option value="">Select Instagram Account</option>';
+            connected.forEach(function(account) {
+                options += `<option value="${account.id}">@${$('<div>').text(account.username || account.instagramUserId).html()}</option>`;
+            });
+
+            $accountSelect.html(options).prop('disabled', false);
+
+            const toSelect = preselectAccountId || (currentPost && currentPost.instagramAccountId);
+            if (toSelect) {
+                $accountSelect.val(String(toSelect));
+            }
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load Instagram accounts for this client.');
+        });
+}
+
+function applyMediaTypeUi(mediaType) {
+    const config = existingMediaTypeHints[mediaType] || existingMediaTypeHints.image;
+    $('#mediaFiles').attr('accept', config.accept);
+    $('#mediaFiles').prop('multiple', config.multiple);
+    $('#mediaInputHint').text(config.hint);
+    $('#mediaInputLabel').text(mediaType === 'reel' ? 'Video' : (mediaType === 'carousel' ? 'Images' : 'Image'));
+}
+
+function previewSelectedMedia(files) {
+    const $preview = $('#mediaPreview');
+    $preview.empty();
+
+    Array.from(files || []).forEach(function(file) {
+        if (file.type.indexOf('video') === 0) {
+            const url = URL.createObjectURL(file);
+            $preview.append(`<video src="${url}" controls style="width:140px;height:140px;object-fit:cover;border-radius:8px;"></video>`);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $preview.append(`<img src="${e.target.result}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">`);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function loadInstagramPostForEdit(postId) {
+    $.getJSON(API_BASE + '/getInstagramPosts.php')
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', 'Unable to load the post.');
+                return;
+            }
+
+            const post = (res.data.posts || []).find(p => String(p.id) === String(postId));
+
+            if (!post) {
+                window.showToast && window.showToast('danger', 'Instagram post not found.');
+                return;
+            }
+
+            bindInstagramPostForEdit(post);
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load the post.');
+        });
+}
+
+function bindInstagramPostForEdit(post) {
+    currentPost = post;
+
+    $('#pageTitle').text('Edit Instagram Post');
+    $('#breadcrumbCurrent').text('Edit Post');
+    $('#postId').val(post.id);
+    $('#mediaType').val(post.mediaType);
+    applyMediaTypeUi(post.mediaType);
+    $('#caption').val(post.caption || '').trigger('input');
+    $('#existingMediaNote').removeClass('d-none');
+
+    if (post.clientId) {
+        $('#clientSelect').val(String(post.clientId));
+        loadInstagramAccountsForClient(post.clientId, post.instagramAccountId);
+    }
+
+    if (post.scheduledAt) {
+        $('#scheduledAt').val(post.scheduledAt.replace(' ', 'T').substring(0, 16));
+    }
+
+    const $preview = $('#mediaPreview');
+    $preview.empty();
+    (post.mediaUrls || []).forEach(function(url) {
+        if (post.mediaType === 'reel') {
+            $preview.append(`<video src="${url}" controls style="width:140px;height:140px;object-fit:cover;border-radius:8px;"></video>`);
+        } else {
+            $preview.append(`<img src="${url}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">`);
+        }
+    });
+
+    const canEdit = ['draft', 'scheduled', 'failed'].indexOf(post.status) !== -1;
+
+    if (!canEdit) {
+        $('#postLockedAlert').removeClass('d-none');
+        $('#saveDraftBtn, #schedulePostBtn').prop('disabled', true);
+        $('#instagramPostForm :input').prop('disabled', true);
+    }
+}
+
+function validateInstagramPost(mediaType, hasExistingMedia) {
+    if (!$('#clientSelect').val()) {
+        return 'Please select a client.';
+    }
+
+    if (!$('#accountSelect').val()) {
+        return 'Please select an Instagram account for this client.';
+    }
+
+    const files = $('#mediaFiles')[0].files;
+
+    if (!files.length && !hasExistingMedia) {
+        return 'Please upload media for this post.';
+    }
+
+    if (mediaType === 'carousel' && files.length && (files.length < 2 || files.length > 10)) {
+        return 'A carousel post needs between 2 and 10 images.';
+    }
+
+    return '';
+}
+
+function submitInstagramPost(action) {
+    const mediaType = $('#mediaType').val();
+    const hasExistingMedia = !!(
+        currentPost &&
+        currentPost.mediaUrls &&
+        currentPost.mediaUrls.length &&
+        currentPost.mediaType === mediaType
+    );
+    const error = validateInstagramPost(mediaType, hasExistingMedia);
+
+    if (error) {
+        window.showToast && window.showToast('warning', error);
+        return;
+    }
+
+    if (action === 'schedule') {
+        const scheduledAt = $('#scheduledAt').val();
+
+        if (scheduledAt) {
+            const chosen = new Date(scheduledAt);
+            if (chosen.getTime() < Date.now() - 60000) {
+                window.showToast && window.showToast('warning', 'Please choose a schedule time in the future.');
+                return;
+            }
+        }
+    }
+
+    const formData = new FormData(document.getElementById('instagramPostForm'));
+    formData.set('action', action);
+    formData.set('csrfToken', CSRF_TOKEN);
+
+    const $btn = action === 'schedule' ? $('#schedulePostBtn') : $('#saveDraftBtn');
+    const originalText = $btn.text();
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
+    $('#saveDraftBtn, #schedulePostBtn').prop('disabled', true);
+
+    $.ajax({
+        url: API_BASE + '/saveInstagramPost.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: formData,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Invalid server response.'
+            );
+
+            if (res && res.success) {
+                window.location.href = 'instagram-scheduled-posts';
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save Instagram post.');
+        },
+        complete: function() {
+            $btn.text(originalText);
+            $('#saveDraftBtn, #schedulePostBtn').prop('disabled', false);
+        }
+    });
+}
+</script>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
