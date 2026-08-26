@@ -11,6 +11,7 @@ function ensureInstagramSettingsTable(mysqli $con): void
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             metaAppId VARCHAR(191) NOT NULL DEFAULT '',
             metaAppSecret TEXT NOT NULL,
+            metaConfigId VARCHAR(191) NOT NULL DEFAULT '',
             redirectUrl VARCHAR(255) NOT NULL DEFAULT '',
             webhookVerifyToken VARCHAR(191) NOT NULL DEFAULT '',
             isActive TINYINT(1) NOT NULL DEFAULT 1,
@@ -22,6 +23,11 @@ function ensureInstagramSettingsTable(mysqli $con): void
     );
 
     instagramSettingsEnsureColumn($con, 'webhookVerifyToken', "VARCHAR(191) NOT NULL DEFAULT ''");
+    // Facebook Login for Business config_id — needed by instagramOauthStart.php
+    // to build the authorize URL. Nullable-by-default (empty string) so
+    // existing installs keep working with the legacy scope-based OAuth flow
+    // until an operator enters a Configuration ID in the settings UI.
+    instagramSettingsEnsureColumn($con, 'metaConfigId', "VARCHAR(191) NOT NULL DEFAULT '' AFTER metaAppId");
 }
 
 function instagramSettingsEnsureColumn(mysqli $con, string $column, string $definition): void
@@ -80,6 +86,7 @@ function getInstagramSettingsDefaults(): array
 {
     return [
         'metaAppId' => '',
+        'metaConfigId' => '',
         'redirectUrl' => '',
         'webhookVerifyToken' => '',
         'hasAppSecret' => false,
@@ -114,6 +121,7 @@ function getInstagramSettings(mysqli $con): array
 
     return [
         'metaAppId' => (string)$row['metaAppId'],
+        'metaConfigId' => (string)($row['metaConfigId'] ?? ''),
         'redirectUrl' => (string)$row['redirectUrl'],
         'webhookVerifyToken' => (string)$row['webhookVerifyToken'],
         'hasAppSecret' => trim((string)$row['metaAppSecret']) !== '',
@@ -131,6 +139,7 @@ function getInstagramSettingsForOAuth(mysqli $con): ?array
     return [
         'metaAppId' => (string)$row['metaAppId'],
         'metaAppSecret' => decryptSecret((string)$row['metaAppSecret']),
+        'metaConfigId' => (string)($row['metaConfigId'] ?? ''),
         'redirectUrl' => (string)$row['redirectUrl'],
         'webhookVerifyToken' => (string)$row['webhookVerifyToken'],
     ];
@@ -142,6 +151,7 @@ function saveInstagramSettings(mysqli $con, array $settings, int $userId): bool
 
     $metaAppId = trim((string)($settings['metaAppId'] ?? ''));
     $metaAppSecret = trim((string)($settings['metaAppSecret'] ?? ''));
+    $metaConfigId = trim((string)($settings['metaConfigId'] ?? ''));
     $redirectUrl = trim((string)($settings['redirectUrl'] ?? ''));
 
     $existing = getInstagramSettingsRow($con);
@@ -163,7 +173,7 @@ function saveInstagramSettings(mysqli $con, array $settings, int $userId): bool
         $stmt = mysqli_prepare(
             $con,
             "UPDATE instagramSettings
-             SET metaAppId = ?, metaAppSecret = ?, redirectUrl = ?, webhookVerifyToken = ?
+             SET metaAppId = ?, metaAppSecret = ?, metaConfigId = ?, redirectUrl = ?, webhookVerifyToken = ?
              WHERE id = ?"
         );
 
@@ -172,19 +182,19 @@ function saveInstagramSettings(mysqli $con, array $settings, int $userId): bool
         }
 
         $existingId = (int)$existing['id'];
-        mysqli_stmt_bind_param($stmt, 'ssssi', $metaAppId, $encryptedSecret, $redirectUrl, $webhookVerifyToken, $existingId);
+        mysqli_stmt_bind_param($stmt, 'sssssi', $metaAppId, $encryptedSecret, $metaConfigId, $redirectUrl, $webhookVerifyToken, $existingId);
     } else {
         $stmt = mysqli_prepare(
             $con,
-            "INSERT INTO instagramSettings (metaAppId, metaAppSecret, redirectUrl, webhookVerifyToken, isActive, createdBy)
-             VALUES (?, ?, ?, ?, 1, ?)"
+            "INSERT INTO instagramSettings (metaAppId, metaAppSecret, metaConfigId, redirectUrl, webhookVerifyToken, isActive, createdBy)
+             VALUES (?, ?, ?, ?, ?, 1, ?)"
         );
 
         if (!$stmt) {
             return false;
         }
 
-        mysqli_stmt_bind_param($stmt, 'ssssi', $metaAppId, $encryptedSecret, $redirectUrl, $webhookVerifyToken, $userId);
+        mysqli_stmt_bind_param($stmt, 'sssssi', $metaAppId, $encryptedSecret, $metaConfigId, $redirectUrl, $webhookVerifyToken, $userId);
     }
 
     $saved = mysqli_stmt_execute($stmt);
@@ -981,9 +991,22 @@ function instagramGraphApiRequest(string $url, array $params, string $method = '
 
     $response = curl_exec($ch);
     $curlError = curl_error($ch);
+    $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
     if ($response === false) {
+        // Diagnostic-only (temporary): mirrors into logs/instagram-api.log
+        // because error_log()'s destination isn't reachable on this
+        // Hostinger deployment. See instagramWriteApiDebugLog().
+        instagramWriteApiDebugLog(
+            'Instagram Graph API network error' . "\n"
+            . 'URL: ' . $url . "\n"
+            . 'Method: ' . strtoupper($method) . "\n"
+            . 'HTTP Status: ' . $httpStatus . "\n"
+            . 'Params: ' . json_encode(instagramSanitizeParamsForLog($params)) . "\n"
+            . 'cURL error: ' . $curlError
+        );
+
         // Network-level failure (DNS, timeout, connection reset) — treated as
         // transient so callers can retry rather than permanently failing a post.
         throw new InstagramTransientApiException('Meta API request failed: ' . $curlError);
@@ -992,6 +1015,17 @@ function instagramGraphApiRequest(string $url, array $params, string $method = '
     $decoded = json_decode((string)$response, true);
 
     if (!is_array($decoded)) {
+        // Response body only (no request params echoed back by Meta here),
+        // so nothing credential-bearing to redact from it.
+        instagramWriteApiDebugLog(
+            'Instagram Graph API invalid JSON response' . "\n"
+            . 'URL: ' . $url . "\n"
+            . 'Method: ' . strtoupper($method) . "\n"
+            . 'HTTP Status: ' . $httpStatus . "\n"
+            . 'Params: ' . json_encode(instagramSanitizeParamsForLog($params)) . "\n"
+            . 'Response body: ' . (string)$response
+        );
+
         throw new RuntimeException('Meta API returned an invalid response.');
     }
 
@@ -999,10 +1033,71 @@ function instagramGraphApiRequest(string $url, array $params, string $method = '
         $errorInfo = is_array($decoded['error']) ? $decoded['error'] : [];
         $message = (string)($errorInfo['message'] ?? '');
         $code = (int)($errorInfo['code'] ?? 0);
+
+        // Diagnostic-only: log the complete Meta error response server-side
+        // so a rejected media publish (e.g. "Only photo or video can be
+        // accepted as media type") can be root-caused from the exact
+        // message/code/subcode/fbtrace_id Meta sent, not just the short
+        // message string the thrown exception carries. image_url/video_url
+        // are intentionally left unredacted — that's exactly what's being
+        // debugged; only credential-bearing params are redacted.
+        $diagnosticEntry = 'Instagram Graph API error' . "\n"
+            . 'URL: ' . $url . "\n"
+            . 'Method: ' . strtoupper($method) . "\n"
+            . 'HTTP Status: ' . $httpStatus . "\n"
+            . 'Params: ' . json_encode(instagramSanitizeParamsForLog($params)) . "\n"
+            . 'Meta error: ' . json_encode($errorInfo);
+
+        error_log($diagnosticEntry);
+        instagramWriteApiDebugLog($diagnosticEntry);
+
         throw new RuntimeException($message !== '' ? $message : 'Unknown Meta API error.', $code);
     }
 
     return $decoded;
+}
+
+/**
+ * Diagnostic-only (temporary): redacts credential-bearing keys from a Graph
+ * API params array before it's written to logs/instagram-api.log. Shared by
+ * all three failure branches in instagramGraphApiRequest() below.
+ */
+function instagramSanitizeParamsForLog(array $params): array
+{
+    $sensitiveKeys = ['access_token', 'client_secret', 'code', 'fb_exchange_token'];
+    $sanitized = $params;
+
+    foreach ($sensitiveKeys as $sensitiveKey) {
+        if (array_key_exists($sensitiveKey, $sanitized)) {
+            $sanitized[$sensitiveKey] = '[REDACTED]';
+        }
+    }
+
+    return $sanitized;
+}
+
+/**
+ * Diagnostic-only (temporary): appends one entry to logs/instagram-api.log,
+ * used only by instagramGraphApiRequest()'s failure branches so the exact
+ * Meta API error can be inspected on hosts (e.g. Hostinger) where
+ * error_log()'s destination isn't reachable. Never called on success.
+ */
+function instagramWriteApiDebugLog(string $entry): void
+{
+    $logDir = dirname(__DIR__) . '/logs';
+
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+
+    if (!is_dir($logDir)) {
+        return;
+    }
+
+    $logFile = $logDir . '/instagram-api.log';
+    $line = '[' . date('Y-m-d H:i:s') . ']' . "\n" . $entry . "\n\n";
+
+    @file_put_contents($logFile, $line, FILE_APPEND | LOCK_EX);
 }
 
 /**

@@ -9,7 +9,7 @@ if (!function_exists('getDbConnection')) {
 
         if ($connection === null) {
             $serverHost = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
-            $isLocalHost = preg_match('/^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/', $serverHost) === 1;
+            $isLocalHost = preg_match('/^(localhost|127\.0\.0\.1|\[::1\]|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|192\.168\.\d+\.\d+)(?::\d+)?$/', $serverHost) === 1;
             $normalizedDir = str_replace('\\', '/', __DIR__);
             $isLocalPath = preg_match('#/(xampp|wamp64)/(htdocs|www)/#i', $normalizedDir) === 1;
             $isLocalEnvironment = $isLocalHost || ($serverHost === '' && $isLocalPath);
