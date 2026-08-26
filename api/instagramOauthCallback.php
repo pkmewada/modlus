@@ -134,5 +134,6 @@ try {
 
     redirectWithStatus('success', 'Instagram account connected successfully for ' . $clientLabel . '.', $clientId);
 } catch (Throwable $e) {
-    redirectWithStatus('error', 'Instagram connection failed: ' . $e->getMessage(), $clientId);
+    error_log('Instagram OAuth callback error (clientId ' . $clientId . '): ' . $e->getMessage());
+    redirectWithStatus('error', 'Instagram connection failed. Please try again or contact the administrator.', $clientId);
 }

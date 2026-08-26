@@ -58,6 +58,12 @@
                                 </div>
 
                                 <div class="col-12">
+                                    <label class="form-label" for="metaConfigId">Facebook Login Configuration ID</label>
+                                    <input type="text" class="form-control" id="metaConfigId" name="metaConfigId" maxlength="191">
+                                    <div class="form-text">From Meta App Dashboard → Facebook Login for Business → Configurations. Optional — leave blank to use the legacy permission-scope OAuth flow.</div>
+                                </div>
+
+                                <div class="col-12">
                                     <label class="form-label" for="redirectUrl">Redirect URL</label>
                                     <input type="url" class="form-control" id="redirectUrl" name="redirectUrl" maxlength="255">
                                     <div class="form-text">Add this exact URL to your Meta App's Valid OAuth Redirect URIs.</div>
@@ -281,6 +287,7 @@ function bindInstagramSettings(settings) {
     instagramSettingsLoaded = settings;
 
     $('#metaAppId').val(settings.metaAppId || '');
+    $('#metaConfigId').val(settings.metaConfigId || '');
     $('#redirectUrl').val(settings.redirectUrl || settings.defaultRedirectUrl || '');
     $('#metaAppSecret').val('').attr('placeholder', settings.hasAppSecret ? 'Saved — leave blank to keep current secret' : '');
     $('#webhookCallbackUrl').val(BASE_URL + '/api/instagramWebhook.php');
@@ -374,6 +381,7 @@ function saveInstagramSettings() {
         data: {
             metaAppId: $('#metaAppId').val().trim(),
             metaAppSecret: $('#metaAppSecret').val(),
+            metaConfigId: $('#metaConfigId').val().trim(),
             redirectUrl: $('#redirectUrl').val().trim(),
             csrfToken: CSRF_TOKEN,
         },

@@ -37,6 +37,7 @@ try {
 
 $metaAppId = postValue('metaAppId');
 $metaAppSecret = postValue('metaAppSecret');
+$metaConfigId = postValue('metaConfigId');
 $redirectUrl = postValue('redirectUrl');
 
 if ($metaAppId === '') {
@@ -53,6 +54,7 @@ try {
         [
             'metaAppId' => $metaAppId,
             'metaAppSecret' => $metaAppSecret,
+            'metaConfigId' => $metaConfigId,
             'redirectUrl' => $redirectUrl,
         ],
         getLoggedInUserId()

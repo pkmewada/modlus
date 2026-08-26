@@ -28,13 +28,25 @@ $state = bin2hex(random_bytes(16));
 $_SESSION['instagramOauthState'] = $state;
 $_SESSION['instagramOauthClientId'] = $clientId;
 
-$authorizeUrl = 'https://www.facebook.com/v19.0/dialog/oauth?' . http_build_query([
+$authorizeParams = [
     'client_id' => $settings['metaAppId'],
     'redirect_uri' => $redirectUri,
     'state' => $state,
     'response_type' => 'code',
-    'scope' => 'instagram_basic,instagram_manage_insights,pages_show_list,pages_read_engagement',
-]);
+];
+
+// Facebook Login for Business: when a login Configuration ID is set, the
+// permissions requested come from that configuration in the Meta App
+// Dashboard, not from a `scope` param — Meta ignores/rejects `scope`
+// alongside `config_id`. Fall back to the legacy scope-based dialog for
+// installs that haven't set a Configuration ID yet.
+if ($settings['metaConfigId'] !== '') {
+    $authorizeParams['config_id'] = $settings['metaConfigId'];
+} else {
+    $authorizeParams['scope'] = 'instagram_basic,instagram_manage_insights,pages_show_list,pages_read_engagement';
+}
+
+$authorizeUrl = 'https://www.facebook.com/v19.0/dialog/oauth?' . http_build_query($authorizeParams);
 
 header('Location: ' . $authorizeUrl);
 exit;
