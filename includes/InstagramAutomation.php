@@ -379,6 +379,7 @@ function getInstagramAccountById(mysqli $con, int $accountId): ?array
         'id' => (int)$row['id'],
         'clientId' => $row['clientId'] !== null ? (int)$row['clientId'] : null,
         'instagramUserId' => (string)$row['instagramUserId'],
+        'facebookPageId' => (string)$row['facebookPageId'],
         'username' => (string)$row['username'],
         'accessToken' => decryptSecret((string)$row['accessToken']),
     ];

@@ -1,6 +1,6 @@
 # Instagram Automation — Production State (Source of Truth)
 
-Last Updated: 2026-08-27
+Last Updated: 2026-08-27 (Phase 5 — Facebook Page Publishing adapter added)
 
 > **CURRENT BASELINE IS PRODUCTION WORKING.**
 >
@@ -632,6 +632,80 @@ sync run and a real dashboard load are confirmed in production.
 files; `getInstagramDashboardSummary()` executed successfully against the
 local dev database (returned all-zero summary, consistent with no connected
 accounts in that database — no SQL errors, table auto-created as expected).
+
+---
+
+## 22.6. Phase 5 (Social Media Automation roadmap) — Facebook Page Publishing Adapter
+
+**Date**: 2026-08-27. Phase 4 (§22.5) was confirmed production-verified by
+the user (real Meta insights synced: `followers_count: 1212`,
+`media_count: 53`, `reach: 17`) before this phase started.
+
+**Audit findings before writing any code:**
+
+1. **The Page Access Token already exists per account.** `api/instagramOauthCallback.php`
+   (lines ~85-113) calls `/me/accounts`, and stores **`$page['access_token']`**
+   (a Page Access Token) — not the user token — into `instagramAccounts.accessToken`,
+   alongside `facebookPageId`. So no new OAuth flow was needed for Facebook
+   publishing; the credential material was already there, just unused for
+   this purpose. Do not change what gets stored here without checking every
+   existing caller of `getInstagramAccountById()`/`accessToken` first.
+2. **Permission scope is unconfirmed.** §6's confirmed permission screens
+   list "Read content posted on the Page" — there is **no confirmed grant
+   of `pages_manage_posts`**, which Meta requires to create Page posts
+   (`/{page-id}/photos`, `/{page-id}/feed`). Neither the `config_id`-based
+   flow (permissions come from the Meta Dashboard configuration, opaque to
+   this repo) nor the legacy `scope=` fallback in `api/instagramOauthStart.php`
+   requests it. **This was flagged to the user and left unresolved** — it's
+   an external Meta App Dashboard change, not something fixable from code.
+   If a publish call fails with an OAuthException about missing permission:
+   add `pages_manage_posts` to Configuration ID `1397228955807717` in the
+   Meta App Dashboard, then **reconnect** the affected account(s) — existing
+   stored tokens will not retroactively gain the new scope.
+3. **`getInstagramAccountById()` was missing `facebookPageId` in its return
+   array** even though the DB row has always had the column (used internally
+   in `saveInstagramAccountFromOAuth()`/`getInstagramAccounts()` already).
+   Fixed additively — added one key to the returned array
+   (`includes/InstagramAutomation.php`, `getInstagramAccountById()`). No
+   existing caller's behavior changes; they simply never read that key
+   before.
+
+**What was built:**
+
+- `includes/FacebookPublisher.php` — new, separate from
+  `InstagramAutomation.php` per the roadmap's "keep publishers separate"
+  rule:
+  - `publishFacebookImagePost(array $account, string $imageUrl, string $caption): array`
+    → `POST /{facebookPageId}/photos`
+  - `publishFacebookTextPost(array $account, string $message): array`
+    → `POST /{facebookPageId}/feed`
+  - Both reuse the existing `instagramGraphApiRequest()` transport (curl +
+    JSON decode + Meta error handling + diagnostic logging) rather than
+    duplicating that plumbing — it's a generic Graph API HTTP wrapper, not
+    Instagram-specific business logic, already shared across
+    Insights/Comments/Webhooks.
+  - `$account` is exactly the array `getInstagramAccountById()` returns —
+    same account-lookup path Instagram publishing already uses, same
+    client-scoping guarantees (§8) apply unchanged.
+- `cron/testFacebookPublish.php` — **manual CLI test tool, not a cron job**.
+  Do not register it on Hostinger Cron. Lets an admin manually verify a
+  real publish against one already-connected account:
+  `php cron/testFacebookPublish.php <instagramAccountId> image <imageUrl> [caption]`
+  or `... <instagramAccountId> text "<message>"`.
+
+**Not yet done (deferred to later phases per the roadmap):** no
+`socialPosts`/scheduler/UI wiring — Phase 5 is adapter-only, matching the
+roadmap's own phase boundary ("Both should use common scheduling
+architecture later" = Phase 6/7).
+
+**Verified during this change:** `php -l` clean on all three touched/created
+files (`includes/InstagramAutomation.php`, `includes/FacebookPublisher.php`,
+`cron/testFacebookPublish.php`). `cron/testFacebookPublish.php` exercised
+locally with an invalid account id and a missing-argument case — both fail
+cleanly with a clear message and exit code 1, no fatals. **Not yet
+exercised against a real Facebook Page** — that requires the user to run it
+against a real connected account in production, and depends on the
+`pages_manage_posts` permission question above being resolved first.
 
 ---
 
