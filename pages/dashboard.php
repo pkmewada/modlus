@@ -132,6 +132,59 @@
                 </div>
                 <!-- End:: row-1 -->
 
+                <!-- Start:: row-instagram-overview -->
+                <div class="row" id="instagramOverviewRow" style="display:none;">
+                    <div class="col-12">
+                        <div class="card custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">Instagram Overview</div>
+                                <a href="instagram-analytics" class="fs-12">View full analytics</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="ti ti-brand-instagram fs-24 text-primary"></i>
+                                            <div>
+                                                <div class="fs-20 fw-semibold" id="igConnectedAccounts">—</div>
+                                                <div class="text-muted fs-12">Connected Accounts</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="ti ti-users fs-24 text-primary"></i>
+                                            <div>
+                                                <div class="fs-20 fw-semibold" id="igTotalFollowers">—</div>
+                                                <div class="text-muted fs-12">Total Followers</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="ti ti-eye fs-24 text-primary"></i>
+                                            <div>
+                                                <div class="fs-20 fw-semibold" id="igReachToday">—</div>
+                                                <div class="text-muted fs-12">Reach (Today)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="ti ti-click fs-24 text-primary"></i>
+                                            <div>
+                                                <div class="fs-20 fw-semibold" id="igInteractionsToday">—</div>
+                                                <div class="text-muted fs-12">Interactions (Today)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End:: row-instagram-overview -->
+
                 <!-- Start:: row-2 -->
                 <div class="row">
                     <div class="col-xl-9">
@@ -803,5 +856,28 @@
             </div>
         </div>
         <!-- End::app-content -->
+
+<script>
+fetch(API_BASE + '/getInstagramDashboardSummary.php')
+    .then(function(res) { return res.json(); })
+    .then(function(res) {
+        if (!res || !res.success || !res.data || !res.data.summary) {
+            return;
+        }
+
+        var summary = res.data.summary;
+
+        if (summary.connectedAccounts <= 0) {
+            return;
+        }
+
+        document.getElementById('igConnectedAccounts').textContent = summary.connectedAccounts.toLocaleString();
+        document.getElementById('igTotalFollowers').textContent = summary.totalFollowers.toLocaleString();
+        document.getElementById('igReachToday').textContent = summary.totalReachToday.toLocaleString();
+        document.getElementById('igInteractionsToday').textContent = summary.totalInteractionsToday.toLocaleString();
+        document.getElementById('instagramOverviewRow').style.display = '';
+    })
+    .catch(function() {});
+</script>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>
