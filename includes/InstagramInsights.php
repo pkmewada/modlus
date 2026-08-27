@@ -229,7 +229,7 @@ function fetchInstagramAccountInsights(array $account): array
     $insightMetrics = fetchInstagramInsightsResilient(
         $account,
         $account['instagramUserId'] . '/insights',
-        ['reach', 'profile_views'],
+        ['reach', 'profile_views', 'website_clicks', 'total_interactions'],
         ['period' => 'day']
     );
 
@@ -301,6 +301,70 @@ function fetchInstagramInsightsResilient(array $account, string $edge, array $me
 
         return $metrics;
     }
+}
+
+/**
+ * Admin-wide rollup for the main CRM dashboard widget — deliberately NOT
+ * client-scoped (unlike every other Instagram query in this module) since
+ * it's a read-only summary card, not a stored/attributed record. Never used
+ * for anything beyond display; every underlying row still carries its own
+ * clientId + instagramAccountId (§8 of docs/instagram-automation-flow.md).
+ */
+function getInstagramDashboardSummary(mysqli $con): array
+{
+    ensureInstagramInsightsTable($con);
+    ensureInstagramAccountsTable($con);
+
+    $summary = [
+        'connectedAccounts' => 0,
+        'totalFollowers' => 0,
+        'totalReachToday' => 0,
+        'totalInteractionsToday' => 0,
+    ];
+
+    $accountsResult = mysqli_query($con, "SELECT COUNT(*) AS total FROM instagramAccounts WHERE status = 'connected'");
+    $summary['connectedAccounts'] = (int)(mysqli_fetch_assoc($accountsResult)['total'] ?? 0);
+
+    $followersResult = mysqli_query(
+        $con,
+        "SELECT i.metricValue
+         FROM instagramInsights i
+         INNER JOIN (
+             SELECT instagramAccountId, MAX(capturedAt) AS maxDate
+             FROM instagramInsights
+             WHERE metricName = 'followers_count' AND postId IS NULL
+             GROUP BY instagramAccountId
+         ) latest ON latest.instagramAccountId = i.instagramAccountId AND latest.maxDate = i.capturedAt
+         WHERE i.metricName = 'followers_count' AND i.postId IS NULL"
+    );
+
+    while ($row = mysqli_fetch_assoc($followersResult)) {
+        $summary['totalFollowers'] += (int)$row['metricValue'];
+    }
+
+    $today = date('Y-m-d');
+    $stmt = mysqli_prepare(
+        $con,
+        "SELECT metricName, SUM(metricValue) AS total
+         FROM instagramInsights
+         WHERE postId IS NULL AND capturedAt = ? AND metricName IN ('reach', 'total_interactions')
+         GROUP BY metricName"
+    );
+    mysqli_stmt_bind_param($stmt, 's', $today);
+    mysqli_stmt_execute($stmt);
+    $todayResult = mysqli_stmt_get_result($stmt);
+
+    while ($row = mysqli_fetch_assoc($todayResult)) {
+        if ($row['metricName'] === 'reach') {
+            $summary['totalReachToday'] = (int)$row['total'];
+        } elseif ($row['metricName'] === 'total_interactions') {
+            $summary['totalInteractionsToday'] = (int)$row['total'];
+        }
+    }
+
+    mysqli_stmt_close($stmt);
+
+    return $summary;
 }
 
 function extractInstagramInsightValues(array $response): array
