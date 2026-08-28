@@ -1,6 +1,6 @@
 # Instagram Automation — Production State (Source of Truth)
 
-Last Updated: 2026-08-28 (Phase 8 — Unified module naming refactor added)
+Last Updated: 2026-08-28 (Phase 10 — Facebook Text Post UI added)
 
 > **CURRENT BASELINE IS PRODUCTION WORKING.**
 >
@@ -1451,6 +1451,152 @@ production (or simply deploying the code and letting the table rename
 self-heal, then running just the routes migration, which is not
 self-healing) and confirming the sidebar/pages/scheduler all behave as
 verified locally.
+
+---
+
+## 22.11. Phase 9 — Social Posts Result Visibility
+
+**Date**: 2026-08-28. Additive UI/visibility improvement only, following a
+read-only audit — no publishing, scheduling, recovery, OAuth, or database
+behavior changed.
+
+**What changed**: `pages/social-posts.php` now shows, per post:
+- **Account** — the connected Instagram username actually used by that
+  specific post (resolved from `post.instagramAccountId`, never "the
+  client's first account" — verified against a client with two connected
+  accounts, each post correctly showed its own account).
+- **Results** (replaces the old bare "Platforms" badges) — for each
+  platform the post targets, its own status (Published/Failed/Pending) and:
+  - Instagram: the real `instagramMediaId` as plain text (no link — see
+    below), or the real `errorMessage` if it failed.
+  - Facebook: the real `facebookPostId` as a clickable link
+    (`https://www.facebook.com/{facebookPostId}`, `target="_blank"`,
+    `rel="noopener noreferrer"`), or `facebookErrorMessage` if it failed.
+  - Neither platform's result is ever fabricated — an unresolved platform
+    shows "—", never an invented ID.
+
+**Why Instagram has no link but Facebook does**: audited the codebase and
+docs for any existing Instagram/Facebook permalink construction — none
+exists. Facebook's stored `facebookPostId` is already in Meta's standard
+`{pageId}_{postId}` form, which is Meta's own documented direct-link
+format. Instagram's stored `instagramMediaId` is the numeric Graph API
+media ID, which cannot be reliably converted to an `instagram.com/p/{shortcode}`
+URL without an extra Graph API call — per the explicit instruction not to
+fabricate a URL, Instagram's ID is shown as plain text only.
+
+**Partial success**: verified with real synthetic data for both directions
+(Instagram succeeds + Facebook fails, and the mirror) — each platform's own
+outcome renders independently and correctly; the overall status badge
+(unchanged, still driven by the existing `status` column) is never
+overridden or recalculated by this phase's display logic.
+
+**One small pre-existing bug fixed in `api/getSocialPosts.php`**: its
+`$allowedStatuses` allow-list was missing `'partial'` — the "Partial"
+filter option (added to the UI in Phase 7) silently fell back to "all
+statuses" when selected. Directly relevant to this phase's own goal
+(partial-success visibility), so fixed as part of this change; no other
+line in that file was touched.
+
+**Account resolution method**: reuses the existing, unmodified
+`api/getInstagramSettings.php` endpoint (already used by the composer's
+account dropdown) with no `clientId` filter, fetched once on page load into
+an `id → username` map — the same client-side lookup-map pattern already
+used for client labels on this same page. No new endpoint, no SQL JOIN, no
+N+1 queries, no change to `getSocialPosts()`/`getSocialPostById()`. That
+endpoint's account rows never include an access token (confirmed by its
+column list), so this introduces no token exposure.
+
+**Database**: **no changes** — every field displayed already existed on
+`socialPosts` before this phase.
+
+**Publishing/scheduler/OAuth**: not opened for editing. `includes/SocialPostEngine.php`,
+`includes/InstagramAutomation.php`'s publishing functions, `cron/instagramScheduler.php`,
+and both OAuth files are untouched.
+
+**Testing**: `php -l` clean on both modified files. Verified against real,
+API-layer data (`getSocialPosts()` called directly, not mocked) covering
+all 9 required scenarios — Instagram-only success, Facebook-only success,
+both success, partial (both directions), failed, draft, scheduled, and a
+client with two connected accounts — by running the actual page JavaScript
+(extracted from the file, not reimplemented) against that real data in a
+Node sandbox. All 9 scenarios rendered correctly, including correct
+per-post account attribution with no cross-account leakage.
+
+**Known limitation**: no direct production UI test has been performed —
+status is **IMPLEMENTED — AWAITING PRODUCTION VERIFICATION**.
+
+---
+
+## 22.12. Phase 10 — Facebook Text Post UI
+
+**Date**: 2026-08-28. Exposes the pre-existing `publishFacebookTextPost()` /
+`SocialPostEngine.php` text dispatch through the composer — no new
+publishing logic, no new engine path.
+
+**Audit finding, approved before implementation**: `cron/instagramScheduler.php`'s
+due-post switch had no `text` case — a scheduled text post would have
+fallen into `case 'image': default:`, which hardcodes `type='image'` and an
+empty `imageUrl`, always failing with a confusing error instead of ever
+reaching `publishFacebookTextPost()`. The user explicitly approved adding
+one `case 'text':` branch (mirrors the existing image branch's shape
+exactly — same `publishSocialPost()` → `normalizeSocialEngineResult()` →
+`finalizeSocialScheduledPost()` call — no other branch, lock, claim, or
+recovery logic touched). Verified via `git diff --stat`: 35 insertions, 0
+deletions.
+
+**UI**: `pages/social-create-post.php` gains a "Text Post" option (Image,
+Text Post, Reel, Carousel). Selecting it: hides the media upload control
+entirely (wrapped in `#mediaFieldGroup`/`#mediaPreviewGroup`, no media
+required or submitted), relabels "Caption" to "Post Text" (same field,
+reused as the Facebook message — no second editor), forces Instagram
+unchecked+disabled and Facebook checked+enabled (if the account has a
+linked Page), and enables Publish Now (previously image-only).
+
+**Server-side enforcement** (never relies on JavaScript alone):
+`api/saveSocialPost.php` and `api/publishSocialPostNow.php` both reject
+`mediaType='text'` + Instagram in `platforms` — verified by simulating real
+POST requests (session + CSRF) directly against both scripts: `platforms=['instagram']`
+and `platforms=['instagram','facebook']` were both rejected with "Text
+posts can only be published to Facebook." before any Meta call. Empty text
+is rejected ("Please enter the text for this post."). Media upload is
+skipped entirely for `mediaType='text'` — `mediaPaths` stays empty, nothing
+is validated as required.
+
+**Publishing flow** (verified unchanged): UI → `api/publishSocialPostNow.php`
+(or `api/saveSocialPost.php` → `socialPosts` → `cron/instagramScheduler.php`) →
+`SocialPostEngine.php` → `publishFacebookTextPost()` → Meta Graph API. Zero
+lines changed in `SocialPostEngine.php`, `FacebookPublisher.php`, or any
+Instagram publishing function.
+
+**Database**: no changes. `socialPosts.mediaType='text'` fits the existing
+`VARCHAR(20)` column; `platforms='facebook'` uses the existing column
+exactly as image/carousel/reel posts already do.
+
+**Existing functionality preserved**: Instagram image, Facebook image, and
+Instagram+Facebook image publishing verified unchanged at the engine level
+(identical error/behavior before and after this change). Reel and carousel
+publishing untouched — confirmed no lines changed in those branches.
+
+**Known limitation discovered during testing (not fixed, out of approved
+scope)**: Phase 7's crash-recovery scan (`getStuckSocialPosts()`) is scoped
+to `mediaType IN ('image', 'carousel')` — it does **not** include `'text'`.
+A scheduled text post that crashes between being claimed
+(`status='publishing'`) and finalizing has no recovery path, the same class
+of gap already documented for Reels. Not addressed here — the approved
+change was limited to the one dispatch case, not an extension of recovery
+scope.
+
+**Testing**: `php -l` clean on all 5 modified files. All required test
+cases (A-G) executed against the real code (not reimplemented): Facebook
+text Publish Now, Facebook text draft, a real scheduled text post run
+through the actual `cron/instagramScheduler.php`, Instagram-text and
+Instagram+Facebook-text rejected server-side via simulated real HTTP
+requests to both API scripts, and Facebook/Instagram+Facebook image
+regression confirmed identical at the engine level. All local; no real
+Meta credentials available in this environment, so no real Facebook text
+post has actually been created.
+
+**Status**: **IMPLEMENTED — AWAITING PRODUCTION VERIFICATION.**
 
 ---
 

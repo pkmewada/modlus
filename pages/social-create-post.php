@@ -59,24 +59,25 @@
                                     <label class="form-label" for="mediaType">Post Type</label>
                                     <select class="form-select" id="mediaType" name="mediaType">
                                         <option value="image">Image Post</option>
+                                        <option value="text">Text Post</option>
                                         <option value="reel">Reel (Video)</option>
                                         <option value="carousel">Carousel (2-10 Images)</option>
                                     </select>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12" id="mediaFieldGroup">
                                     <label class="form-label" id="mediaInputLabel" for="mediaFiles">Media</label>
                                     <input type="file" class="form-control" id="mediaFiles" name="media[]" accept="image/jpeg">
                                     <div class="form-text" id="mediaInputHint">JPG or PNG, up to 8 MB.</div>
                                     <div id="existingMediaNote" class="form-text text-muted d-none">Leave empty to keep the existing media.</div>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12" id="mediaPreviewGroup">
                                     <div id="mediaPreview" class="d-flex flex-wrap gap-2"></div>
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label" for="caption">Caption</label>
+                                    <label class="form-label" id="captionLabel" for="caption">Caption</label>
                                     <textarea class="form-control" id="caption" name="caption" rows="5" maxlength="2200"></textarea>
                                     <div class="form-text"><span id="captionCount">0</span>/2200 characters</div>
                                 </div>
@@ -271,21 +272,31 @@ function loadInstagramAccountsForClient(clientId, preselectAccountId) {
 }
 
 function applyMediaTypeUi(mediaType) {
+    const isText = mediaType === 'text';
     const config = existingMediaTypeHints[mediaType] || existingMediaTypeHints.image;
-    $('#mediaFiles').attr('accept', config.accept);
-    $('#mediaFiles').prop('multiple', config.multiple);
-    $('#mediaInputHint').text(config.hint);
-    $('#mediaInputLabel').text(mediaType === 'reel' ? 'Video' : (mediaType === 'carousel' ? 'Images' : 'Image'));
 
-    // Publish Now (Phase 6) only supports image posts. Facebook scheduling
-    // (Phase 7) is also image-only — no verified Facebook equivalent for
-    // reels/carousels yet (docs §22.7/§22.8) — enforced here and again
+    // Text posts need no media at all — hide the whole media control rather
+    // than just relaxing validation, since a text post has nothing to show
+    // there (reuses the existing caption field as the post content instead).
+    $('#mediaFieldGroup, #mediaPreviewGroup').toggleClass('d-none', isText);
+    $('#captionLabel').text(isText ? 'Post Text' : 'Caption');
+
+    if (!isText) {
+        $('#mediaFiles').attr('accept', config.accept);
+        $('#mediaFiles').prop('multiple', config.multiple);
+        $('#mediaInputHint').text(config.hint);
+        $('#mediaInputLabel').text(mediaType === 'reel' ? 'Video' : (mediaType === 'carousel' ? 'Images' : 'Image'));
+    }
+
+    // Publish Now (Phase 6) supports image and text posts. Facebook
+    // scheduling is also image/text-only — no verified Facebook equivalent
+    // for reels/carousels yet (docs §22.7/§22.8) — enforced here and again
     // server-side in api/saveSocialPost.php.
     const isImage = mediaType === 'image';
-    $('#publishNowBtn').prop('disabled', !isImage);
-    $('#publishNowHint').text(isImage
+    $('#publishNowBtn').prop('disabled', !(isImage || isText));
+    $('#publishNowHint').text((isImage || isText)
         ? 'Publishes immediately to the platforms checked above.'
-        : 'Publish Now supports image posts only — use Schedule Post for reels/carousels.');
+        : 'Publish Now supports image and text posts only — use Schedule Post for reels/carousels.');
 
     updateFacebookPlatformAvailability();
 }
@@ -296,14 +307,29 @@ function updateFacebookPlatformAvailability() {
     const account = accounts.find(a => String(a.id) === String(accountId));
     const hasPage = !!(account && account.facebookPageId);
     const mediaType = $('#mediaType').val();
-    const canUseFacebook = hasPage && mediaType === 'image';
+    const isText = mediaType === 'text';
 
+    if (isText) {
+        // Text posts are Facebook-only by architecture — Instagram has no
+        // text-only feed post (see includes/SocialPostEngine.php). Locked
+        // here client-side; api/saveSocialPost.php and
+        // api/publishSocialPostNow.php enforce the same rule server-side.
+        $('#platformInstagram').prop('checked', false).prop('disabled', true);
+        $('#platformFacebook').prop('disabled', !hasPage).prop('checked', hasPage);
+        $('#noFacebookPageHint').text('This account has no linked Facebook Page — a text post needs one.').toggleClass('d-none', hasPage);
+        window.instagramComposerEditPlatforms = null;
+        return;
+    }
+
+    $('#platformInstagram').prop('disabled', false);
+
+    const canUseFacebook = hasPage && mediaType === 'image';
     $('#platformFacebook').prop('disabled', !canUseFacebook);
 
     if (!hasPage) {
         $('#noFacebookPageHint').text('This account has no linked Facebook Page.').removeClass('d-none');
     } else if (mediaType !== 'image') {
-        $('#noFacebookPageHint').text('Facebook scheduling is only supported for image posts.').removeClass('d-none');
+        $('#noFacebookPageHint').text('Facebook scheduling is only supported for image and text posts.').removeClass('d-none');
     } else {
         $('#noFacebookPageHint').addClass('d-none');
     }
@@ -325,14 +351,15 @@ function escapeComposerHtml(value) {
 
 function submitPublishNow() {
     const mediaType = $('#mediaType').val();
+    const isText = mediaType === 'text';
 
-    if (mediaType !== 'image') {
-        window.showToast && window.showToast('warning', 'Publish Now currently supports image posts only. Use Schedule Post for reels/carousels.');
+    if (mediaType !== 'image' && !isText) {
+        window.showToast && window.showToast('warning', 'Publish Now currently supports image and text posts only. Use Schedule Post for reels/carousels.');
         return;
     }
 
     const platforms = [];
-    if ($('#platformInstagram').is(':checked')) platforms.push('instagram');
+    if (!isText && $('#platformInstagram').is(':checked')) platforms.push('instagram');
     if ($('#platformFacebook').is(':checked')) platforms.push('facebook');
 
     if (!platforms.length) {
@@ -340,22 +367,34 @@ function submitPublishNow() {
         return;
     }
 
-    const hasExistingMedia = !!(
-        currentPost &&
-        currentPost.mediaUrls &&
-        currentPost.mediaUrls.length &&
-        currentPost.mediaType === mediaType
-    );
-    const error = validateInstagramPost(mediaType, hasExistingMedia);
+    if (isText) {
+        if (platforms.indexOf('instagram') !== -1) {
+            window.showToast && window.showToast('warning', 'Text posts can only be published to Facebook.');
+            return;
+        }
 
-    if (error) {
-        window.showToast && window.showToast('warning', error);
-        return;
-    }
+        if (!$('#caption').val().trim()) {
+            window.showToast && window.showToast('warning', 'Please enter the text for this post.');
+            return;
+        }
+    } else {
+        const hasExistingMedia = !!(
+            currentPost &&
+            currentPost.mediaUrls &&
+            currentPost.mediaUrls.length &&
+            currentPost.mediaType === mediaType
+        );
+        const error = validateInstagramPost(mediaType, hasExistingMedia);
 
-    if (!$('#mediaFiles')[0].files.length) {
-        window.showToast && window.showToast('warning', 'Please upload an image to publish now.');
-        return;
+        if (error) {
+            window.showToast && window.showToast('warning', error);
+            return;
+        }
+
+        if (!$('#mediaFiles')[0].files.length) {
+            window.showToast && window.showToast('warning', 'Please upload an image to publish now.');
+            return;
+        }
     }
 
     const formData = new FormData(document.getElementById('instagramPostForm'));
@@ -521,6 +560,14 @@ function validateInstagramPost(mediaType, hasExistingMedia) {
         return 'Please select an Instagram account for this client.';
     }
 
+    if (mediaType === 'text') {
+        if (!$('#caption').val().trim()) {
+            return 'Please enter the text for this post.';
+        }
+
+        return '';
+    }
+
     const files = $('#mediaFiles')[0].files;
 
     if (!files.length && !hasExistingMedia) {
@@ -550,7 +597,7 @@ function submitInstagramPost(action) {
     }
 
     const platforms = [];
-    if ($('#platformInstagram').is(':checked')) platforms.push('instagram');
+    if (mediaType !== 'text' && $('#platformInstagram').is(':checked')) platforms.push('instagram');
     if ($('#platformFacebook').is(':checked')) platforms.push('facebook');
 
     if (!platforms.length) {
@@ -558,8 +605,13 @@ function submitInstagramPost(action) {
         return;
     }
 
-    if (platforms.indexOf('facebook') !== -1 && mediaType !== 'image') {
-        window.showToast && window.showToast('warning', 'Facebook scheduling is only supported for image posts.');
+    if (mediaType === 'text' && platforms.indexOf('instagram') !== -1) {
+        window.showToast && window.showToast('warning', 'Text posts can only be published to Facebook.');
+        return;
+    }
+
+    if (platforms.indexOf('facebook') !== -1 && mediaType !== 'image' && mediaType !== 'text') {
+        window.showToast && window.showToast('warning', 'Facebook scheduling is only supported for image and text posts.');
         return;
     }
 

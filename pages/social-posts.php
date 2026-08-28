@@ -54,10 +54,11 @@
                                 <thead>
                                     <tr>
                                         <th>Client</th>
+                                        <th>Account</th>
                                         <th>Media</th>
                                         <th>Type</th>
                                         <th>Caption</th>
-                                        <th>Platforms</th>
+                                        <th>Results</th>
                                         <th>Status</th>
                                         <th>Scheduled / Published</th>
                                         <th class="text-end">Action</th>
@@ -65,7 +66,7 @@
                                 </thead>
                                 <tbody id="instagramPostsBody">
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted">Loading posts...</td>
+                                        <td colspan="9" class="text-center text-muted">Loading posts...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -80,9 +81,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 let instagramClientLabels = {};
+let instagramAccountUsernames = {};
 
 $(function() {
-    loadInstagramClients(loadInstagramPosts);
+    loadAllInstagramAccounts(function() {
+        loadInstagramClients(loadInstagramPosts);
+    });
     checkInstagramAccountConnected();
 
     $('#statusFilter, #clientFilter').on('change', function() {
@@ -135,6 +139,43 @@ function loadInstagramClients(onDone) {
     });
 }
 
+// Reuses the existing getInstagramSettings.php endpoint (same one the
+// composer's account dropdown already calls) with no clientId filter to
+// build an id->username lookup for the whole listing — one bulk fetch, no
+// per-row queries. This endpoint never returns an access token (confirmed
+// in includes/InstagramAutomation.php's getInstagramAccounts() column
+// list), so this is safe to call without any new backend endpoint.
+function loadAllInstagramAccounts(onDone) {
+    $.getJSON(API_BASE + '/getInstagramSettings.php')
+        .done(function(res) {
+            const accounts = (res && res.data && res.data.instagramAccounts) || [];
+            instagramAccountUsernames = {};
+
+            accounts.forEach(function(account) {
+                instagramAccountUsernames[account.id] = account.username || account.instagramUserId || '';
+            });
+        })
+        .always(function() {
+            if (typeof onDone === 'function') {
+                onDone();
+            }
+        });
+}
+
+function accountLabel(post) {
+    if (!post.instagramAccountId) {
+        return '<span class="text-muted">—</span>';
+    }
+
+    const username = instagramAccountUsernames[post.instagramAccountId];
+
+    if (!username) {
+        return '<span class="text-muted">—</span>';
+    }
+
+    return '@' + escapeHtml(username);
+}
+
 function checkInstagramAccountConnected() {
     const clientId = $('#clientFilter').val();
 
@@ -166,26 +207,63 @@ function statusBadge(status) {
 }
 
 function typeBadge(mediaType) {
-    const labels = { image: 'Image', reel: 'Reel', carousel: 'Carousel' };
+    const labels = { image: 'Image', text: 'Text', reel: 'Reel', carousel: 'Carousel' };
     return `<span class="badge bg-primary-transparent">${labels[mediaType] || mediaType}</span>`;
 }
 
-function platformsBadges(post) {
+// Facebook's own per-platform state already exists on the row
+// (facebookStatus, written by finalizeSocialScheduledPost() /
+// publishSocialPostNow.php) — displayed as-is, never recalculated.
+// Instagram has no equivalent dedicated status column; its result is
+// shown from the same two fields the backend itself already uses as the
+// source of truth for "did Instagram succeed" (instagramMediaId present)
+// and "did Instagram fail" (the overall post status reached a terminal
+// failed/partial state without an id) — this reads existing data, it does
+// not compute a new status.
+function platformResults(post) {
     const platforms = (post.platforms || 'instagram').split(',').map(p => p.trim()).filter(Boolean);
-    const facebookColors = { pending: 'info', published: 'success', failed: 'danger', not_applicable: 'secondary' };
+    const terminal = ['published', 'partial', 'failed'].indexOf(post.status) !== -1;
+    let html = '';
 
-    return platforms.map(function(platform) {
-        if (platform === 'instagram') {
-            return '<span class="badge bg-primary-transparent me-1">Instagram</span>';
+    if (platforms.indexOf('instagram') !== -1) {
+        const published = !!post.instagramMediaId;
+        const failed = !published && terminal;
+        const color = published ? 'success' : (failed ? 'danger' : 'secondary');
+        const label = published ? 'Instagram · Published' : (failed ? 'Instagram · Failed' : 'Instagram · Pending');
+
+        html += `<div class="mb-2"><span class="badge bg-${color}-transparent">${label}</span>`;
+
+        if (published) {
+            html += `<div class="fs-12 text-muted mt-1">ID: ${escapeHtml(post.instagramMediaId)}</div>`;
+        } else if (failed && post.errorMessage) {
+            html += `<div class="fs-12 text-danger text-wrap mt-1" style="max-width: 220px;">${escapeHtml(post.errorMessage)}</div>`;
+        } else {
+            html += '<div class="fs-12 text-muted mt-1">—</div>';
         }
 
-        if (platform === 'facebook') {
-            const color = facebookColors[post.facebookStatus] || 'secondary';
-            return `<span class="badge bg-${color}-transparent me-1">Facebook</span>`;
+        html += '</div>';
+    }
+
+    if (platforms.indexOf('facebook') !== -1) {
+        const fbColors = { published: 'success', failed: 'danger', pending: 'secondary', not_applicable: 'secondary' };
+        const color = fbColors[post.facebookStatus] || 'secondary';
+        const label = 'Facebook · ' + (post.facebookStatus ? (post.facebookStatus.charAt(0).toUpperCase() + post.facebookStatus.slice(1)) : 'Pending');
+
+        html += `<div><span class="badge bg-${color}-transparent">${label}</span>`;
+
+        if (post.facebookStatus === 'published' && post.facebookPostId) {
+            const fbUrl = 'https://www.facebook.com/' + encodeURIComponent(post.facebookPostId);
+            html += `<div class="fs-12 text-muted mt-1">ID: <a href="${fbUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(post.facebookPostId)}</a></div>`;
+        } else if (post.facebookStatus === 'failed' && post.facebookErrorMessage) {
+            html += `<div class="fs-12 text-danger text-wrap mt-1" style="max-width: 220px;">${escapeHtml(post.facebookErrorMessage)}</div>`;
+        } else {
+            html += '<div class="fs-12 text-muted mt-1">—</div>';
         }
 
-        return `<span class="badge bg-secondary-transparent me-1">${escapeHtml(platform)}</span>`;
-    }).join('');
+        html += '</div>';
+    }
+
+    return html || '<span class="text-muted">—</span>';
 }
 
 function mediaThumb(post) {
@@ -225,7 +303,7 @@ function renderInstagramPosts(posts) {
     $body.empty();
 
     if (!posts.length) {
-        $body.append('<tr><td colspan="8" class="text-center text-muted">No social posts found.</td></tr>');
+        $body.append('<tr><td colspan="9" class="text-center text-muted">No social posts found.</td></tr>');
         return;
     }
 
@@ -258,10 +336,11 @@ function renderInstagramPosts(posts) {
         $body.append(`
             <tr>
                 <td>${escapeHtml(clientLabel)}</td>
+                <td>${accountLabel(post)}</td>
                 <td>${mediaThumb(post)}</td>
                 <td>${typeBadge(post.mediaType)}</td>
                 <td class="text-wrap" style="max-width: 320px;">${caption}</td>
-                <td>${platformsBadges(post)}</td>
+                <td>${platformResults(post)}</td>
                 <td>${statusBadge(post.status)}</td>
                 <td>${scheduleInfo}</td>
                 <td class="text-end">${actions}</td>
