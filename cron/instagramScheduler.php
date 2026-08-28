@@ -295,6 +295,41 @@ foreach ($duePosts as $post) {
                 }
                 break;
 
+            case 'text':
+                // Phase 10: Facebook text posts. Text is Facebook-only by
+                // architecture (enforced at save time in
+                // api/saveSocialPost.php) — always dispatched through the
+                // Phase 6 Unified Social Post Engine, same as the
+                // Facebook/dual-platform image branch below. No new
+                // publishing logic — publishFacebookTextPost() (unchanged)
+                // does the actual Meta API call.
+                $textPlatforms = array_values(array_filter(array_map('trim', explode(',', (string)($post['platforms'] ?? 'facebook')))));
+
+                $textResult = publishSocialPost($con, (int)$post['clientId'], (int)$post['instagramAccountId'], $textPlatforms, 'text', [
+                    'message' => $caption,
+                ]);
+
+                $textResultPlatforms = normalizeSocialEngineResult($textResult, $textPlatforms);
+                finalizeSocialScheduledPost($con, $post, $textResultPlatforms);
+
+                foreach ($textResultPlatforms as $platform => $platformResult) {
+                    instagramSchedulerLog(
+                        'Post #' . $postId . ' (Client: ' . $clientLabel . ') ' . $platform . ': '
+                        . (!empty($platformResult['success'])
+                            ? 'published (postId ' . ($platformResult['postId'] ?? '') . ')'
+                            : ('failed' . (!empty($platformResult['transient']) ? ' transiently, will retry next run' : '') . ': ' . ($platformResult['message'] ?? '')))
+                    );
+                }
+
+                saveActivityLog(
+                    $con,
+                    'InstagramAutomation',
+                    $postId,
+                    'publish',
+                    'Unified social text post processed via scheduler for Client: ' . $clientLabel . ' (' . implode('+', $textPlatforms) . ', overall: ' . $textResult['status'] . ').'
+                );
+                break;
+
             case 'image':
             default:
                 $platforms = array_values(array_filter(array_map('trim', explode(',', (string)($post['platforms'] ?? 'instagram')))));

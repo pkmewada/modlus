@@ -35,6 +35,7 @@ $clientId = (int)($_POST['clientId'] ?? 0);
 $accountId = (int)($_POST['instagramAccountId'] ?? 0);
 $platforms = isset($_POST['platforms']) && is_array($_POST['platforms']) ? array_map('strval', $_POST['platforms']) : [];
 $caption = trim((string)($_POST['caption'] ?? ''));
+$mediaType = trim((string)($_POST['mediaType'] ?? 'image'));
 
 // Same two guards used by api/saveSocialPost.php — no second
 // client/account validation system introduced for this endpoint.
@@ -54,32 +55,50 @@ if (strlen($caption) > 2200) {
     respond(false, 'Caption must be 2200 characters or fewer.');
 }
 
-// Publish Now currently supports image posts only (see docs §22.7) — reels/
-// carousels still go through the existing Draft/Schedule + cron flow.
-$imageUrl = '';
-
-if (isset($_FILES['media']) && !empty($_FILES['media']['name'][0] ?? '')) {
-    $uploadResult = saveInstagramMediaFiles($_FILES['media'], 'image', 1);
-
-    if (!empty($uploadResult['errors'])) {
-        respond(false, implode(' ', $uploadResult['errors']));
+if ($mediaType === 'text') {
+    // Facebook text publishing (Phase 10) — reuses the existing
+    // SocialPostEngine text dispatch (publishFacebookTextPost()); no new
+    // publishing code. Instagram has no text-only feed post, so it's
+    // rejected here even if somehow still selected client-side.
+    if (in_array('instagram', $platforms, true)) {
+        respond(false, 'Text posts can only be published to Facebook.');
     }
 
-    if (!empty($uploadResult['paths'])) {
-        $absoluteUrls = socialPostMediaAbsoluteUrls([$uploadResult['paths'][0]]);
-        $imageUrl = $absoluteUrls[0] ?? '';
+    if ($caption === '') {
+        respond(false, 'Please enter the text for this post.');
     }
-}
 
-if ($imageUrl === '') {
-    respond(false, 'Please upload an image to publish now.');
+    $type = 'text';
+    $content = ['message' => $caption];
+} else {
+    // Publish Now currently supports image and text posts only (see docs
+    // §22.7/§22.12) — reels/carousels still go through the existing
+    // Draft/Schedule + cron flow.
+    $imageUrl = '';
+
+    if (isset($_FILES['media']) && !empty($_FILES['media']['name'][0] ?? '')) {
+        $uploadResult = saveInstagramMediaFiles($_FILES['media'], 'image', 1);
+
+        if (!empty($uploadResult['errors'])) {
+            respond(false, implode(' ', $uploadResult['errors']));
+        }
+
+        if (!empty($uploadResult['paths'])) {
+            $absoluteUrls = socialPostMediaAbsoluteUrls([$uploadResult['paths'][0]]);
+            $imageUrl = $absoluteUrls[0] ?? '';
+        }
+    }
+
+    if ($imageUrl === '') {
+        respond(false, 'Please upload an image to publish now.');
+    }
+
+    $type = 'image';
+    $content = ['imageUrl' => $imageUrl, 'caption' => $caption];
 }
 
 try {
-    $result = publishSocialPost($con, $clientId, $accountId, $platforms, 'image', [
-        'imageUrl' => $imageUrl,
-        'caption' => $caption,
-    ]);
+    $result = publishSocialPost($con, $clientId, $accountId, $platforms, $type, $content);
 
     $clientLabel = getInstagramClientLabel($con, $clientId);
 

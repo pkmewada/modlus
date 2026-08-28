@@ -39,7 +39,7 @@ $action = trim((string)($_POST['action'] ?? 'draft'));
 $scheduledAtInput = trim((string)($_POST['scheduledAt'] ?? ''));
 $platformsInput = isset($_POST['platforms']) && is_array($_POST['platforms']) ? array_map('strval', $_POST['platforms']) : ['instagram'];
 
-$allowedMediaTypes = ['image', 'reel', 'carousel'];
+$allowedMediaTypes = ['image', 'reel', 'carousel', 'text'];
 
 if (!in_array($mediaType, $allowedMediaTypes, true)) {
     respond(false, 'Invalid media type.');
@@ -54,11 +54,22 @@ if (empty($platforms)) {
     $platforms = ['instagram'];
 }
 
-// Facebook publishing is image-only (no verified Facebook equivalent for
-// reels/carousels yet — see docs §22.7/§22.8) — reject the combination at
-// save time rather than silently dropping it at publish time.
-if (in_array('facebook', $platforms, true) && $mediaType !== 'image') {
-    respond(false, 'Facebook scheduling is only supported for image posts.');
+// Facebook publishing is image/text-only (no verified Facebook equivalent
+// for reels/carousels yet — see docs §22.7/§22.8) — reject the combination
+// at save time rather than silently dropping it at publish time.
+if (in_array('facebook', $platforms, true) && $mediaType !== 'image' && $mediaType !== 'text') {
+    respond(false, 'Facebook scheduling is only supported for image and text posts.');
+}
+
+// Instagram has no text-only feed post (Phase 10) — rejected here even if
+// a client somehow still sends it, so this can never reach the scheduler
+// or the publish-now engine with an invalid platform/type combination.
+if ($mediaType === 'text' && in_array('instagram', $platforms, true)) {
+    respond(false, 'Text posts can only be published to Facebook.');
+}
+
+if ($mediaType === 'text' && $caption === '') {
+    respond(false, 'Please enter the text for this post.');
 }
 
 if ($clientId <= 0 || !instagramClientExists($con, $clientId)) {
@@ -106,39 +117,46 @@ if ($existingPost && !in_array($existingPost['status'], ['draft', 'scheduled', '
     respond(false, 'This post can no longer be edited.');
 }
 
-$mediaCategory = $mediaType === 'reel' ? 'video' : 'image';
-$maxFiles = $mediaType === 'carousel' ? 10 : 1;
+$mediaPaths = [];
 
-// Only carry forward existing media when the post type is unchanged —
-// otherwise a post left with mismatched media (e.g. an image reused as a
-// reel's "video") would fail confusingly at Meta's end instead of here.
-$mediaPaths = ($existingPost && $existingPost['mediaType'] === $mediaType)
-    ? decodeSocialPostMediaPaths($existingPost['mediaUrl'])
-    : [];
+if ($mediaType !== 'text') {
+    $mediaCategory = $mediaType === 'reel' ? 'video' : 'image';
+    $maxFiles = $mediaType === 'carousel' ? 10 : 1;
 
-if (isset($_FILES['media']) && !empty($_FILES['media']['name'][0] ?? '')) {
-    $uploadResult = saveInstagramMediaFiles($_FILES['media'], $mediaCategory, $maxFiles);
+    // Only carry forward existing media when the post type is unchanged —
+    // otherwise a post left with mismatched media (e.g. an image reused as
+    // a reel's "video") would fail confusingly at Meta's end instead of here.
+    $mediaPaths = ($existingPost && $existingPost['mediaType'] === $mediaType)
+        ? decodeSocialPostMediaPaths($existingPost['mediaUrl'])
+        : [];
 
-    if (!empty($uploadResult['errors'])) {
-        respond(false, implode(' ', $uploadResult['errors']));
+    if (isset($_FILES['media']) && !empty($_FILES['media']['name'][0] ?? '')) {
+        $uploadResult = saveInstagramMediaFiles($_FILES['media'], $mediaCategory, $maxFiles);
+
+        if (!empty($uploadResult['errors'])) {
+            respond(false, implode(' ', $uploadResult['errors']));
+        }
+
+        if (!empty($uploadResult['paths'])) {
+            $mediaPaths = $uploadResult['paths'];
+        }
     }
 
-    if (!empty($uploadResult['paths'])) {
-        $mediaPaths = $uploadResult['paths'];
+    if (empty($mediaPaths)) {
+        respond(false, 'Please upload media for this post.');
+    }
+
+    if ($mediaType === 'carousel' && count($mediaPaths) < 2) {
+        respond(false, 'A carousel post needs at least 2 images.');
+    }
+
+    if ($mediaType !== 'carousel' && count($mediaPaths) > 1) {
+        $mediaPaths = [$mediaPaths[0]];
     }
 }
-
-if (empty($mediaPaths)) {
-    respond(false, 'Please upload media for this post.');
-}
-
-if ($mediaType === 'carousel' && count($mediaPaths) < 2) {
-    respond(false, 'A carousel post needs at least 2 images.');
-}
-
-if ($mediaType !== 'carousel' && count($mediaPaths) > 1) {
-    $mediaPaths = [$mediaPaths[0]];
-}
+// Text posts (Phase 10): no media at all — $mediaPaths stays empty. Media
+// upload is neither attempted nor required, matching the "media is not
+// required, not submitted, not validated" rule for this content type.
 
 try {
     $savedId = saveSocialPost(

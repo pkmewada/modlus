@@ -18,7 +18,7 @@ function respond(bool $success, string $message, array $data = []): void
 }
 
 $status = trim((string)($_GET['status'] ?? ''));
-$allowedStatuses = ['draft', 'scheduled', 'publishing', 'published', 'failed'];
+$allowedStatuses = ['draft', 'scheduled', 'publishing', 'published', 'partial', 'failed'];
 
 if ($status !== '' && !in_array($status, $allowedStatuses, true)) {
     $status = '';

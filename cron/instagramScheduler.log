@@ -12,3 +12,5 @@
 [2026-08-28 20:22:36] Scheduler run complete. Finalized 0 in-flight, published 0 newly due.
 [2026-08-28 20:24:12] Post #34 (Client: Praveen Mewada (000001)) recovery attempted facebook: failed: This account has no linked Facebook Page to publish to.
 [2026-08-28 20:24:13] Scheduler run complete. Finalized 0 in-flight, published 0 newly due.
+[2026-08-28 21:17:39] Post #43 (Client: Praveen Mewada (000001)) facebook: failed: This account has no linked Facebook Page to publish to.
+[2026-08-28 21:17:39] Scheduler run complete. Finalized 0 in-flight, published 1 newly due.
