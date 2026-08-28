@@ -1,6 +1,6 @@
 # Instagram Automation — Production State (Source of Truth)
 
-Last Updated: 2026-08-28 (Phase 7 — Unified Scheduled Publishing added)
+Last Updated: 2026-08-28 (Phase 7.x — Instagram image container readiness bug fix added)
 
 > **CURRENT BASELINE IS PRODUCTION WORKING.**
 >
@@ -1205,6 +1205,64 @@ manual test tooling — do not register it on Hostinger Cron.**
 production-verified (unlike Phase 4/5/6, which have real post ids on
 record) until the production test commands above have actually been run
 and their results confirmed.
+
+---
+
+## 22.9. Phase 7.x — Production Bug Fix: Instagram Image Container Readiness
+
+**Date**: 2026-08-28. Discovered via a real production scheduled
+Instagram+Facebook post: Facebook published successfully
+(`336886156185070_122207273216467606`), Instagram failed with HTTP 400,
+`error_subcode 2207027` — *"The media is not ready to be published. Please
+wait a moment."* Meta had accepted the image container creation call but
+hadn't finished processing it by the time `media_publish` was called
+immediately afterward. Phase 7's own behavior around this was correct
+(`status='partial'`, Facebook's post id preserved, Instagram's error
+preserved) — the bug was purely in the timing of the two Instagram Graph
+API calls, not in the Phase 7 architecture.
+
+**Fix**: `publishInstagramImagePost()` (`includes/InstagramAutomation.php`)
+now polls the **existing** `getInstagramContainerStatus()` (already used,
+unchanged, by Phase A's Reel finalization) between creating the container
+and calling `media_publish`, waiting for `FINISHED` before proceeding.
+Bounded: polls every `INSTAGRAM_CONTAINER_POLL_INTERVAL_SECONDS` (2s), for
+at most `INSTAGRAM_CONTAINER_POLL_MAX_SECONDS` (30s) total. `ERROR`/`EXPIRED`
+is a permanent failure; a timeout without `FINISHED`/`ERROR` throws the
+**existing** `InstagramTransientApiException` — the same class every other
+retryable failure in this module already uses, so both existing callers
+(`SocialPostEngine.php`'s per-platform catch, and the scheduler's legacy
+try/catch) already handle it correctly as retryable with **no changes
+needed in either file**. Each poll attempt logs `creation_id` + `status_code`
+via the existing `instagramWriteApiDebugLog()` — never the access token.
+
+Because `publishInstagramImagePost()` is the single function both Phase 6
+Publish Now and Phase 7 Scheduled Publishing already call (directly, or via
+`SocialPostEngine.php`), this one change benefits both automatically — no
+scheduler-only polling, no duplicated Instagram publishing logic.
+
+**Scope**: Instagram **image** posts only, matching the reported bug.
+Carousel/Reel publishing were not touched — Reels already have their own
+async finalization (Phase A, unchanged); carousels create containers the
+same way images do and could theoretically hit the same race, but that
+was not part of the reported bug or this fix's scope.
+
+**Database**: none. This is a pure application/service-layer timing fix.
+
+**Verified locally**: `php -l` clean; Facebook-only publishing produces the
+exact same error as before the fix (proving Facebook was not touched);
+Instagram-only publishing still fails at container *creation* (before ever
+reaching the new polling code) with the correct account/token, proving the
+polling is correctly positioned after creation and its exception handling
+integrates with the existing transient/permanent classification; `git diff`
+confirms `publishInstagramCarouselPost()`/`publishInstagramVideoPost()`/Phase
+A are byte-for-byte untouched. **Live polling behavior (an actual
+IN_PROGRESS→FINISHED transition, and a real deliberately-delayed
+container) requires a production account with real Meta credentials and
+was NOT executed from this environment.**
+
+No exactly-once guarantee is claimed beyond what Phase 7 already
+documented (§22.8) — this fix reduces the specific "container not ready"
+race, it does not change the acknowledged crash-timing limitation.
 
 ---
 
