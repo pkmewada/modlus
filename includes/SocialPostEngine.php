@@ -130,6 +130,20 @@ function socialPostEnginePublishOne(array $account, string $platform, string $ty
                 'message' => 'Published successfully.',
             ];
         }
+    } catch (InstagramTransientApiException $e) {
+        // Network-level blip talking to Meta, not Meta rejecting the post.
+        // Flagged distinctly so a scheduled-post caller (Phase 7) can leave
+        // this platform's persisted state untouched for a later retry
+        // instead of recording a permanent failure — see
+        // finalizeSocialScheduledPost() in InstagramAutomation.php. A
+        // synchronous caller (Publish Now) can safely treat this the same
+        // as any other failure since there is nothing to retry later there.
+        return [
+            'success' => false,
+            'postId' => null,
+            'message' => $e->getMessage(),
+            'transient' => true,
+        ];
     } catch (Throwable $e) {
         // $e->getMessage() here is always the sanitized Meta error message
         // (instagramGraphApiRequest() already strips access_token/

@@ -1,6 +1,6 @@
 # Instagram Automation — Production State (Source of Truth)
 
-Last Updated: 2026-08-28 (Phase 6 — Unified Social Post Engine added)
+Last Updated: 2026-08-28 (Phase 7 — Unified Scheduled Publishing added)
 
 > **CURRENT BASELINE IS PRODUCTION WORKING.**
 >
@@ -936,6 +936,275 @@ php cron/testUnifiedSocialPost.php <accountId> facebook text "MODLUS Phase 6 Fac
   above) — do not treat this phase as production-verified the way Phase 4
   and Phase 5 are (§18) until the user runs them and confirms real post
   ids, per this doc's own standing rule (§19/§20).
+
+---
+
+## 22.8. Phase 7 — Unified Scheduled Publishing
+
+**Date**: 2026-08-28. Follows the stop-and-report exchange in this same
+session (recorded conceptually here since it wasn't a separate doc entry):
+the existing `instagramPosts.status`/`instagramMediaId`/`errorMessage`
+triplet was found to be single-platform-only and incapable of representing
+independent Instagram/Facebook completion state; the user approved four
+additive columns plus a `'partial'` status value before any code was
+written.
+
+### Architecture
+
+`cron/instagramScheduler.php` remains the **only** scheduler — no second
+cron system was created. Its existing three-part shape is preserved and
+extended with one new phase:
+
+```
+Phase A  (unchanged) — finalize Reels still processing at Meta
+Phase A2 (NEW)       — recover image/carousel posts stuck in 'publishing'
+Phase B  (extended)  — publish newly due scheduled posts
+```
+
+Phase A is now explicitly scoped to `mediaType = 'reel'`
+(`getInstagramPostsByStatus($con, 'publishing', 20, 'reel')`) so it can
+never overlap with Phase A2's image/carousel recovery scan
+(`getStuckSocialPosts()`). Every existing Instagram-only code path — the
+legacy image branch, the carousel branch, the reel branch, `handleInstagramAuthFailure()`,
+the `flock` single-instance lock — is **byte-for-byte unchanged**. The only
+new logic is one `if ($platforms === ['instagram'] || empty($platforms))`
+branch inside the existing `case 'image':` block: when true (every
+pre-Phase-7 post, since `platforms` defaults to `'instagram'`), it takes
+the exact original code path; only when a post's `platforms` differs from
+that default does it route into the new unified logic.
+
+### Files created
+
+- `database/migrations/2026-08-28-instagram-posts-phase7-scheduling.sql` —
+  documents the 4 additive columns (also self-healed at runtime).
+- `cron/testScheduledUnifiedSocialPost.php` — **MANUAL TEST ONLY, NOT A
+  CRON JOB.** A harness with three subcommands (`create`, `simulate-stuck`,
+  `show`) that lets a real due/stuck row be set up deterministically and
+  then exercised with the real `cron/instagramScheduler.php`, instead of
+  waiting hours for a real schedule or faking a real crash.
+
+### Files modified
+
+- `includes/InstagramAutomation.php` — `ensureInstagramPostsTable()` gains
+  4 self-healed columns; `getInstagramPostsByStatus()` gains an optional
+  `$mediaType` filter (additive, existing 2-arg/3-arg callers unaffected);
+  `saveInstagramPost()` gains an optional `platforms` key (defaults to
+  `['instagram']` — legacy callers/behavior unchanged); new functions
+  `getStuckSocialPosts()`, `socialScheduledRecoveryPlan()`,
+  `recordInstagramPlatformResult()`, `markFacebookScheduledPublished()`,
+  `markFacebookScheduledFailed()`, `setInstagramPostOverallStatus()`,
+  `normalizeSocialEngineResult()`, `finalizeSocialScheduledPost()`. Every
+  pre-existing function (`markInstagramPostPublished()`,
+  `markInstagramPostFailed()`, `revertInstagramPostToScheduled()`,
+  `getDueInstagramPosts()`, etc.) is untouched.
+- `includes/SocialPostEngine.php` — one additive change: catches
+  `InstagramTransientApiException` distinctly from other errors and adds
+  `'transient' => true` to that platform's result, so a scheduled-post
+  caller can tell a network blip apart from a real Meta rejection. `publishSocialPost()`'s
+  signature, validation order, and return shape are unchanged; Phase 6's
+  `api/publishSocialPostNow.php` ignores the new key and is unaffected.
+- `cron/instagramScheduler.php` — adds Phase A2; the `case 'image':` branch
+  gains the platforms-based fork described above.
+- `api/saveInstagramPost.php` — accepts `platforms[]`, defaults to
+  `['instagram']` when absent, rejects Facebook + non-image at save time.
+- `pages/instagram-create-post.php` — wires the Phase 6 platform checkboxes
+  into the Draft/Schedule submit (previously they only fed Publish Now);
+  Facebook checkbox is now gated by *both* having a linked Page *and*
+  Post Type = Image; edit mode restores a post's saved platform selection.
+- `pages/instagram-scheduled-posts.php` — adds a Platforms column
+  (per-platform badges, Facebook's badge colored by its own
+  `facebookStatus`), a `'partial'` status badge/filter option, and extends
+  "View Error" to show both platforms' errors when present.
+
+### Database changes
+
+Four additive columns on `instagramPosts` (see migration file above for
+exact types/defaults) plus one new value (`'partial'`) for the existing
+`status` column — no new tables, no `companyId`, no changes to any other
+table.
+
+### Platform selection / Instagram-only / Facebook-only / Instagram+Facebook behavior
+
+`platforms` is a comma list persisted at save time. The scheduler reads it
+per-post and only ever calls the platform(s) actually selected — confirmed
+by testing (below): an Instagram-only post takes the untouched legacy path;
+a Facebook-only post and a dual post both route through
+`publishSocialPost()` with exactly the requested platform list, never more.
+
+### Partial-success handling
+
+`finalizeSocialScheduledPost()` computes `status` from combining both
+platforms' outcomes, never from a single platform's side effect — verified
+directly (see Tests below): Instagram success + Facebook permanent failure
+→ `status = 'partial'`, with Facebook's own error preserved in
+`facebookErrorMessage` and Instagram's real post id preserved in
+`instagramMediaId`.
+
+### Retry / idempotency behavior
+
+- "Done" is determined **only** from a persisted result
+  (`instagramMediaId` / `facebookPostId`), never from `status` — so a
+  platform whose success is already recorded is **never** re-attempted, by
+  either fresh Phase B processing or Phase A2 recovery.
+- A platform result marked `transient` (network-level Meta API failure) is
+  left completely unwritten — the row stays `'publishing'` and Phase A2
+  retries exactly that platform on the next run, never the other one.
+- **Acknowledged, not solved**: if Meta accepts a publish call but the PHP
+  process dies before the response is recorded, the next recovery pass has
+  no way to know that and will attempt that platform again — this is a
+  narrow, inherent limitation of at-least-once retry against a
+  non-idempotent Graph API with no client-supplied idempotency key. It
+  predates Phase 7 (the same gap already existed, unhandled, for
+  Instagram-only posts) and is not claimed to be closed by this work —
+  only the specific "already-recorded success" case (the vast majority of
+  real crash timing) is now safely handled.
+
+### Token security / client isolation
+
+Unchanged mechanisms, reused exactly: `getInstagramAccountById()` remains
+the only decryption path; `instagramAccountBelongsToClient()` /
+`instagramClientExists()` remain the only ownership guards. No new token
+storage, no token in any log line (grepped all touched files and the
+actual log output produced during testing — see Tests below).
+
+### Manual + local testing actually performed
+
+**Schema**: `ensureInstagramPostsTable()` run locally — confirmed all 4
+columns created with the exact documented types/defaults.
+
+**`saveInstagramPost()`**: confirmed a call with `platforms: ['instagram','facebook']`
+persists `platforms='instagram,facebook'`, `facebookStatus='pending'`; a
+legacy call with no `platforms` key persists `platforms='instagram'`,
+`facebookStatus='not_applicable'` — proving old callers are unaffected.
+
+**`socialScheduledRecoveryPlan()`** (pure function, no DB/network):
+exercised all 6 combinations (neither done, Instagram done, Facebook done,
+both done, Facebook-only, legacy Instagram-only) — every `instagramNeeded`/
+`facebookNeeded`/`alreadyComplete` value matched expectation.
+
+**`finalizeSocialScheduledPost()`**: exercised 6 scenarios against real
+local DB rows (Instagram-done-then-Facebook-succeeds, mixed success/permanent-failure,
+Instagram-succeeds-with-Facebook-transient, both-already-done,
+Facebook-only-success, and the mirror Facebook-done-then-Instagram-succeeds)
+— **two real bugs were found and fixed during this testing**, not
+discovered by static review:
+1. The original implementation trusted `markInstagramPostPublished()`/
+   `markInstagramPostFailed()`'s side effect on `status` to reflect the
+   aggregate outcome, which is wrong whenever a platform's success wasn't
+   freshly attempted this run (recovery skip) or a sibling platform is
+   still transiently unresolved. Fixed by splitting into two phases: each
+   platform's own fields are written independently
+   (`recordInstagramPlatformResult()`), and `status` is decided exactly
+   once, explicitly, only when nothing is left unresolved.
+2. `publishSocialPost()` returns an **empty** `platforms` array when its
+   own top-level validation rejects a request before dispatching to any
+   platform (e.g. missing Facebook Page) — `finalizeSocialScheduledPost()`
+   was misreading that as "not attempted, trust existing state" instead of
+   "this attempt failed", silently leaving a genuinely-failed platform
+   stuck at `'pending'` with no error recorded. Fixed with
+   `normalizeSocialEngineResult()`, which turns a top-level rejection into
+   an explicit failure entry for every platform that was actually intended
+   to be attempted.
+
+After both fixes, all 6 scenarios produced exactly the expected `status`/
+`instagramMediaId`/`facebookStatus`/`facebookPostId`/`facebookErrorMessage`.
+
+**End-to-end against the real `cron/instagramScheduler.php`** (local
+machine, synthetic client/account, real code path, real scheduler
+execution — not mocked):
+- Simulated Instagram-already-done + Facebook-pending → ran the real
+  scheduler → confirmed via log line and DB state: Instagram was **not**
+  re-attempted (`instagramMediaId` unchanged), only Facebook was attempted.
+- Simulated Facebook-already-done + Instagram-pending (the mirror
+  direction) → confirmed Facebook was **not** re-attempted
+  (`facebookPostId` unchanged); Instagram's attempt hit a local-machine-only
+  curl/SSL issue (no CA bundle on this dev machine — unrelated to Phase 7
+  logic) and was correctly classified `transient`, leaving the row safely
+  retriable rather than marked failed.
+- Simulated both-already-done → ran the real scheduler → log line
+  explicitly confirms *"finalized without a new Meta API call"*; `status`
+  correctly became `'published'`.
+- Created a fresh due Instagram+Facebook post with a synthetic (invalid)
+  test account and ran the real scheduler → both platforms correctly
+  attempted, both correctly failed (test account has no valid credentials)
+  with the real, specific error message preserved per platform, `status`
+  correctly `'failed'` (both failed) — confirming `normalizeSocialEngineResult()`'s
+  fix works on the fresh-due path too, not just recovery.
+- `php -l` clean on every touched/created file.
+- Grepped `cron/instagramScheduler.log` and `logs/social-post-engine.log`
+  for token-shaped content after all of the above runs — none found;
+  logged messages are exactly the sanitized error strings shown above.
+
+**Incident during testing, caught and fixed**: initial cleanup of
+synthetic test posts pointed at the shared real test image
+(`uploads/instagram-posts/test.jpg`, used throughout Phase 5/6 testing) —
+`deleteInstagramPostRecord()`'s existing (unmodified, correct) behavior of
+removing a deleted post's referenced media file deleted that shared file
+as a side effect. Caught immediately via `git status` and restored via
+`git checkout`. Recorded here as a reminder for any future local testing:
+use a throwaway media path for synthetic posts, never the shared
+documented test image.
+
+**NOT EXECUTED — REQUIRES PRODUCTION TEST** (no production DB/Meta network
+access from this environment):
+- Test A: schedule a real Instagram-only image post — confirm unchanged
+  behavior.
+- Test B: schedule a real Facebook-only image post — confirm a real
+  Facebook post id.
+- Test C: schedule a real Instagram+Facebook image post — confirm both a
+  real Instagram media id and a real Facebook post id, `status = 'published'`.
+- A real crash-recovery scenario (kill `-9` the scheduler process between
+  the two platform calls) — the local testing above simulates the
+  *outcome* of a crash (via `simulate-stuck`) and proves the recovery
+  *logic* is correct, but has not observed an actual process crash on
+  production.
+
+### Production test commands
+
+```
+# A — Instagram only (existing behavior, must be unaffected)
+php cron/testScheduledUnifiedSocialPost.php create <accountId> instagram image uploads/instagram-posts/test.jpg "Phase 7 IG-only test"
+php cron/instagramScheduler.php
+
+# B — Facebook only
+php cron/testScheduledUnifiedSocialPost.php create <accountId> facebook image uploads/instagram-posts/test.jpg "Phase 7 FB-only test"
+php cron/instagramScheduler.php
+
+# C — Instagram + Facebook (the most important test)
+php cron/testScheduledUnifiedSocialPost.php create <accountId> instagram,facebook image uploads/instagram-posts/test.jpg "Phase 7 unified test"
+php cron/instagramScheduler.php
+
+# After each: inspect the resulting row
+php cron/testScheduledUnifiedSocialPost.php show <postId>
+
+# Recovery tests (deterministic, no need to wait for or force a real crash)
+php cron/testScheduledUnifiedSocialPost.php simulate-stuck <postId> yes no   # IG done, FB pending
+php cron/instagramScheduler.php
+php cron/testScheduledUnifiedSocialPost.php simulate-stuck <postId> no yes   # FB done, IG pending
+php cron/instagramScheduler.php
+php cron/testScheduledUnifiedSocialPost.php simulate-stuck <postId> yes yes  # both done — must log "without a new Meta API call"
+php cron/instagramScheduler.php
+```
+
+**`cron/testScheduledUnifiedSocialPost.php` and its log/lock output are
+manual test tooling — do not register it on Hostinger Cron.**
+
+### Known limitations
+
+- Facebook scheduling is image-only (enforced at save time) — no verified
+  Facebook equivalent for Reels/carousels exists yet, matching Phase 5/6.
+- Platform-specific captions remain out of scope (same content is reused
+  for both platforms), as explicitly scoped by the user.
+- The narrow crash-timing gap described under Retry/idempotency above is
+  acknowledged, not solved — exactly-once delivery is not claimed.
+- Production verification is outstanding — see status below.
+
+### Production verification status
+
+**IMPLEMENTED — AWAITING PRODUCTION VERIFICATION.** Do not treat Phase 7 as
+production-verified (unlike Phase 4/5/6, which have real post ids on
+record) until the production test commands above have actually been run
+and their results confirmed.
 
 ---
 

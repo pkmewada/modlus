@@ -7,6 +7,7 @@ if (PHP_SAPI !== 'cli') {
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/InstagramAutomation.php';
+require_once __DIR__ . '/../includes/SocialPostEngine.php';
 require_once __DIR__ . '/../includes/leadActivityLogger.php';
 
 date_default_timezone_set('Asia/Kolkata');
@@ -82,8 +83,11 @@ $accountCache = [];
 |--------------------------------------------------------------------------
 | Phase A: finalize Reels still processing at Meta (across all clients)
 |--------------------------------------------------------------------------
+| Explicitly scoped to mediaType = 'reel' (Phase 7) — image/carousel posts
+| have their own recovery path (Phase A2 below), which must never overlap
+| with this Reel-specific container-status check.
 */
-$processingPosts = getInstagramPostsByStatus($con, 'publishing', 20);
+$processingPosts = getInstagramPostsByStatus($con, 'publishing', 20, 'reel');
 
 foreach ($processingPosts as $post) {
     $postId = (int)$post['id'];
@@ -126,6 +130,122 @@ foreach ($processingPosts as $post) {
         saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed for Client: ' . $clientLabel . ' (' . $e->getMessage() . ').');
         instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') failed: ' . $e->getMessage());
         handleInstagramAuthFailure($con, $accountCache, $account, $e);
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Phase A2 (Phase 7): recover image/carousel posts stuck in 'publishing'
+|--------------------------------------------------------------------------
+| Only reachable if a previous run's process died mid-publish — an
+| image/carousel post has no legitimate reason to still be 'publishing' on
+| a later run otherwise (see getStuckSocialPosts()). Never re-publishes a
+| platform whose success is already persisted (instagramMediaId /
+| facebookPostId) — only the still-incomplete platform(s) are attempted.
+|--------------------------------------------------------------------------
+*/
+$stuckPosts = getStuckSocialPosts($con, 20);
+
+foreach ($stuckPosts as $post) {
+    $postId = (int)$post['id'];
+    $account = loadInstagramAccountForPost($con, $accountCache, $post);
+
+    if (!$account) {
+        markInstagramPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
+        saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed during recovery: linked account unavailable.');
+        instagramSchedulerLog('Post #' . $postId . ' failed during recovery: linked Instagram account unavailable.');
+        continue;
+    }
+
+    $clientLabel = getInstagramClientLabel($con, $account['clientId']);
+    $plan = socialScheduledRecoveryPlan($post);
+
+    try {
+        if ($plan['alreadyComplete']) {
+            // Every selected platform already has a persisted result — the
+            // crash happened after publishing finished but before the row
+            // was finalized. No Meta API call needed here at all.
+            finalizeSocialScheduledPost($con, $post, []);
+            instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovered: all selected platform(s) already had a persisted result — finalized without a new Meta API call.');
+            continue;
+        }
+
+        if ($post['mediaType'] === 'carousel') {
+            // Carousel is always Instagram-only (Facebook is image-only,
+            // enforced at save time) — recovery here is simply resuming the
+            // single publish attempt, mirroring Phase B's carousel case.
+            $mediaUrls = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($post['mediaUrl']));
+
+            try {
+                $result = publishInstagramCarouselPost($account, $mediaUrls, (string)$post['caption']);
+                markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
+                saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram carousel post via scheduler recovery for Client: ' . $clientLabel . '.');
+                instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovered and published (carousel). Media ID: ' . $result['instagramMediaId']);
+            } catch (InstagramTransientApiException $e) {
+                instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovery publish failed transiently, will retry next run: ' . $e->getMessage());
+            } catch (Throwable $e) {
+                markInstagramPostFailed($con, $postId, $e->getMessage());
+                saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed during recovery for Client: ' . $clientLabel . ' (' . $e->getMessage() . ').');
+                instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovery failed: ' . $e->getMessage());
+                handleInstagramAuthFailure($con, $accountCache, $account, $e);
+            }
+
+            continue;
+        }
+
+        // Image post — attempt only the platform(s) not already done.
+        $platformsToAttempt = [];
+
+        if ($plan['instagramNeeded']) {
+            $platformsToAttempt[] = 'instagram';
+        }
+
+        if ($plan['facebookNeeded']) {
+            $platformsToAttempt[] = 'facebook';
+        }
+
+        if (empty($platformsToAttempt)) {
+            // Defensive — shouldn't happen alongside alreadyComplete being
+            // false, but never loop forever on an unrecognized state.
+            finalizeSocialScheduledPost($con, $post, []);
+            continue;
+        }
+
+        $mediaUrls = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($post['mediaUrl']));
+        $result = publishSocialPost(
+            $con,
+            (int)$post['clientId'],
+            (int)$post['instagramAccountId'],
+            $platformsToAttempt,
+            'image',
+            ['imageUrl' => $mediaUrls[0] ?? '', 'caption' => (string)$post['caption']]
+        );
+
+        $resultPlatforms = normalizeSocialEngineResult($result, $platformsToAttempt);
+        finalizeSocialScheduledPost($con, $post, $resultPlatforms);
+
+        foreach ($resultPlatforms as $platform => $platformResult) {
+            instagramSchedulerLog(
+                'Post #' . $postId . ' (Client: ' . $clientLabel . ') recovery attempted ' . $platform . ': '
+                . (!empty($platformResult['success'])
+                    ? 'success (postId ' . ($platformResult['postId'] ?? '') . ')'
+                    : ('failed' . (!empty($platformResult['transient']) ? ' transiently, will retry next run' : '') . ': ' . ($platformResult['message'] ?? '')))
+            );
+        }
+
+        saveActivityLog(
+            $con,
+            'InstagramAutomation',
+            $postId,
+            'publish',
+            'Scheduler recovery attempted remaining platform(s) for Client: ' . $clientLabel . ' (' . implode('+', $platformsToAttempt) . ').'
+        );
+    } catch (Throwable $e) {
+        // Truly unexpected failure (not a Meta/transient error, which
+        // publishSocialPost() already turns into a structured result) —
+        // log only, leave the row's status untouched so it's retried next
+        // run rather than guessing at a terminal state.
+        instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovery hit an unexpected error, will retry next run: ' . $e->getMessage());
     }
 }
 
@@ -177,10 +297,46 @@ foreach ($duePosts as $post) {
 
             case 'image':
             default:
-                $result = publishInstagramImagePost($account, $mediaUrls[0] ?? '', $caption);
-                markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
-                saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram image post via scheduler for Client: ' . $clientLabel . '.');
-                instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') published (image). Media ID: ' . $result['instagramMediaId']);
+                $platforms = array_values(array_filter(array_map('trim', explode(',', (string)($post['platforms'] ?? 'instagram')))));
+
+                if ($platforms === ['instagram'] || empty($platforms)) {
+                    // Legacy path — byte-for-byte unchanged from before Phase 7.
+                    // Every post created before Phase 7 (platforms defaults to
+                    // 'instagram') always takes this exact branch.
+                    $result = publishInstagramImagePost($account, $mediaUrls[0] ?? '', $caption);
+                    markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
+                    saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram image post via scheduler for Client: ' . $clientLabel . '.');
+                    instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') published (image). Media ID: ' . $result['instagramMediaId']);
+                    break;
+                }
+
+                // Phase 7: Facebook-only or Instagram+Facebook — reuse the
+                // Phase 6 Unified Social Post Engine rather than duplicating
+                // platform publishing logic here.
+                $unifiedResult = publishSocialPost($con, (int)$post['clientId'], (int)$post['instagramAccountId'], $platforms, 'image', [
+                    'imageUrl' => $mediaUrls[0] ?? '',
+                    'caption' => $caption,
+                ]);
+
+                $unifiedResultPlatforms = normalizeSocialEngineResult($unifiedResult, $platforms);
+                finalizeSocialScheduledPost($con, $post, $unifiedResultPlatforms);
+
+                foreach ($unifiedResultPlatforms as $platform => $platformResult) {
+                    instagramSchedulerLog(
+                        'Post #' . $postId . ' (Client: ' . $clientLabel . ') ' . $platform . ': '
+                        . (!empty($platformResult['success'])
+                            ? 'published (postId ' . ($platformResult['postId'] ?? '') . ')'
+                            : ('failed' . (!empty($platformResult['transient']) ? ' transiently, will retry next run' : '') . ': ' . ($platformResult['message'] ?? '')))
+                    );
+                }
+
+                saveActivityLog(
+                    $con,
+                    'InstagramAutomation',
+                    $postId,
+                    'publish',
+                    'Unified social post processed via scheduler for Client: ' . $clientLabel . ' (' . implode('+', $platforms) . ', overall: ' . $unifiedResult['status'] . ').'
+                );
                 break;
         }
     } catch (InstagramTransientApiException $e) {
