@@ -1180,6 +1180,77 @@ function getInstagramContainerStatus(array $account, string $containerId): strin
     return (string)($status['status_code'] ?? 'UNKNOWN');
 }
 
+/*
+|--------------------------------------------------------------------------
+| Production bug fix (Phase 7.x): Instagram image container readiness
+|--------------------------------------------------------------------------
+| Production evidence: a scheduled Instagram+Facebook post had Facebook
+| succeed while Instagram's media_publish call failed with HTTP 400,
+| error_subcode 2207027 ("The media is not ready to be published. Please
+| wait a moment.") — Meta had accepted the container create call but
+| hadn't finished processing it yet when media_publish was called
+| immediately afterward. Fixed by polling the EXISTING
+| getInstagramContainerStatus() (already used by the Reel finalization
+| phase — not duplicated) between container creation and media_publish,
+| bounded so a container that never becomes ready doesn't hang the
+| publish call indefinitely.
+*/
+const INSTAGRAM_CONTAINER_POLL_INTERVAL_SECONDS = 2;
+const INSTAGRAM_CONTAINER_POLL_MAX_SECONDS = 30;
+
+/**
+ * Blocks (bounded) until an Instagram media container reports FINISHED, or
+ * throws. Never busy-loops — each iteration sleeps
+ * INSTAGRAM_CONTAINER_POLL_INTERVAL_SECONDS; the whole wait is capped at
+ * INSTAGRAM_CONTAINER_POLL_MAX_SECONDS.
+ *
+ * - FINISHED                  -> returns normally, caller proceeds to media_publish.
+ * - ERROR / EXPIRED           -> throws RuntimeException (permanent — Meta
+ *                                could not process the container at all).
+ * - IN_PROGRESS/anything else -> keeps polling until the deadline.
+ * - deadline reached without FINISHED/ERROR -> throws
+ *   InstagramTransientApiException — the SAME exception class every other
+ *   network-level/retryable failure in this module already uses, so both
+ *   existing callers (SocialPostEngine.php's per-platform catch and the
+ *   scheduler's legacy try/catch) already handle it correctly as
+ *   retryable without any further changes.
+ *
+ * Logs each poll attempt (creation_id + status) via the existing
+ * instagramWriteApiDebugLog() diagnostic log — never the access token,
+ * which this function never even receives outside $account['accessToken']
+ * passed straight through to getInstagramContainerStatus().
+ */
+function waitForInstagramContainerReady(array $account, string $containerId): void
+{
+    $deadline = time() + INSTAGRAM_CONTAINER_POLL_MAX_SECONDS;
+
+    while (true) {
+        $statusCode = getInstagramContainerStatus($account, $containerId);
+
+        instagramWriteApiDebugLog(
+            'Instagram container readiness check' . "\n"
+            . 'creation_id: ' . $containerId . "\n"
+            . 'status_code: ' . $statusCode
+        );
+
+        if ($statusCode === 'FINISHED') {
+            return;
+        }
+
+        if ($statusCode === 'ERROR' || $statusCode === 'EXPIRED') {
+            throw new RuntimeException('Meta reported the Instagram media container could not be processed (status: ' . $statusCode . ').');
+        }
+
+        if (time() >= $deadline) {
+            throw new InstagramTransientApiException(
+                'Instagram media container was not ready within ' . INSTAGRAM_CONTAINER_POLL_MAX_SECONDS . ' seconds (last status: ' . $statusCode . ').'
+            );
+        }
+
+        sleep(INSTAGRAM_CONTAINER_POLL_INTERVAL_SECONDS);
+    }
+}
+
 function publishInstagramImagePost(array $account, string $mediaUrl, string $caption): array
 {
     $container = instagramGraphApiRequest(
@@ -1195,7 +1266,10 @@ function publishInstagramImagePost(array $account, string $mediaUrl, string $cap
         throw new RuntimeException('Meta did not return a media container id.');
     }
 
-    return ['instagramMediaId' => publishInstagramContainer($account, (string)$container['id'])];
+    $containerId = (string)$container['id'];
+    waitForInstagramContainerReady($account, $containerId);
+
+    return ['instagramMediaId' => publishInstagramContainer($account, $containerId)];
 }
 
 function publishInstagramCarouselPost(array $account, array $mediaUrls, string $caption): array

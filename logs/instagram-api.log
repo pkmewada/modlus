@@ -14,3 +14,11 @@ HTTP Status: 0
 Params: {"image_url":"https:\/\/modlus.in\/uploads\/instagram-posts\/test.jpg","caption":"CLI harness test","access_token":"[REDACTED]"}
 cURL error: SSL certificate problem: unable to get local issuer certificate
 
+[2026-08-28 19:36:49]
+Instagram Graph API network error
+URL: https://graph.facebook.com/v19.0/TEST_BUGFIX_USER/media
+Method: POST
+HTTP Status: 0
+Params: {"image_url":"https:\/\/modlus.in\/uploads\/instagram-posts\/test.jpg","caption":"regression test","access_token":"[REDACTED]"}
+cURL error: SSL certificate problem: unable to get local issuer certificate
+
