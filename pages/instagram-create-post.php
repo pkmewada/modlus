@@ -93,6 +93,21 @@
 
                         <div class="card-body d-flex flex-column gap-3">
                             <div>
+                                <label class="form-label">Post To</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platformInstagram" checked>
+                                        <label class="form-check-label" for="platformInstagram">Instagram</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="platformFacebook" disabled>
+                                        <label class="form-check-label" for="platformFacebook">Facebook</label>
+                                    </div>
+                                </div>
+                                <div class="form-text d-none" id="noFacebookPageHint">This account has no linked Facebook Page.</div>
+                            </div>
+
+                            <div>
                                 <label class="form-label" for="scheduledAt">Schedule Date &amp; Time</label>
                                 <input type="datetime-local" class="form-control" id="scheduledAt" name="scheduledAt">
                                 <div class="form-text">Leave empty to publish as soon as the scheduler next runs.</div>
@@ -105,6 +120,15 @@
                             <button type="button" class="btn btn-primary" id="schedulePostBtn">
                                 Schedule Post
                             </button>
+
+                            <hr class="my-1">
+
+                            <button type="button" class="btn btn-success" id="publishNowBtn">
+                                Publish Now
+                            </button>
+                            <div class="form-text" id="publishNowHint">Publishes immediately to the platforms checked above, using the existing scheduled-post flow above only for reels/carousels.</div>
+
+                            <div id="publishNowResults" class="d-none"></div>
                         </div>
                     </div>
                 </div>
@@ -129,6 +153,10 @@ $(function() {
 
     $('#clientSelect').on('change', function() {
         loadInstagramAccountsForClient($(this).val());
+    });
+
+    $('#accountSelect').on('change', function() {
+        updateFacebookPlatformAvailability();
     });
 
     $('#mediaType').on('change', function() {
@@ -160,6 +188,10 @@ $(function() {
 
     $('#schedulePostBtn').on('click', function() {
         submitInstagramPost('schedule');
+    });
+
+    $('#publishNowBtn').on('click', function() {
+        submitPublishNow();
     });
 
     const params = new URLSearchParams(window.location.search);
@@ -224,11 +256,14 @@ function loadInstagramAccountsForClient(clientId, preselectAccountId) {
             });
 
             $accountSelect.html(options).prop('disabled', false);
+            window.instagramComposerAccounts = connected;
 
             const toSelect = preselectAccountId || (currentPost && currentPost.instagramAccountId);
             if (toSelect) {
                 $accountSelect.val(String(toSelect));
             }
+
+            updateFacebookPlatformAvailability();
         })
         .fail(function() {
             window.showToast && window.showToast('danger', 'Unable to load Instagram accounts for this client.');
@@ -241,6 +276,132 @@ function applyMediaTypeUi(mediaType) {
     $('#mediaFiles').prop('multiple', config.multiple);
     $('#mediaInputHint').text(config.hint);
     $('#mediaInputLabel').text(mediaType === 'reel' ? 'Video' : (mediaType === 'carousel' ? 'Images' : 'Image'));
+
+    // Publish Now (the Phase 6 Unified Social Post Engine) only supports
+    // image posts today — reels/carousels still go through the existing
+    // Draft/Schedule + cron flow above, untouched.
+    const isImage = mediaType === 'image';
+    $('#publishNowBtn').prop('disabled', !isImage);
+    $('#publishNowHint').text(isImage
+        ? 'Publishes immediately to the platforms checked above.'
+        : 'Publish Now supports image posts only — use Schedule Post for reels/carousels.');
+}
+
+function updateFacebookPlatformAvailability() {
+    const accountId = $('#accountSelect').val();
+    const accounts = window.instagramComposerAccounts || [];
+    const account = accounts.find(a => String(a.id) === String(accountId));
+    const hasPage = !!(account && account.facebookPageId);
+
+    $('#platformFacebook').prop('disabled', !hasPage);
+    $('#platformFacebook').prop('checked', hasPage);
+    $('#noFacebookPageHint').toggleClass('d-none', hasPage);
+}
+
+function escapeComposerHtml(value) {
+    return $('<div>').text(value == null ? '' : value).html();
+}
+
+function submitPublishNow() {
+    const mediaType = $('#mediaType').val();
+
+    if (mediaType !== 'image') {
+        window.showToast && window.showToast('warning', 'Publish Now currently supports image posts only. Use Schedule Post for reels/carousels.');
+        return;
+    }
+
+    const platforms = [];
+    if ($('#platformInstagram').is(':checked')) platforms.push('instagram');
+    if ($('#platformFacebook').is(':checked')) platforms.push('facebook');
+
+    if (!platforms.length) {
+        window.showToast && window.showToast('warning', 'Please select at least one platform.');
+        return;
+    }
+
+    const hasExistingMedia = !!(
+        currentPost &&
+        currentPost.mediaUrls &&
+        currentPost.mediaUrls.length &&
+        currentPost.mediaType === mediaType
+    );
+    const error = validateInstagramPost(mediaType, hasExistingMedia);
+
+    if (error) {
+        window.showToast && window.showToast('warning', error);
+        return;
+    }
+
+    if (!$('#mediaFiles')[0].files.length) {
+        window.showToast && window.showToast('warning', 'Please upload an image to publish now.');
+        return;
+    }
+
+    const formData = new FormData(document.getElementById('instagramPostForm'));
+    formData.set('csrfToken', CSRF_TOKEN);
+    platforms.forEach(function(p) { formData.append('platforms[]', p); });
+
+    const $btn = $('#publishNowBtn');
+    const originalText = $btn.text();
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Publishing...');
+    $('#saveDraftBtn, #schedulePostBtn, #publishNowBtn').prop('disabled', true);
+    $('#publishNowResults').addClass('d-none').empty();
+
+    $.ajax({
+        url: API_BASE + '/publishSocialPostNow.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: formData,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function(res) {
+            renderPublishNowResults(res);
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to publish now.');
+        },
+        complete: function() {
+            $btn.text(originalText);
+            $('#saveDraftBtn, #schedulePostBtn').prop('disabled', false);
+            applyMediaTypeUi($('#mediaType').val());
+        }
+    });
+}
+
+function renderPublishNowResults(res) {
+    const $panel = $('#publishNowResults');
+    $panel.removeClass('d-none').empty();
+
+    const result = res && res.data && res.data.result;
+
+    if (!result) {
+        $panel.append(`<div class="alert alert-danger mb-2">${escapeComposerHtml(res && res.message ? res.message : 'Publishing failed.')}</div>`);
+        window.showToast && window.showToast('danger', res && res.message ? res.message : 'Publishing failed.');
+        return;
+    }
+
+    const labels = { instagram: 'Instagram', facebook: 'Facebook' };
+
+    Object.keys(result.platforms || {}).forEach(function(platform) {
+        const platformResult = result.platforms[platform];
+        const ok = !!platformResult.success;
+        const icon = ok ? '✓' : '✕';
+        const cls = ok ? 'alert-success' : 'alert-danger';
+        const postIdLine = platformResult.postId ? ('<br>Post ID: ' + escapeComposerHtml(String(platformResult.postId))) : '';
+
+        $panel.append(`
+            <div class="alert ${cls} mb-2">
+                <strong>${icon} ${labels[platform] || platform}</strong><br>
+                ${escapeComposerHtml(platformResult.message || '')}${postIdLine}
+            </div>
+        `);
+    });
+
+    window.showToast && window.showToast(
+        result.status === 'success' ? 'success' : (result.status === 'partial' ? 'warning' : 'danger'),
+        res && res.message ? res.message : 'Publishing complete.'
+    );
 }
 
 function previewSelectedMedia(files) {
