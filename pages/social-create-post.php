@@ -6,14 +6,14 @@
     <div class="container-fluid">
         <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
-                <h1 class="page-title fw-medium fs-18 mb-2" id="pageTitle">Create Instagram Post</h1>
+                <h1 class="page-title fw-medium fs-18 mb-2" id="pageTitle">Create Social Post</h1>
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
                         <a href="dashboard">Dashboard</a>
                     </li>
                     <li class="breadcrumb-item">Automation</li>
                     <li class="breadcrumb-item">
-                        <a href="instagram-scheduled-posts">Instagram Posts</a>
+                        <a href="social-posts">Social Posts</a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page" id="breadcrumbCurrent">Create Post</li>
                 </ol>
@@ -166,7 +166,7 @@ $(function() {
 
         // Existing media only carries forward when the type is unchanged —
         // switching type always requires a fresh upload (mirrors the
-        // server-side rule in saveInstagramPost.php).
+        // server-side rule in saveSocialPost.php).
         if (currentPost && currentPost.mediaType === $(this).val()) {
             $('#existingMediaNote').removeClass('d-none');
         } else {
@@ -280,7 +280,7 @@ function applyMediaTypeUi(mediaType) {
     // Publish Now (Phase 6) only supports image posts. Facebook scheduling
     // (Phase 7) is also image-only — no verified Facebook equivalent for
     // reels/carousels yet (docs §22.7/§22.8) — enforced here and again
-    // server-side in api/saveInstagramPost.php.
+    // server-side in api/saveSocialPost.php.
     const isImage = mediaType === 'image';
     $('#publishNowBtn').prop('disabled', !isImage);
     $('#publishNowHint').text(isImage
@@ -445,7 +445,7 @@ function previewSelectedMedia(files) {
 }
 
 function loadInstagramPostForEdit(postId) {
-    $.getJSON(API_BASE + '/getInstagramPosts.php')
+    $.getJSON(API_BASE + '/getSocialPosts.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', 'Unable to load the post.');
@@ -469,7 +469,7 @@ function loadInstagramPostForEdit(postId) {
 function bindInstagramPostForEdit(post) {
     currentPost = post;
 
-    $('#pageTitle').text('Edit Instagram Post');
+    $('#pageTitle').text('Edit Social Post');
     $('#breadcrumbCurrent').text('Edit Post');
     $('#postId').val(post.id);
     $('#mediaType').val(post.mediaType);
@@ -586,7 +586,7 @@ function submitInstagramPost(action) {
     $('#saveDraftBtn, #schedulePostBtn').prop('disabled', true);
 
     $.ajax({
-        url: API_BASE + '/saveInstagramPost.php',
+        url: API_BASE + '/saveSocialPost.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: formData,
@@ -600,7 +600,7 @@ function submitInstagramPost(action) {
             );
 
             if (res && res.success) {
-                window.location.href = 'instagram-scheduled-posts';
+                window.location.href = 'social-posts';
             }
         },
         error: function() {

@@ -18,7 +18,7 @@ require_once __DIR__ . '/FacebookPublisher.php';
 | This file is deliberately synchronous/stateless: publishSocialPost()
 | takes a request, publishes to the requested platforms right away, and
 | returns a structured per-platform result. It does not touch
-| instagramPosts or any other table — persistence (if any) is the caller's
+| socialPosts or any other table — persistence (if any) is the caller's
 | responsibility. This keeps the engine equally usable from a synchronous
 | "Publish Now" API call today and from a future scheduler (Phase 7)
 | without redesigning it — the same function signature works either way.
@@ -51,7 +51,7 @@ function publishSocialPost(mysqli $con, int $clientId, int $accountId, array $pl
         return socialPostEngineFailure('Please select a valid client.');
     }
 
-    // The same cross-client guard already used by api/saveInstagramPost.php —
+    // The same cross-client guard already used by api/saveSocialPost.php —
     // no second account/ownership lookup system introduced here.
     if ($accountId <= 0 || !instagramAccountBelongsToClient($con, $accountId, $clientId)) {
         return socialPostEngineFailure('The selected account does not belong to this client.');

@@ -1,6 +1,6 @@
 # Instagram Automation — Production State (Source of Truth)
 
-Last Updated: 2026-08-28 (Phase 7.x — Instagram image container readiness bug fix added)
+Last Updated: 2026-08-28 (Phase 8 — Unified module naming refactor added)
 
 > **CURRENT BASELINE IS PRODUCTION WORKING.**
 >
@@ -1263,6 +1263,194 @@ was NOT executed from this environment.**
 No exactly-once guarantee is claimed beyond what Phase 7 already
 documented (§22.8) — this fix reduces the specific "container not ready"
 race, it does not change the acknowledged crash-timing limitation.
+
+---
+
+## 22.10. Phase 8 — Unified Module Naming Refactor
+
+**Date**: 2026-08-28. Naming/refactoring only — no behavior, OAuth, permissions,
+scheduler logic, or data semantics changed. The module evolved (Phases 5-7)
+from Instagram-only into a unified publisher supporting Instagram-only,
+Facebook-only, and Instagram+Facebook — the old all-"Instagram" naming had
+become misleading. This phase renames exactly the parts that are genuinely
+part of the unified post/scheduling domain, and deliberately leaves every
+genuinely platform-specific name untouched.
+
+### UI naming
+
+| Old sidebar label | New sidebar label | Route |
+| --- | --- | --- |
+| Instagram Automation | **Social Media Automation** | `/instagram-automation` (unchanged — see below) |
+| Create Instagram Post | **Create Social Post** | `/instagram-create-post` → `/social-create-post` |
+| Instagram Posts | **Social Posts** | `/instagram-scheduled-posts` → `/social-posts` |
+| Instagram Comments | *(unchanged)* | `/instagram-comments` |
+| Instagram Analytics | *(unchanged)* | `/instagram-analytics` |
+
+Comments and Analytics were deliberately **not** renamed — both remain
+genuinely Instagram-only in their actual implementation (`instagramComments`/
+`instagramInsights` tables, Instagram Graph API only, no Facebook data
+anywhere in either feature). Renaming their labels would have been cosmetic,
+not accurate — exactly what this phase was told not to do.
+
+### Route naming — one deliberate exception
+
+`/instagram-automation` (the Meta connect/settings page) keeps its **route
+path** unchanged — only its sidebar label and `routesMaster.routeTitle`
+changed to "Social Media Automation". Reason: `api/instagramOauthCallback.php`
+redirects back to this exact path by name; renaming it would have required
+touching the OAuth callback file, which every phase of this project has
+been told to leave alone unless proven necessary. Not proven necessary here
+— a label change fully satisfies "the user sees Social Media Automation",
+without touching OAuth.
+
+### File renames (via `git mv`, history preserved)
+
+- `pages/instagram-create-post.php` → `pages/social-create-post.php`
+- `pages/instagram-scheduled-posts.php` → `pages/social-posts.php`
+- `api/saveInstagramPost.php` → `api/saveSocialPost.php`
+- `api/getInstagramPosts.php` → `api/getSocialPosts.php`
+- `api/deleteInstagramPost.php` → `api/deleteSocialPost.php`
+
+`api/publishSocialPostNow.php` was already correctly named (Phase 6) — not
+touched. `cron/instagramScheduler.php` was **deliberately not renamed** —
+see below.
+
+### Function renames (unified post/scheduling domain only)
+
+`includes/InstagramAutomation.php`: `ensureInstagramPostsTable` →
+`ensureSocialPostsTable`, `instagramPostsEnsureColumn` →
+`socialPostsEnsureColumn`, `encodeInstagramPostMediaPaths` →
+`encodeSocialPostMediaPaths`, `decodeInstagramPostMediaPaths` →
+`decodeSocialPostMediaPaths`, `instagramPostMediaAbsoluteUrls` →
+`socialPostMediaAbsoluteUrls`, `getInstagramPosts` → `getSocialPosts`,
+`getInstagramPostById` → `getSocialPostById`, `saveInstagramPost` →
+`saveSocialPost`, `deleteInstagramPostRecord` → `deleteSocialPostRecord`,
+`getDueInstagramPosts` → `getDueSocialPosts`, `getInstagramPostsByStatus` →
+`getSocialPostsByStatus`, `markInstagramPostPublishing` →
+`markSocialPostPublishing`, `markInstagramPostPublished` →
+`markSocialPostPublished`, `markInstagramPostFailed` →
+`markSocialPostFailed`, `revertInstagramPostToScheduled` →
+`revertSocialPostToScheduled`, `setInstagramPostOverallStatus` →
+`setSocialPostOverallStatus`.
+
+### Platform-specific functions intentionally NOT renamed
+
+Every Instagram Graph API function: `publishInstagramImagePost()`,
+`publishInstagramCarouselPost()`, `publishInstagramVideoPost()`,
+`publishInstagramContainer()`, `getInstagramContainerStatus()`,
+`waitForInstagramContainerReady()`, `updateInstagramPostContainerId()`
+(Reel container tracking — genuinely Instagram-specific),
+`instagramGraphApiRequest()`, `instagramSanitizeParamsForLog()`,
+`instagramWriteApiDebugLog()`, `InstagramTransientApiException`. Every
+account/OAuth/settings function: `getInstagramAccountById()`,
+`getInstagramAccounts()`, `saveInstagramAccountFromOAuth()`,
+`instagramAccountBelongsToClient()`, `instagramClientExists()`,
+`getInstagramClientLabel()`, `ensureInstagramAccountsTable()`,
+`disconnectInstagramAccount()`, `isInstagramAuthError()`, everything in
+`instagramSettings`. Facebook-specific: `publishFacebookImagePost()`,
+`publishFacebookTextPost()`, `facebookPageAccountValid()`,
+`markFacebookScheduledPublished()`, `markFacebookScheduledFailed()`. Phase
+7's own additions that were already generic: `getStuckSocialPosts()`,
+`socialScheduledRecoveryPlan()`, `finalizeSocialScheduledPost()`,
+`normalizeSocialEngineResult()`. `recordInstagramPlatformResult()` was
+kept Instagram-named on purpose — it writes only Instagram's own columns
+(`instagramMediaId`/`errorMessage`) and deliberately never touches
+Facebook's, so an Instagram-specific name is the accurate one.
+
+### Database: `instagramPosts` → `socialPosts`
+
+Renamed via `RENAME TABLE` — an atomic metadata operation. Confirmed
+locally: every row, column, index, primary key, default, and timestamp
+preserved unchanged; only the table's name changed. Two ways this is
+applied, matching this project's established migration convention:
+
+1. **Self-healing** (`ensureSocialPostsTable()`): on any request, if
+   `socialPosts` doesn't exist but the old `instagramPosts` does, it's
+   renamed in place before anything else happens. Verified locally by
+   renaming `socialPosts` back to `instagramPosts` and confirming
+   `ensureSocialPostsTable()` correctly renamed it forward again.
+2. **Explicit migration** (for documentation and manual/production runs):
+   `database/migrations/2026-08-28-social-posts-naming.sql`.
+
+No column was added, removed, or reinterpreted. No `companyId`. Two other
+files had raw SQL against this table and were updated to keep working:
+`includes/InstagramInsights.php` (post-level analytics JOIN) and
+`includes/InstagramComments.php` (comment-to-post resolution) — both kept
+their own Instagram-specific function names (they only ever query Instagram
+media), only their `FROM`/`SELECT` table reference changed.
+
+`instagramAccounts`, `instagramSettings`, `instagramInsights`,
+`instagramComments`, `instagramWebhookEvents` were **not** renamed — the
+audit found no evidence any of them have become cross-platform.
+
+### routesMaster: `UPDATE`, never `DELETE`+`INSERT`
+
+`database/migrations/2026-08-28-social-posts-routes-naming.sql` updates the
+existing rows' `routePath`/`pageFile`/`routeTitle` in place. This matters:
+`rolePermissions` grants reference a route by its `routeId`, not by path
+string — updating in place preserves every role's existing permission grant
+for these pages; deleting and re-inserting would issue new `routeId`s and
+silently revoke access until someone manually re-granted it. **This
+migration is not self-healing — it must actually be run** (unlike the table
+rename). Verified locally: ran it, confirmed the new routes resolve via
+`getRouteByPath()` and the pages render correctly.
+
+### Backward compatibility for old URLs
+
+Old bookmarks to `/instagram-create-post` and `/instagram-scheduled-posts`
+will 404 after this change. A trivial alias was considered (per the
+request) but rejected: `routesMaster` permissions are keyed by `routeId`,
+so a second row for the old path would be a *new*, unpermissioned route —
+nobody would have access to it without a separate admin step, which is
+exactly the "complicated routing abstraction" this phase was told to
+avoid. The sidebar and every internal link were updated to the new paths,
+so normal in-app navigation is unaffected; only manually-typed/bookmarked
+old URLs are affected.
+
+### `cron/instagramScheduler.php`: intentionally NOT renamed
+
+Hostinger Cron points directly at this filename in production. Renaming it
+would require coordinating a production cron configuration change purely
+for cosmetic naming — explicitly out of scope. It remains an internal
+legacy filename; the module's user-facing identity is now "Social Media
+Automation" regardless of what the cron script backing it is called.
+`instagramSchedulerLog()` and `cron/instagramScheduler.log` were left
+unchanged for the same reason (consistency with the file they belong to).
+
+### Incident during testing (caught, fixed)
+
+Local test cleanup twice deleted the shared `uploads/instagram-posts/test.jpg`
+(used since Phase 5) as a side effect of `deleteSocialPostRecord()`'s
+existing, correct behavior of removing a deleted post's referenced media.
+Caught both times via `git status` and restored via `git checkout`.
+Separately, bulk-renaming several files via PowerShell's `-Encoding UTF8`
+silently added a UTF-8 BOM to the start of five PHP files — invisible to
+`php -l` but would have emitted stray bytes before any `header()` call in
+production. Caught by an actual functional test run (not by linting) and
+stripped from all five files before finalizing.
+
+### Testing performed
+
+`php -l` clean on every modified file. Full functional regression against
+local synthetic data: `saveSocialPost()` → `getSocialPostById()` →
+`getSocialPosts()` → `getDueSocialPosts()` → `markSocialPostPublishing()` →
+`markSocialPostPublished()` → `deleteSocialPostRecord()`, all against the
+renamed `socialPosts` table. Full recovery cycle re-run end-to-end through
+the real `cron/instagramScheduler.php` (Instagram-already-done +
+Facebook-pending → correctly skipped Instagram, attempted only Facebook,
+finalized `status='partial'` with a clean error message) — identical
+correct behavior to the pre-rename Phase 7 test. `routesMaster` verified to
+resolve the two new paths correctly. No access token in any log output.
+
+### Production verification status
+
+**IMPLEMENTED — AWAITING PRODUCTION VERIFICATION.** Requires running
+`database/migrations/2026-08-28-social-posts-naming.sql` and
+`database/migrations/2026-08-28-social-posts-routes-naming.sql` on
+production (or simply deploying the code and letting the table rename
+self-heal, then running just the routes migration, which is not
+self-healing) and confirming the sidebar/pages/scheduler all behave as
+verified locally.
 
 ---
 

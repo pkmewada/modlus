@@ -27,8 +27,8 @@ if ($status !== '' && !in_array($status, $allowedStatuses, true)) {
 $clientId = (int)($_GET['clientId'] ?? 0) ?: null;
 
 try {
-    respond(true, 'Instagram posts loaded successfully.', [
-        'posts' => getInstagramPosts($con, $status, $clientId),
+    respond(true, 'Social posts loaded successfully.', [
+        'posts' => getSocialPosts($con, $status, $clientId),
     ]);
 } catch (Throwable $e) {
     respond(false, $e->getMessage());

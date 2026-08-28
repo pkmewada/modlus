@@ -6,17 +6,17 @@
     <div class="container-fluid">
         <div class="my-4 page-header-breadcrumb d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div>
-                <h1 class="page-title fw-medium fs-18 mb-2">Instagram Posts</h1>
+                <h1 class="page-title fw-medium fs-18 mb-2">Social Posts</h1>
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
                         <a href="dashboard">Dashboard</a>
                     </li>
                     <li class="breadcrumb-item">Automation</li>
-                    <li class="breadcrumb-item active" aria-current="page">Instagram Posts</li>
+                    <li class="breadcrumb-item active" aria-current="page">Social Posts</li>
                 </ol>
             </div>
             <div>
-                <a href="instagram-create-post" class="btn btn-primary">
+                <a href="social-create-post" class="btn btn-primary">
                     <i class="ti ti-plus me-1"></i>
                     Create Post
                 </a>
@@ -93,7 +93,7 @@ $(function() {
     $('#instagramPostsBody').on('click', '.delete-instagram-post', function() {
         const postId = $(this).data('post-id');
 
-        if (!confirm('Delete this Instagram post? This cannot be undone.')) {
+        if (!confirm('Delete this social post? This cannot be undone.')) {
             return;
         }
 
@@ -206,17 +206,17 @@ function loadInstagramPosts() {
     const status = $('#statusFilter').val();
     const clientId = $('#clientFilter').val();
 
-    $.getJSON(API_BASE + '/getInstagramPosts.php', { status: status, clientId: clientId })
+    $.getJSON(API_BASE + '/getSocialPosts.php', { status: status, clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
-                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Instagram posts.');
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load social posts.');
                 return;
             }
 
             renderInstagramPosts(res.data.posts || []);
         })
         .fail(function() {
-            window.showToast && window.showToast('danger', 'Unable to load Instagram posts.');
+            window.showToast && window.showToast('danger', 'Unable to load social posts.');
         });
 }
 
@@ -225,7 +225,7 @@ function renderInstagramPosts(posts) {
     $body.empty();
 
     if (!posts.length) {
-        $body.append('<tr><td colspan="8" class="text-center text-muted">No Instagram posts found.</td></tr>');
+        $body.append('<tr><td colspan="8" class="text-center text-muted">No social posts found.</td></tr>');
         return;
     }
 
@@ -241,7 +241,7 @@ function renderInstagramPosts(posts) {
         let actions = '';
 
         if (canEdit) {
-            actions += `<a href="instagram-create-post?postId=${post.id}" class="btn btn-sm btn-outline-primary me-1">Edit</a>`;
+            actions += `<a href="social-create-post?postId=${post.id}" class="btn btn-sm btn-outline-primary me-1">Edit</a>`;
         }
 
         if (post.status === 'failed' || post.status === 'partial' || post.facebookStatus === 'failed') {
@@ -276,7 +276,7 @@ function deleteInstagramPost(postId) {
     }
 
     $.ajax({
-        url: API_BASE + '/deleteInstagramPost.php',
+        url: API_BASE + '/deleteSocialPost.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { postId: postId, csrfToken: CSRF_TOKEN },

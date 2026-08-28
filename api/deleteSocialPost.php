@@ -32,13 +32,13 @@ try {
 $postId = (int)($_POST['postId'] ?? 0);
 
 if ($postId <= 0) {
-    respond(false, 'Invalid Instagram post.');
+    respond(false, 'Invalid social post.');
 }
 
-$post = getInstagramPostById($con, $postId);
+$post = getSocialPostById($con, $postId);
 
 if (!$post) {
-    respond(false, 'Instagram post not found.');
+    respond(false, 'Social post not found.');
 }
 
 if (!in_array($post['status'], ['draft', 'scheduled', 'failed'], true)) {
@@ -46,14 +46,14 @@ if (!in_array($post['status'], ['draft', 'scheduled', 'failed'], true)) {
 }
 
 try {
-    $ok = deleteInstagramPostRecord($con, $postId);
+    $ok = deleteSocialPostRecord($con, $postId);
 
     if ($ok) {
         $clientLabel = getInstagramClientLabel($con, $post['clientId'] !== null ? (int)$post['clientId'] : null);
-        saveActivityLog($con, 'InstagramAutomation', $postId, 'delete', 'Deleted an Instagram post for Client: ' . $clientLabel . '.');
+        saveActivityLog($con, 'InstagramAutomation', $postId, 'delete', 'Deleted a social post for Client: ' . $clientLabel . '.');
     }
 
-    respond($ok, $ok ? 'Instagram post deleted.' : 'Unable to delete Instagram post.');
+    respond($ok, $ok ? 'Social post deleted.' : 'Unable to delete social post.');
 } catch (Throwable $e) {
     respond(false, $e->getMessage());
 }

@@ -309,11 +309,32 @@ function disconnectInstagramAccount(mysqli $con, int $accountId): bool
 |--------------------------------------------------------------------------
 */
 
-function ensureInstagramPostsTable(mysqli $con): void
+/**
+ * Phase 8 naming rename: the table was `instagramPosts` — now `socialPosts`
+ * since it stores Instagram-only, Facebook-only, and Instagram+Facebook
+ * rows alike (Phase 6/7). Self-heals safely on an existing production
+ * database: if `socialPosts` doesn't exist yet but the old `instagramPosts`
+ * does, it's renamed in place (a plain RENAME TABLE — every row, column,
+ * index, default, and the primary key are preserved unchanged; nothing is
+ * dropped or re-created) before the CREATE TABLE IF NOT EXISTS below ever
+ * runs. See database/migrations/2026-08-28-social-posts-naming.sql for the
+ * same rename as an explicit, documented migration.
+ */
+function ensureSocialPostsTable(mysqli $con): void
 {
+    $socialPostsExists = mysqli_query($con, "SHOW TABLES LIKE 'socialPosts'");
+
+    if (!$socialPostsExists || mysqli_num_rows($socialPostsExists) === 0) {
+        $legacyExists = mysqli_query($con, "SHOW TABLES LIKE 'instagramPosts'");
+
+        if ($legacyExists && mysqli_num_rows($legacyExists) > 0) {
+            mysqli_query($con, "RENAME TABLE instagramPosts TO socialPosts");
+        }
+    }
+
     mysqli_query(
         $con,
-        "CREATE TABLE IF NOT EXISTS instagramPosts (
+        "CREATE TABLE IF NOT EXISTS socialPosts (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             createdBy INT UNSIGNED NOT NULL DEFAULT 0,
             clientId INT NULL DEFAULT NULL,
@@ -333,30 +354,30 @@ function ensureInstagramPostsTable(mysqli $con): void
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
     );
 
-    instagramPostsEnsureColumn($con, 'clientId', 'INT NULL DEFAULT NULL');
-    instagramPostsEnsureColumn($con, 'instagramAccountId', 'INT UNSIGNED NULL DEFAULT NULL');
+    socialPostsEnsureColumn($con, 'clientId', 'INT NULL DEFAULT NULL');
+    socialPostsEnsureColumn($con, 'instagramAccountId', 'INT UNSIGNED NULL DEFAULT NULL');
     // Phase 7: which platform(s) this post targets ('instagram', 'facebook',
     // or 'instagram,facebook') and Facebook's own independent result —
     // deliberately separate from status/instagramMediaId/errorMessage so
     // Instagram's and Facebook's outcomes can never be conflated. Default
     // 'instagram'/'not_applicable' means every pre-Phase-7 row is read
     // exactly as it always has been — zero behavior change for old posts.
-    instagramPostsEnsureColumn($con, 'platforms', "VARCHAR(30) NOT NULL DEFAULT 'instagram'");
-    instagramPostsEnsureColumn($con, 'facebookStatus', "VARCHAR(20) NOT NULL DEFAULT 'not_applicable'");
-    instagramPostsEnsureColumn($con, 'facebookPostId', "VARCHAR(64) NOT NULL DEFAULT ''");
-    instagramPostsEnsureColumn($con, 'facebookErrorMessage', 'TEXT NULL DEFAULT NULL');
+    socialPostsEnsureColumn($con, 'platforms', "VARCHAR(30) NOT NULL DEFAULT 'instagram'");
+    socialPostsEnsureColumn($con, 'facebookStatus', "VARCHAR(20) NOT NULL DEFAULT 'not_applicable'");
+    socialPostsEnsureColumn($con, 'facebookPostId', "VARCHAR(64) NOT NULL DEFAULT ''");
+    socialPostsEnsureColumn($con, 'facebookErrorMessage', 'TEXT NULL DEFAULT NULL');
 }
 
-function instagramPostsEnsureColumn(mysqli $con, string $column, string $definition): void
+function socialPostsEnsureColumn(mysqli $con, string $column, string $definition): void
 {
     $columnName = mysqli_real_escape_string($con, $column);
-    $result = mysqli_query($con, "SHOW COLUMNS FROM instagramPosts LIKE '{$columnName}'");
+    $result = mysqli_query($con, "SHOW COLUMNS FROM socialPosts LIKE '{$columnName}'");
 
     if ($result && mysqli_num_rows($result) > 0) {
         return;
     }
 
-    mysqli_query($con, "ALTER TABLE instagramPosts ADD COLUMN {$column} {$definition}");
+    mysqli_query($con, "ALTER TABLE socialPosts ADD COLUMN {$column} {$definition}");
 }
 
 /**
@@ -574,19 +595,19 @@ function saveInstagramMediaFiles(array $filesField, string $mediaCategory = 'ima
 |--------------------------------------------------------------------------
 */
 
-function encodeInstagramPostMediaPaths(array $paths): string
+function encodeSocialPostMediaPaths(array $paths): string
 {
     return (string)json_encode(array_values($paths));
 }
 
-function decodeInstagramPostMediaPaths(?string $mediaUrl): array
+function decodeSocialPostMediaPaths(?string $mediaUrl): array
 {
     $decoded = json_decode((string)$mediaUrl, true);
 
     return is_array($decoded) ? $decoded : array_values(array_filter([(string)$mediaUrl]));
 }
 
-function instagramPostMediaAbsoluteUrls(array $relativePaths): array
+function socialPostMediaAbsoluteUrls(array $relativePaths): array
 {
     return array_map(
         static fn(string $path): string => BASE_URL . '/' . ltrim($path, '/'),
@@ -594,9 +615,9 @@ function instagramPostMediaAbsoluteUrls(array $relativePaths): array
     );
 }
 
-function getInstagramPosts(mysqli $con, string $status = '', ?int $clientId = null): array
+function getSocialPosts(mysqli $con, string $status = '', ?int $clientId = null): array
 {
-    ensureInstagramPostsTable($con);
+    ensureSocialPostsTable($con);
 
     $where = [];
     $types = '';
@@ -618,7 +639,7 @@ function getInstagramPosts(mysqli $con, string $status = '', ?int $clientId = nu
 
     $stmt = mysqli_prepare(
         $con,
-        "SELECT * FROM instagramPosts {$whereSql} ORDER BY COALESCE(scheduledAt, createdAt) DESC, id DESC"
+        "SELECT * FROM socialPosts {$whereSql} ORDER BY COALESCE(scheduledAt, createdAt) DESC, id DESC"
     );
 
     if ($types !== '') {
@@ -630,7 +651,7 @@ function getInstagramPosts(mysqli $con, string $status = '', ?int $clientId = nu
     $posts = [];
 
     while ($row = mysqli_fetch_assoc($result)) {
-        $row['mediaUrls'] = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($row['mediaUrl']));
+        $row['mediaUrls'] = socialPostMediaAbsoluteUrls(decodeSocialPostMediaPaths($row['mediaUrl']));
         $posts[] = $row;
     }
 
@@ -639,11 +660,11 @@ function getInstagramPosts(mysqli $con, string $status = '', ?int $clientId = nu
     return $posts;
 }
 
-function getInstagramPostById(mysqli $con, int $id): ?array
+function getSocialPostById(mysqli $con, int $id): ?array
 {
-    ensureInstagramPostsTable($con);
+    ensureSocialPostsTable($con);
 
-    $stmt = mysqli_prepare($con, "SELECT * FROM instagramPosts WHERE id = ? LIMIT 1");
+    $stmt = mysqli_prepare($con, "SELECT * FROM socialPosts WHERE id = ? LIMIT 1");
     mysqli_stmt_bind_param($stmt, 'i', $id);
     mysqli_stmt_execute($stmt);
     $row = mysqli_stmt_get_result($stmt)->fetch_assoc();
@@ -653,19 +674,19 @@ function getInstagramPostById(mysqli $con, int $id): ?array
         return null;
     }
 
-    $row['mediaUrls'] = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($row['mediaUrl']));
+    $row['mediaUrls'] = socialPostMediaAbsoluteUrls(decodeSocialPostMediaPaths($row['mediaUrl']));
 
     return $row;
 }
 
-function saveInstagramPost(mysqli $con, array $data, int $userId): int
+function saveSocialPost(mysqli $con, array $data, int $userId): int
 {
-    ensureInstagramPostsTable($con);
+    ensureSocialPostsTable($con);
 
     $clientId = (int)($data['clientId'] ?? 0);
     $instagramAccountId = (int)($data['instagramAccountId'] ?? 0);
     $mediaType = (string)($data['mediaType'] ?? 'image');
-    $mediaPathsJson = encodeInstagramPostMediaPaths($data['mediaPaths'] ?? []);
+    $mediaPathsJson = encodeSocialPostMediaPaths($data['mediaPaths'] ?? []);
     $caption = (string)($data['caption'] ?? '');
     $status = (string)($data['status'] ?? 'draft');
     $scheduledAt = $data['scheduledAt'] ?? null;
@@ -690,7 +711,7 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
     if ($postId > 0) {
         $stmt = mysqli_prepare(
             $con,
-            "UPDATE instagramPosts
+            "UPDATE socialPosts
              SET clientId = ?, instagramAccountId = ?, mediaType = ?, mediaUrl = ?, caption = ?, status = ?, scheduledAt = ?,
                  errorMessage = '', platforms = ?, facebookStatus = ?, facebookPostId = '', facebookErrorMessage = NULL
              WHERE id = ?"
@@ -717,7 +738,7 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
 
     $stmt = mysqli_prepare(
         $con,
-        "INSERT INTO instagramPosts
+        "INSERT INTO socialPosts
             (createdBy, clientId, instagramAccountId, mediaType, mediaUrl, caption, status, scheduledAt, platforms, facebookStatus)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
@@ -742,21 +763,21 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
     return $newId;
 }
 
-function deleteInstagramPostRecord(mysqli $con, int $id): bool
+function deleteSocialPostRecord(mysqli $con, int $id): bool
 {
-    $post = getInstagramPostById($con, $id);
+    $post = getSocialPostById($con, $id);
 
     if (!$post) {
         return false;
     }
 
-    $stmt = mysqli_prepare($con, "DELETE FROM instagramPosts WHERE id = ?");
+    $stmt = mysqli_prepare($con, "DELETE FROM socialPosts WHERE id = ?");
     mysqli_stmt_bind_param($stmt, 'i', $id);
     $ok = mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
     if ($ok) {
-        foreach (decodeInstagramPostMediaPaths($post['mediaUrl']) as $relativePath) {
+        foreach (decodeSocialPostMediaPaths($post['mediaUrl']) as $relativePath) {
             $fullPath = dirname(__DIR__) . '/' . ltrim((string)$relativePath, '/');
 
             if (is_file($fullPath)) {
@@ -768,13 +789,13 @@ function deleteInstagramPostRecord(mysqli $con, int $id): bool
     return $ok;
 }
 
-function getDueInstagramPosts(mysqli $con, int $limit = 20): array
+function getDueSocialPosts(mysqli $con, int $limit = 20): array
 {
-    ensureInstagramPostsTable($con);
+    ensureSocialPostsTable($con);
 
     $stmt = mysqli_prepare(
         $con,
-        "SELECT * FROM instagramPosts
+        "SELECT * FROM socialPosts
          WHERE status = 'scheduled' AND scheduledAt <= NOW()
          ORDER BY scheduledAt ASC
          LIMIT ?"
@@ -793,20 +814,20 @@ function getDueInstagramPosts(mysqli $con, int $limit = 20): array
     return $posts;
 }
 
-function getInstagramPostsByStatus(mysqli $con, string $status, int $limit = 20, ?string $mediaType = null): array
+function getSocialPostsByStatus(mysqli $con, string $status, int $limit = 20, ?string $mediaType = null): array
 {
-    ensureInstagramPostsTable($con);
+    ensureSocialPostsTable($con);
 
     if ($mediaType !== null) {
         $stmt = mysqli_prepare(
             $con,
-            "SELECT * FROM instagramPosts WHERE status = ? AND mediaType = ? ORDER BY updatedAt ASC LIMIT ?"
+            "SELECT * FROM socialPosts WHERE status = ? AND mediaType = ? ORDER BY updatedAt ASC LIMIT ?"
         );
         mysqli_stmt_bind_param($stmt, 'ssi', $status, $mediaType, $limit);
     } else {
         $stmt = mysqli_prepare(
             $con,
-            "SELECT * FROM instagramPosts WHERE status = ? ORDER BY updatedAt ASC LIMIT ?"
+            "SELECT * FROM socialPosts WHERE status = ? ORDER BY updatedAt ASC LIMIT ?"
         );
         mysqli_stmt_bind_param($stmt, 'si', $status, $limit);
     }
@@ -828,18 +849,18 @@ function getInstagramPostsByStatus(mysqli $con, string $status, int $limit = 20,
  * Phase 7 recovery scan: image/carousel posts stuck in 'publishing' across
  * cron runs. Reels are deliberately excluded — they legitimately sit in
  * 'publishing' while Meta processes them asynchronously (see
- * getInstagramPostsByStatus($con, 'publishing', 20, 'reel') in the
+ * getSocialPostsByStatus($con, 'publishing', 20, 'reel') in the
  * scheduler's existing Phase A) — an image/carousel post has no such
  * legitimate async state, so finding one here always means the previous
  * cron run's process died mid-publish, never a normal in-progress state.
  */
 function getStuckSocialPosts(mysqli $con, int $limit = 20): array
 {
-    ensureInstagramPostsTable($con);
+    ensureSocialPostsTable($con);
 
     $stmt = mysqli_prepare(
         $con,
-        "SELECT * FROM instagramPosts
+        "SELECT * FROM socialPosts
          WHERE status = 'publishing' AND mediaType IN ('image', 'carousel')
          ORDER BY updatedAt ASC
          LIMIT ?"
@@ -897,7 +918,7 @@ function markFacebookScheduledPublished(mysqli $con, int $id, string $postId): v
 {
     $stmt = mysqli_prepare(
         $con,
-        "UPDATE instagramPosts SET facebookStatus = 'published', facebookPostId = ?, facebookErrorMessage = NULL WHERE id = ?"
+        "UPDATE socialPosts SET facebookStatus = 'published', facebookPostId = ?, facebookErrorMessage = NULL WHERE id = ?"
     );
     mysqli_stmt_bind_param($stmt, 'si', $postId, $id);
     mysqli_stmt_execute($stmt);
@@ -908,16 +929,16 @@ function markFacebookScheduledFailed(mysqli $con, int $id, string $message): voi
 {
     $stmt = mysqli_prepare(
         $con,
-        "UPDATE instagramPosts SET facebookStatus = 'failed', facebookErrorMessage = ? WHERE id = ?"
+        "UPDATE socialPosts SET facebookStatus = 'failed', facebookErrorMessage = ? WHERE id = ?"
     );
     mysqli_stmt_bind_param($stmt, 'si', $message, $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
 
-function setInstagramPostOverallStatus(mysqli $con, int $id, string $status): void
+function setSocialPostOverallStatus(mysqli $con, int $id, string $status): void
 {
-    $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET status = ? WHERE id = ?");
+    $stmt = mysqli_prepare($con, "UPDATE socialPosts SET status = ? WHERE id = ?");
     mysqli_stmt_bind_param($stmt, 'si', $status, $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -926,8 +947,8 @@ function setInstagramPostOverallStatus(mysqli $con, int $id, string $status): vo
 /**
  * Records Instagram's own OWN result fields (instagramMediaId/publishedAt/
  * errorMessage) for a multi-platform scheduled post — deliberately does
- * NOT touch `status`, unlike markInstagramPostPublished()/
- * markInstagramPostFailed() (which remain unchanged and are still used
+ * NOT touch `status`, unlike markSocialPostPublished()/
+ * markSocialPostFailed() (which remain unchanged and are still used
  * as-is by the legacy single-platform scheduler path and Reel/carousel
  * handling). `status` for a multi-platform post is only ever decided once,
  * explicitly, by finalizeSocialScheduledPost() below — never as a side
@@ -939,11 +960,11 @@ function recordInstagramPlatformResult(mysqli $con, int $id, bool $success, stri
     if ($success) {
         $stmt = mysqli_prepare(
             $con,
-            "UPDATE instagramPosts SET instagramMediaId = ?, publishedAt = NOW(), errorMessage = '' WHERE id = ?"
+            "UPDATE socialPosts SET instagramMediaId = ?, publishedAt = NOW(), errorMessage = '' WHERE id = ?"
         );
         mysqli_stmt_bind_param($stmt, 'si', $mediaId, $id);
     } else {
-        $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET errorMessage = ? WHERE id = ?");
+        $stmt = mysqli_prepare($con, "UPDATE socialPosts SET errorMessage = ? WHERE id = ?");
         mysqli_stmt_bind_param($stmt, 'si', $errorMessage, $id);
     }
 
@@ -1079,17 +1100,17 @@ function finalizeSocialScheduledPost(mysqli $con, array $post, array $engineResu
     $totalCount = count($outcomes);
 
     if ($successCount === $totalCount) {
-        setInstagramPostOverallStatus($con, $postId, 'published');
+        setSocialPostOverallStatus($con, $postId, 'published');
     } elseif ($successCount === 0) {
-        setInstagramPostOverallStatus($con, $postId, 'failed');
+        setSocialPostOverallStatus($con, $postId, 'failed');
     } else {
-        setInstagramPostOverallStatus($con, $postId, 'partial');
+        setSocialPostOverallStatus($con, $postId, 'partial');
     }
 }
 
-function markInstagramPostPublishing(mysqli $con, int $id): void
+function markSocialPostPublishing(mysqli $con, int $id): void
 {
-    $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET status = 'publishing' WHERE id = ?");
+    $stmt = mysqli_prepare($con, "UPDATE socialPosts SET status = 'publishing' WHERE id = ?");
     mysqli_stmt_bind_param($stmt, 'i', $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -1097,17 +1118,17 @@ function markInstagramPostPublishing(mysqli $con, int $id): void
 
 function updateInstagramPostContainerId(mysqli $con, int $id, string $containerId): void
 {
-    $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET instagramMediaId = ? WHERE id = ?");
+    $stmt = mysqli_prepare($con, "UPDATE socialPosts SET instagramMediaId = ? WHERE id = ?");
     mysqli_stmt_bind_param($stmt, 'si', $containerId, $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
 
-function markInstagramPostPublished(mysqli $con, int $id, string $mediaId): void
+function markSocialPostPublished(mysqli $con, int $id, string $mediaId): void
 {
     $stmt = mysqli_prepare(
         $con,
-        "UPDATE instagramPosts
+        "UPDATE socialPosts
          SET status = 'published', instagramMediaId = ?, publishedAt = NOW(), errorMessage = ''
          WHERE id = ?"
     );
@@ -1116,11 +1137,11 @@ function markInstagramPostPublished(mysqli $con, int $id, string $mediaId): void
     mysqli_stmt_close($stmt);
 }
 
-function markInstagramPostFailed(mysqli $con, int $id, string $message): void
+function markSocialPostFailed(mysqli $con, int $id, string $message): void
 {
     $stmt = mysqli_prepare(
         $con,
-        "UPDATE instagramPosts SET status = 'failed', errorMessage = ? WHERE id = ?"
+        "UPDATE socialPosts SET status = 'failed', errorMessage = ? WHERE id = ?"
     );
     mysqli_stmt_bind_param($stmt, 'si', $message, $id);
     mysqli_stmt_execute($stmt);
@@ -1133,9 +1154,9 @@ function markInstagramPostFailed(mysqli $con, int $id, string $message): void
  * stuck in 'publishing' or wrongly marked 'failed' for a blip that wasn't
  * Meta rejecting the post.
  */
-function revertInstagramPostToScheduled(mysqli $con, int $id): void
+function revertSocialPostToScheduled(mysqli $con, int $id): void
 {
-    $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET status = 'scheduled' WHERE id = ?");
+    $stmt = mysqli_prepare($con, "UPDATE socialPosts SET status = 'scheduled' WHERE id = ?");
     mysqli_stmt_bind_param($stmt, 'i', $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);

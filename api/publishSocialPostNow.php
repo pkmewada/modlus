@@ -36,7 +36,7 @@ $accountId = (int)($_POST['instagramAccountId'] ?? 0);
 $platforms = isset($_POST['platforms']) && is_array($_POST['platforms']) ? array_map('strval', $_POST['platforms']) : [];
 $caption = trim((string)($_POST['caption'] ?? ''));
 
-// Same two guards used by api/saveInstagramPost.php — no second
+// Same two guards used by api/saveSocialPost.php — no second
 // client/account validation system introduced for this endpoint.
 if ($clientId <= 0 || !instagramClientExists($con, $clientId)) {
     respond(false, 'Please select a valid client.');
@@ -66,7 +66,7 @@ if (isset($_FILES['media']) && !empty($_FILES['media']['name'][0] ?? '')) {
     }
 
     if (!empty($uploadResult['paths'])) {
-        $absoluteUrls = instagramPostMediaAbsoluteUrls([$uploadResult['paths'][0]]);
+        $absoluteUrls = socialPostMediaAbsoluteUrls([$uploadResult['paths'][0]]);
         $imageUrl = $absoluteUrls[0] ?? '';
     }
 }

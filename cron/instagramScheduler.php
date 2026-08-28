@@ -87,14 +87,14 @@ $accountCache = [];
 | have their own recovery path (Phase A2 below), which must never overlap
 | with this Reel-specific container-status check.
 */
-$processingPosts = getInstagramPostsByStatus($con, 'publishing', 20, 'reel');
+$processingPosts = getSocialPostsByStatus($con, 'publishing', 20, 'reel');
 
 foreach ($processingPosts as $post) {
     $postId = (int)$post['id'];
     $account = loadInstagramAccountForPost($con, $accountCache, $post);
 
     if (!$account) {
-        markInstagramPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
+        markSocialPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
         saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed: linked account unavailable.');
         instagramSchedulerLog('Post #' . $postId . ' failed: linked Instagram account unavailable.');
         continue;
@@ -107,11 +107,11 @@ foreach ($processingPosts as $post) {
 
         if ($statusCode === 'FINISHED') {
             $mediaId = publishInstagramContainer($account, (string)$post['instagramMediaId']);
-            markInstagramPostPublished($con, $postId, $mediaId);
+            markSocialPostPublished($con, $postId, $mediaId);
             saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram video post via scheduler for Client: ' . $clientLabel . '.');
             instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') published (video). Media ID: ' . $mediaId);
         } elseif ($statusCode === 'ERROR' || $statusCode === 'EXPIRED') {
-            markInstagramPostFailed($con, $postId, 'Meta reported video processing status: ' . $statusCode);
+            markSocialPostFailed($con, $postId, 'Meta reported video processing status: ' . $statusCode);
             saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram video post failed at Meta for Client: ' . $clientLabel . ' (' . $statusCode . ').');
             instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') failed. Status: ' . $statusCode);
         } elseif ($statusCode === 'IN_PROGRESS') {
@@ -119,14 +119,14 @@ foreach ($processingPosts as $post) {
         } else {
             // Unexpected status (e.g. PUBLISHED without our own record of
             // finishing the publish call) — don't retry forever; surface it.
-            markInstagramPostFailed($con, $postId, 'Unexpected Meta processing status: ' . $statusCode . '. Please verify manually on Instagram.');
+            markSocialPostFailed($con, $postId, 'Unexpected Meta processing status: ' . $statusCode . '. Please verify manually on Instagram.');
             saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post has unexpected status for Client: ' . $clientLabel . ' (' . $statusCode . ').');
             instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') has unexpected status ' . $statusCode . '; marked failed for manual review.');
         }
     } catch (InstagramTransientApiException $e) {
         instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') status check failed transiently, will retry next run: ' . $e->getMessage());
     } catch (Throwable $e) {
-        markInstagramPostFailed($con, $postId, $e->getMessage());
+        markSocialPostFailed($con, $postId, $e->getMessage());
         saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed for Client: ' . $clientLabel . ' (' . $e->getMessage() . ').');
         instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') failed: ' . $e->getMessage());
         handleInstagramAuthFailure($con, $accountCache, $account, $e);
@@ -151,7 +151,7 @@ foreach ($stuckPosts as $post) {
     $account = loadInstagramAccountForPost($con, $accountCache, $post);
 
     if (!$account) {
-        markInstagramPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
+        markSocialPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
         saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed during recovery: linked account unavailable.');
         instagramSchedulerLog('Post #' . $postId . ' failed during recovery: linked Instagram account unavailable.');
         continue;
@@ -174,17 +174,17 @@ foreach ($stuckPosts as $post) {
             // Carousel is always Instagram-only (Facebook is image-only,
             // enforced at save time) — recovery here is simply resuming the
             // single publish attempt, mirroring Phase B's carousel case.
-            $mediaUrls = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($post['mediaUrl']));
+            $mediaUrls = socialPostMediaAbsoluteUrls(decodeSocialPostMediaPaths($post['mediaUrl']));
 
             try {
                 $result = publishInstagramCarouselPost($account, $mediaUrls, (string)$post['caption']);
-                markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
+                markSocialPostPublished($con, $postId, $result['instagramMediaId']);
                 saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram carousel post via scheduler recovery for Client: ' . $clientLabel . '.');
                 instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovered and published (carousel). Media ID: ' . $result['instagramMediaId']);
             } catch (InstagramTransientApiException $e) {
                 instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovery publish failed transiently, will retry next run: ' . $e->getMessage());
             } catch (Throwable $e) {
-                markInstagramPostFailed($con, $postId, $e->getMessage());
+                markSocialPostFailed($con, $postId, $e->getMessage());
                 saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed during recovery for Client: ' . $clientLabel . ' (' . $e->getMessage() . ').');
                 instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') recovery failed: ' . $e->getMessage());
                 handleInstagramAuthFailure($con, $accountCache, $account, $e);
@@ -211,7 +211,7 @@ foreach ($stuckPosts as $post) {
             continue;
         }
 
-        $mediaUrls = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($post['mediaUrl']));
+        $mediaUrls = socialPostMediaAbsoluteUrls(decodeSocialPostMediaPaths($post['mediaUrl']));
         $result = publishSocialPost(
             $con,
             (int)$post['clientId'],
@@ -254,30 +254,30 @@ foreach ($stuckPosts as $post) {
 | Phase B: publish newly due scheduled posts (across all clients)
 |--------------------------------------------------------------------------
 */
-$duePosts = getDueInstagramPosts($con, 20);
+$duePosts = getDueSocialPosts($con, 20);
 
 foreach ($duePosts as $post) {
     $postId = (int)$post['id'];
     $account = loadInstagramAccountForPost($con, $accountCache, $post);
 
     if (!$account) {
-        markInstagramPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
+        markSocialPostFailed($con, $postId, 'Linked Instagram account is no longer connected or its token has expired.');
         saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed: linked account unavailable.');
         instagramSchedulerLog('Post #' . $postId . ' failed: linked Instagram account unavailable.');
         continue;
     }
 
     $clientLabel = getInstagramClientLabel($con, $account['clientId']);
-    markInstagramPostPublishing($con, $postId);
+    markSocialPostPublishing($con, $postId);
 
     try {
-        $mediaUrls = instagramPostMediaAbsoluteUrls(decodeInstagramPostMediaPaths($post['mediaUrl']));
+        $mediaUrls = socialPostMediaAbsoluteUrls(decodeSocialPostMediaPaths($post['mediaUrl']));
         $caption = (string)$post['caption'];
 
         switch ($post['mediaType']) {
             case 'carousel':
                 $result = publishInstagramCarouselPost($account, $mediaUrls, $caption);
-                markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
+                markSocialPostPublished($con, $postId, $result['instagramMediaId']);
                 saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram carousel post via scheduler for Client: ' . $clientLabel . '.');
                 instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') published (carousel). Media ID: ' . $result['instagramMediaId']);
                 break;
@@ -286,7 +286,7 @@ foreach ($duePosts as $post) {
                 $result = publishInstagramVideoPost($account, $mediaUrls[0] ?? '', $caption);
 
                 if ($result['status'] === 'published') {
-                    markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
+                    markSocialPostPublished($con, $postId, $result['instagramMediaId']);
                     saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram reel via scheduler for Client: ' . $clientLabel . '.');
                     instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') published (reel). Media ID: ' . $result['instagramMediaId']);
                 } else {
@@ -304,7 +304,7 @@ foreach ($duePosts as $post) {
                     // Every post created before Phase 7 (platforms defaults to
                     // 'instagram') always takes this exact branch.
                     $result = publishInstagramImagePost($account, $mediaUrls[0] ?? '', $caption);
-                    markInstagramPostPublished($con, $postId, $result['instagramMediaId']);
+                    markSocialPostPublished($con, $postId, $result['instagramMediaId']);
                     saveActivityLog($con, 'InstagramAutomation', $postId, 'publish', 'Published Instagram image post via scheduler for Client: ' . $clientLabel . '.');
                     instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') published (image). Media ID: ' . $result['instagramMediaId']);
                     break;
@@ -342,10 +342,10 @@ foreach ($duePosts as $post) {
     } catch (InstagramTransientApiException $e) {
         // Network-level blip, not Meta rejecting the post — requeue rather
         // than permanently failing it.
-        revertInstagramPostToScheduled($con, $postId);
+        revertSocialPostToScheduled($con, $postId);
         instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') publish failed transiently, requeued for retry: ' . $e->getMessage());
     } catch (Throwable $e) {
-        markInstagramPostFailed($con, $postId, $e->getMessage());
+        markSocialPostFailed($con, $postId, $e->getMessage());
         saveActivityLog($con, 'InstagramAutomation', $postId, 'publish_failed', 'Instagram post failed for Client: ' . $clientLabel . ' (' . $e->getMessage() . ').');
         instagramSchedulerLog('Post #' . $postId . ' (Client: ' . $clientLabel . ') failed: ' . $e->getMessage());
         handleInstagramAuthFailure($con, $accountCache, $account, $e);

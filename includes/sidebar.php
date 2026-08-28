@@ -116,9 +116,9 @@ $menuGroups = [
         'label' => 'Automation',
         'icon' => 'ti ti-settings-automation',
         'items' => [
-            ['route' => 'instagram-automation', 'label' => 'Instagram Automation'],
-            ['route' => 'instagram-create-post', 'label' => 'Create Instagram Post'],
-            ['route' => 'instagram-scheduled-posts', 'label' => 'Instagram Posts'],
+            ['route' => 'instagram-automation', 'label' => 'Social Media Automation'],
+            ['route' => 'social-create-post', 'label' => 'Create Social Post'],
+            ['route' => 'social-posts', 'label' => 'Social Posts'],
             ['route' => 'instagram-comments', 'label' => 'Instagram Comments'],
             ['route' => 'instagram-analytics', 'label' => 'Instagram Analytics'],
         ],
