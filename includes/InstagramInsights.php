@@ -124,7 +124,7 @@ function getRecentPublishedInstagramPosts(mysqli $con, int $accountId, int $limi
     $stmt = mysqli_prepare(
         $con,
         "SELECT id, mediaType, instagramMediaId
-         FROM instagramPosts
+         FROM socialPosts
          WHERE instagramAccountId = ? AND status = 'published' AND instagramMediaId != ''
          ORDER BY publishedAt DESC
          LIMIT ?"
@@ -147,7 +147,7 @@ function getRecentPublishedInstagramPosts(mysqli $con, int $accountId, int $limi
  * Records the outcome of the most recent analytics sync attempt for one
  * account — admin error visibility (Task 5 of Phase 3.1). Reuses the same
  * "each row carries its own last-known-state" convention as
- * instagramPosts.status/errorMessage rather than a separate log table.
+ * socialPosts.status/errorMessage rather than a separate log table.
  * $errorMessage = null on success (clears any prior error).
  */
 function markInstagramAccountAnalyticsSync(mysqli $con, int $accountId, ?string $errorMessage): void

@@ -337,7 +337,7 @@ function renderPostInsights(postRows) {
 
             $body.append(`
                 <tr>
-                    <td><a href="instagram-scheduled-posts">Post #${post.postId}</a></td>
+                    <td><a href="social-posts">Post #${post.postId}</a></td>
                     <td>${m.reach != null ? Number(m.reach).toLocaleString() : '—'}</td>
                     <td>${m.impressions != null ? Number(m.impressions).toLocaleString() : '—'}</td>
                     <td>${m.plays != null ? Number(m.plays).toLocaleString() : '—'}</td>

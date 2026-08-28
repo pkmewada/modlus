@@ -56,7 +56,7 @@ function resolveInstagramPostIdByMediaId(mysqli $con, int $accountId, string $me
 
     $stmt = mysqli_prepare(
         $con,
-        "SELECT id FROM instagramPosts WHERE instagramAccountId = ? AND instagramMediaId = ? LIMIT 1"
+        "SELECT id FROM socialPosts WHERE instagramAccountId = ? AND instagramMediaId = ? LIMIT 1"
     );
     mysqli_stmt_bind_param($stmt, 'is', $accountId, $mediaId);
     mysqli_stmt_execute($stmt);

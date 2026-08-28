@@ -96,10 +96,10 @@ if ($status === 'scheduled') {
     }
 }
 
-$existingPost = $postId > 0 ? getInstagramPostById($con, $postId) : null;
+$existingPost = $postId > 0 ? getSocialPostById($con, $postId) : null;
 
 if ($postId > 0 && !$existingPost) {
-    respond(false, 'Instagram post not found.');
+    respond(false, 'Social post not found.');
 }
 
 if ($existingPost && !in_array($existingPost['status'], ['draft', 'scheduled', 'failed'], true)) {
@@ -113,7 +113,7 @@ $maxFiles = $mediaType === 'carousel' ? 10 : 1;
 // otherwise a post left with mismatched media (e.g. an image reused as a
 // reel's "video") would fail confusingly at Meta's end instead of here.
 $mediaPaths = ($existingPost && $existingPost['mediaType'] === $mediaType)
-    ? decodeInstagramPostMediaPaths($existingPost['mediaUrl'])
+    ? decodeSocialPostMediaPaths($existingPost['mediaUrl'])
     : [];
 
 if (isset($_FILES['media']) && !empty($_FILES['media']['name'][0] ?? '')) {
@@ -141,7 +141,7 @@ if ($mediaType !== 'carousel' && count($mediaPaths) > 1) {
 }
 
 try {
-    $savedId = saveInstagramPost(
+    $savedId = saveSocialPost(
         $con,
         [
             'id' => $postId,
@@ -162,13 +162,13 @@ try {
 
     if ($status === 'draft') {
         $auditLabel = 'draft';
-        $successMessage = 'Instagram post saved as draft.';
+        $successMessage = 'Social post saved as draft.';
     } elseif ($isImmediate) {
         $auditLabel = 'scheduled - immediate';
-        $successMessage = 'Instagram post queued for publishing. It will go live once the scheduler next processes it.';
+        $successMessage = 'Social post queued for publishing. It will go live once the scheduler next processes it.';
     } else {
         $auditLabel = 'scheduled - future';
-        $successMessage = 'Instagram post scheduled for ' . date('M j, Y g:i A', strtotime($scheduledAt)) . '.';
+        $successMessage = 'Social post scheduled for ' . date('M j, Y g:i A', strtotime($scheduledAt)) . '.';
     }
 
     saveActivityLog(
@@ -176,11 +176,11 @@ try {
         'InstagramAutomation',
         $savedId,
         $isUpdate ? 'update' : 'create',
-        'Instagram post ' . ($isUpdate ? 'updated' : 'created') . ' (' . $auditLabel . ', platforms: ' . implode('+', $platforms) . ') for Client: ' . $clientLabel . '.'
+        'Social post ' . ($isUpdate ? 'updated' : 'created') . ' (' . $auditLabel . ', platforms: ' . implode('+', $platforms) . ') for Client: ' . $clientLabel . '.'
     );
 
     respond(true, $successMessage, [
-        'post' => getInstagramPostById($con, $savedId),
+        'post' => getSocialPostById($con, $savedId),
     ]);
 } catch (Throwable $e) {
     respond(false, $e->getMessage());

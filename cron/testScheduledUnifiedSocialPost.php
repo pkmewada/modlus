@@ -5,7 +5,7 @@
 | MANUAL TEST ONLY — NOT A CRON JOB.
 |--------------------------------------------------------------------------
 | Do not register this on Hostinger Cron. A test harness for Phase 7
-| (Unified Scheduled Publishing) — lets you set up a real instagramPosts
+| (Unified Scheduled Publishing) — lets you set up a real socialPosts
 | row in a specific state and then run the REAL cron/instagramScheduler.php
 | against it, instead of waiting hours for a real future schedule.
 |
@@ -13,7 +13,7 @@
 |
 |   create <accountId> <platforms> <mediaType> <relativeMediaPath> [caption]
 |     Creates a real, immediately-due (scheduledAt = NOW()) scheduled post
-|     using the same saveInstagramPost() function the real composer uses.
+|     using the same saveSocialPost() function the real composer uses.
 |     <platforms> is comma-separated: instagram | facebook | instagram,facebook
 |     <relativeMediaPath> is relative to the project root, e.g.
 |       uploads/instagram-posts/test.jpg
@@ -84,7 +84,7 @@ if ($command === 'create') {
 
     $relativeMediaPath = ltrim(str_replace(rtrim(BASE_URL, '/') . '/', '', $relativeMediaPath), '/');
 
-    $postId = saveInstagramPost($con, [
+    $postId = saveSocialPost($con, [
         'clientId' => (int)$account['clientId'],
         'instagramAccountId' => $accountId,
         'mediaType' => $mediaType,
@@ -109,7 +109,7 @@ if ($command === 'simulate-stuck') {
         printUsageAndExit();
     }
 
-    $post = getInstagramPostById($con, $postId);
+    $post = getSocialPostById($con, $postId);
 
     if (!$post) {
         fwrite(STDERR, "No post found with id {$postId}.\n");
@@ -122,7 +122,7 @@ if ($command === 'simulate-stuck') {
 
     $stmt = mysqli_prepare(
         $con,
-        "UPDATE instagramPosts
+        "UPDATE socialPosts
          SET status = 'publishing', instagramMediaId = ?, facebookStatus = ?, facebookPostId = ?, errorMessage = '', facebookErrorMessage = NULL
          WHERE id = ?"
     );
@@ -142,7 +142,7 @@ if ($command === 'show') {
         printUsageAndExit();
     }
 
-    $post = getInstagramPostById($con, $postId);
+    $post = getSocialPostById($con, $postId);
 
     if (!$post) {
         fwrite(STDERR, "No post found with id {$postId}.\n");
