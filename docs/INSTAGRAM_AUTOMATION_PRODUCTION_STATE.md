@@ -1,6 +1,6 @@
 # Instagram Automation — Production State (Source of Truth)
 
-Last Updated: 2026-08-27 (Phase 5 — Facebook Page Publishing adapter added)
+Last Updated: 2026-08-28 (Phase 6 — Unified Social Post Engine added)
 
 > **CURRENT BASELINE IS PRODUCTION WORKING.**
 >
@@ -706,6 +706,236 @@ cleanly with a clear message and exit code 1, no fatals. **Not yet
 exercised against a real Facebook Page** — that requires the user to run it
 against a real connected account in production, and depends on the
 `pages_manage_posts` permission question above being resolved first.
+
+---
+
+## 22.7. Phase 6 — Unified Social Post Engine
+
+**Date**: 2026-08-28. Phase 5 (§22.6) was confirmed production-verified by
+the user before this phase started — real Facebook post id
+`336886156185070_122207178524467606`, published via
+`cron/testFacebookPublish.php` against Page `336886156185070`
+(Gym Labz Equipments), proving `pages_manage_posts` now works after the
+Meta Login Configuration update.
+
+**Objective**: one publishing entry point that can send the same post to
+Instagram only, Facebook only, or both, with independent per-platform
+results and correct partial-success reporting — without touching Instagram
+publishing, Facebook publishing, OAuth, or `cron/instagramScheduler.php`.
+
+### Architecture decision made with the user before coding
+
+Nothing in Modlus publishes synchronously today — even Instagram-only
+posts don't publish on "Schedule Post" click; that only saves a DB row,
+and `cron/instagramScheduler.php` (batch, async) publishes it later. Two
+options existed to get an immediate "Publish → see both results now" UX:
+extend the scheduler, or add a new synchronous path alongside it. The user
+explicitly chose **a new synchronous "Publish Now" action**, and explicitly
+required `cron/instagramScheduler.php` to stay completely untouched in this
+phase. That is what was built — the existing Draft/Schedule/cron pipeline
+was not modified in any way.
+
+### What was built
+
+**`includes/SocialPostEngine.php`** (new) — the Unified Social Post Engine.
+Pure orchestration, no Meta API code of its own:
+
+- `publishSocialPost(mysqli $con, int $clientId, int $accountId, array $platforms, string $type, array $content): array`
+  is the single entry point. `$platforms` is a subset of `['instagram', 'facebook']`;
+  `$type` is `'image'` or `'text'`; `$content` carries `imageUrl`/`caption`
+  (image) or `message` (text, falls back to `caption` if not given).
+- Validates, in order: platform list, post type, `instagramClientExists()`,
+  `instagramAccountBelongsToClient()` (the exact same cross-client guard
+  `api/saveInstagramPost.php` already uses — no second account/ownership
+  system), `getInstagramAccountById()` (the exact same account lookup and
+  decryption path everything else uses — no second token/account lookup
+  system), then per-type content requirements, then
+  `facebookPageAccountValid()` when Facebook is requested. Every validation
+  failure returns a structured `['success' => false, 'status' => 'failed', 'message' => ..., 'platforms' => []]`
+  before any Meta API call is made — nothing here can throw an uncaught
+  exception to a caller.
+- `socialPostEnginePublishOne()` dispatches exactly one platform:
+  - Instagram + image → calls the **existing**
+    `publishInstagramImagePost()` (`includes/InstagramAutomation.php`,
+    unchanged) — the same container-create-then-publish flow already
+    production-verified in Phase 2/§16-17.
+  - Instagram + text → returns a structured unsupported result
+    (`'unsupported' => true`) and **never calls any Meta endpoint** —
+    Instagram has no normal text-only feed post.
+  - Facebook + image → calls the **existing** `publishFacebookImagePost()`.
+  - Facebook + text → calls the **existing** `publishFacebookTextPost()`.
+  - Any Meta/transport exception is caught here and turned into a
+    structured `{success:false, message: <sanitized Meta error>}` — one
+    platform's failure can never take down the other platform's call or
+    throw a fatal to the UI. `instagramGraphApiRequest()` (unchanged,
+    reused by both publishers) already redacts `access_token`/
+    `client_secret`/`code` before an exception is ever raised, so the
+    message surfaced here is always safe to show/log.
+  - `socialPostEngineFinalize()` computes overall `status`: `'success'`
+    (all requested platforms succeeded), `'partial'` (some succeeded, some
+    failed — **never** collapsed into a plain failure), or `'failed'`
+    (none succeeded). `success` (boolean) is `true` only for `'success'`;
+    callers must read `status`/`platforms` to distinguish `'partial'` from
+    `'failed'`.
+  - `socialPostEngineLog()` — new diagnostic log,
+    `logs/social-post-engine.log`, one line per platform attempt:
+    timestamp, clientId, accountId, platform, type, success, postId,
+    sanitized message. Never writes `accessToken` — the logged `message`
+    is always the same sanitized string returned to the caller, and the
+    token itself is never passed into this function at all (only the
+    `$account` array's non-secret fields are implied by context, and even
+    those aren't logged — only the ids).
+
+No duplicate Graph API transport, no duplicate token decryption, no
+duplicate account lookup, no duplicate Instagram/Facebook publishing logic
+— every actual Meta API call in this phase happens inside
+`InstagramAutomation.php` or `FacebookPublisher.php`, unchanged.
+
+**`api/publishSocialPostNow.php`** (new) — the synchronous "Publish Now"
+endpoint. Auth + CSRF gated like every other Instagram API. Validates
+client/account ownership (same two checks as `api/saveInstagramPost.php`),
+uploads media via the **existing** `saveInstagramMediaFiles()` into the
+**existing** `uploads/instagram-posts/` directory (no new upload path), then
+calls `publishSocialPost()`. Reports `success => ($status !== 'failed')` at
+the HTTP layer specifically so a `'partial'` result reaches the UI as
+partial (with both platform results rendered), never as a blanket
+"Publishing failed" when one platform actually succeeded. Writes one
+`saveActivityLog()` entry (existing audit log table), never the token.
+
+**`pages/instagram-create-post.php`** (extended, additively) — the
+**existing** Instagram composer, not a second composer. Added:
+- "Post To" checkboxes (Instagram, Facebook). Facebook is disabled/unchecked
+  automatically when the selected account has no `facebookPageId`
+  (`getInstagramSettings.php` already returns that field per account — no
+  new API needed).
+- A "Publish Now" button, enabled only when Post Type is "Image Post"
+  (reels/carousels still use the existing "Schedule Post" + cron flow,
+  completely untouched).
+- A results panel rendering each requested platform's outcome
+  independently (✓/✕, message, post id) — the exact "never show only a
+  generic failure when one platform succeeded" requirement.
+- The existing Draft/Schedule form, its validation, its file input, and its
+  submission to `api/saveInstagramPost.php` are all unchanged; "Publish
+  Now" reads the same form fields via `FormData` and posts to the new
+  endpoint instead — it does not touch or reuse `saveInstagramPost()`.
+
+**`cron/testUnifiedSocialPost.php`** (new) — **MANUAL TEST ONLY, NOT A
+CRON JOB.** Do not register it on Hostinger Cron. Calls
+`publishSocialPost()` directly against one real connected account:
+```
+php cron/testUnifiedSocialPost.php <accountId> <platforms> image <imageUrl> [caption]
+php cron/testUnifiedSocialPost.php <accountId> <platforms> text "<message>"
+```
+`<platforms>` is comma-separated (`instagram`, `facebook`, or
+`instagram,facebook`). Never prints the access token.
+
+### Database
+
+**No schema changes.** `publishSocialPost()`/`api/publishSocialPostNow.php`
+do not read or write `instagramPosts` (or any other table) — "Publish Now"
+is an ephemeral, immediate action, not a scheduled post, so there is
+nothing to persist for it yet. Extending `instagramPosts` with
+`platforms`/`facebookPostId`/`facebookStatus` columns (to give scheduled
+posts the same dual-platform capability) is deferred to the phase that
+unifies scheduling — doing it now would add columns with no code path
+using them yet, which the project's own DB rule explicitly warns against
+("do not create unnecessary tables/columns... do not modify the database
+just because it seems convenient").
+
+### Client isolation
+
+Unchanged mechanism, reused exactly: `instagramAccountBelongsToClient()`
+and `instagramClientExists()` (both pre-existing, both from
+`InstagramAutomation.php`) are the only guards, called once each, before
+any account is loaded or any platform is published to. No second
+client/account validation path was created.
+
+### Token security
+
+Unchanged: `getInstagramAccountById()` is still the only place that reads
+and decrypts `instagramAccounts.accessToken`; `SocialPostEngine.php` only
+ever receives the already-decrypted `$account` array, exactly like
+`FacebookPublisher.php` already did in Phase 5. No new token storage, no
+new decryption path, no token in any HTTP response, log line, or error
+message anywhere in this phase's new code (verified by inspection of every
+`respond()`/log call added — see Testing below).
+
+### Scheduling compatibility
+
+Architectural only, as scoped by the user — no scheduler was built or
+modified in this phase. `publishSocialPost()` takes a plain
+`(clientId, accountId, platforms, type, content)` request and returns a
+plain structured result, with no dependency on how or when it's called;
+a future scheduler can call it exactly the same way `api/publishSocialPostNow.php`
+does. `cron/instagramScheduler.php` was not opened for editing in this
+phase — no dependency was found that would have required changing it, so
+nothing was reported/stopped-on per the user's "stop and report if the
+scheduler needs changing" instruction.
+
+### Manual testing performed (local, no production credentials available here)
+
+Ran directly against `includes/SocialPostEngine.php` (no Meta network
+calls involved for these — all failures below happen before any platform
+dispatch):
+- Invalid platform (`'twitter'`) → clean structured failure, no exception.
+- Invalid post type (`'video'`) → clean structured failure.
+- Invalid `clientId` (999999) → clean structured failure ("Please select a
+  valid client.").
+- Invalid `accountId` against a real local `clientId` → clean structured
+  failure ("The selected account does not belong to this client."), no
+  fatal.
+- Instagram + text, called directly against a synthetic account array →
+  returned the structured unsupported result; confirmed by code path
+  inspection that no Meta endpoint is reachable from that branch.
+- `socialPostEngineFinalize()` unit-level checks: all-success → `status=success`;
+  one success + one failure → `status=partial`, `success=false`, and the
+  successful platform's real `postId`/message are preserved unchanged in
+  the output; all-failure → `status=failed`.
+- `cron/testUnifiedSocialPost.php` run against a non-existent account id
+  and against missing required arguments — both exit cleanly with code 1
+  and a clear stderr message, no PHP warnings/fatals.
+- `php -l` clean on all four touched/created files:
+  `includes/SocialPostEngine.php`, `api/publishSocialPostNow.php`,
+  `cron/testUnifiedSocialPost.php`, `pages/instagram-create-post.php`.
+
+**NOT EXECUTED — REQUIRES PRODUCTION TEST** (no real connected Instagram/
+Facebook account or Meta network access from this environment):
+- Facebook-only image publish via the unified engine (real Facebook post id).
+- Instagram-only image publish via the unified engine (real Instagram media id).
+- Instagram + Facebook combined publish in one call (both real ids, overall
+  `status=success`).
+- Facebook-only text publish via the unified engine.
+- Real partial-failure scenario (one platform succeeding, the other
+  genuinely rejected by Meta).
+- Real cross-client isolation attempt (a second client's real account).
+- The "Publish Now" button end-to-end through the actual browser UI.
+
+To run these on production, mirroring how Phase 5's
+`cron/testFacebookPublish.php` test was run:
+```
+php cron/testUnifiedSocialPost.php <accountId> facebook image https://modlus.in/uploads/instagram-posts/test.jpg "MODLUS Phase 6 Facebook Test"
+php cron/testUnifiedSocialPost.php <accountId> instagram image https://modlus.in/uploads/instagram-posts/test.jpg "MODLUS Phase 6 Instagram Test"
+php cron/testUnifiedSocialPost.php <accountId> instagram,facebook image https://modlus.in/uploads/instagram-posts/test.jpg "MODLUS Phase 6 Unified Test"
+php cron/testUnifiedSocialPost.php <accountId> facebook text "MODLUS Phase 6 Facebook Text Test"
+```
+
+### Known limitations
+
+- "Publish Now" supports image posts only — reels/carousels still require
+  the existing Draft/Schedule + cron flow, unchanged.
+- "Publish Now" is not persisted to `instagramPosts` or shown in
+  `pages/instagram-scheduled-posts.php` — it's an immediate, one-off action
+  with no history row (by design, see Database above).
+- Platform-specific captions (different text per platform) were explicitly
+  out of scope this phase — the engine's `$content` shape already allows
+  it later (`caption` vs a future `instagramCaption`/`facebookCaption`
+  split) without a redesign, but the composer UI only exposes one caption
+  field today, matching the user's "don't overcomplicate the initial UI"
+  instruction.
+- Real Meta-API-touching tests are unverified until run on production (see
+  above) — do not treat this phase as production-verified the way Phase 4
+  and Phase 5 are (§18) until the user runs them and confirms real post
+  ids, per this doc's own standing rule (§19/§20).
 
 ---
 
