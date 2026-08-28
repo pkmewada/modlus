@@ -335,6 +335,16 @@ function ensureInstagramPostsTable(mysqli $con): void
 
     instagramPostsEnsureColumn($con, 'clientId', 'INT NULL DEFAULT NULL');
     instagramPostsEnsureColumn($con, 'instagramAccountId', 'INT UNSIGNED NULL DEFAULT NULL');
+    // Phase 7: which platform(s) this post targets ('instagram', 'facebook',
+    // or 'instagram,facebook') and Facebook's own independent result —
+    // deliberately separate from status/instagramMediaId/errorMessage so
+    // Instagram's and Facebook's outcomes can never be conflated. Default
+    // 'instagram'/'not_applicable' means every pre-Phase-7 row is read
+    // exactly as it always has been — zero behavior change for old posts.
+    instagramPostsEnsureColumn($con, 'platforms', "VARCHAR(30) NOT NULL DEFAULT 'instagram'");
+    instagramPostsEnsureColumn($con, 'facebookStatus', "VARCHAR(20) NOT NULL DEFAULT 'not_applicable'");
+    instagramPostsEnsureColumn($con, 'facebookPostId', "VARCHAR(64) NOT NULL DEFAULT ''");
+    instagramPostsEnsureColumn($con, 'facebookErrorMessage', 'TEXT NULL DEFAULT NULL');
 }
 
 function instagramPostsEnsureColumn(mysqli $con, string $column, string $definition): void
@@ -661,16 +671,33 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
     $scheduledAt = $data['scheduledAt'] ?? null;
     $postId = (int)($data['id'] ?? 0);
 
+    // Phase 7: 'instagram' (the only value that has ever existed) is the
+    // default whenever a caller doesn't specify platforms — every existing
+    // caller/behavior is unaffected.
+    $platformsInput = (array)($data['platforms'] ?? ['instagram']);
+    $platforms = array_values(array_unique(array_intersect(
+        array_map('strtolower', array_map('trim', $platformsInput)),
+        ['instagram', 'facebook']
+    )));
+
+    if (empty($platforms)) {
+        $platforms = ['instagram'];
+    }
+
+    $platformsValue = implode(',', $platforms);
+    $facebookStatus = in_array('facebook', $platforms, true) ? 'pending' : 'not_applicable';
+
     if ($postId > 0) {
         $stmt = mysqli_prepare(
             $con,
             "UPDATE instagramPosts
-             SET clientId = ?, instagramAccountId = ?, mediaType = ?, mediaUrl = ?, caption = ?, status = ?, scheduledAt = ?, errorMessage = ''
+             SET clientId = ?, instagramAccountId = ?, mediaType = ?, mediaUrl = ?, caption = ?, status = ?, scheduledAt = ?,
+                 errorMessage = '', platforms = ?, facebookStatus = ?, facebookPostId = '', facebookErrorMessage = NULL
              WHERE id = ?"
         );
         mysqli_stmt_bind_param(
             $stmt,
-            'iisssssi',
+            'iisssssssi',
             $clientId,
             $instagramAccountId,
             $mediaType,
@@ -678,6 +705,8 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
             $caption,
             $status,
             $scheduledAt,
+            $platformsValue,
+            $facebookStatus,
             $postId
         );
         mysqli_stmt_execute($stmt);
@@ -689,12 +718,12 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
     $stmt = mysqli_prepare(
         $con,
         "INSERT INTO instagramPosts
-            (createdBy, clientId, instagramAccountId, mediaType, mediaUrl, caption, status, scheduledAt)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            (createdBy, clientId, instagramAccountId, mediaType, mediaUrl, caption, status, scheduledAt, platforms, facebookStatus)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     mysqli_stmt_bind_param(
         $stmt,
-        'iiisssss',
+        'iiisssssss',
         $userId,
         $clientId,
         $instagramAccountId,
@@ -702,7 +731,9 @@ function saveInstagramPost(mysqli $con, array $data, int $userId): int
         $mediaPathsJson,
         $caption,
         $status,
-        $scheduledAt
+        $scheduledAt,
+        $platformsValue,
+        $facebookStatus
     );
     mysqli_stmt_execute($stmt);
     $newId = (int)mysqli_insert_id($con);
@@ -762,15 +793,24 @@ function getDueInstagramPosts(mysqli $con, int $limit = 20): array
     return $posts;
 }
 
-function getInstagramPostsByStatus(mysqli $con, string $status, int $limit = 20): array
+function getInstagramPostsByStatus(mysqli $con, string $status, int $limit = 20, ?string $mediaType = null): array
 {
     ensureInstagramPostsTable($con);
 
-    $stmt = mysqli_prepare(
-        $con,
-        "SELECT * FROM instagramPosts WHERE status = ? ORDER BY updatedAt ASC LIMIT ?"
-    );
-    mysqli_stmt_bind_param($stmt, 'si', $status, $limit);
+    if ($mediaType !== null) {
+        $stmt = mysqli_prepare(
+            $con,
+            "SELECT * FROM instagramPosts WHERE status = ? AND mediaType = ? ORDER BY updatedAt ASC LIMIT ?"
+        );
+        mysqli_stmt_bind_param($stmt, 'ssi', $status, $mediaType, $limit);
+    } else {
+        $stmt = mysqli_prepare(
+            $con,
+            "SELECT * FROM instagramPosts WHERE status = ? ORDER BY updatedAt ASC LIMIT ?"
+        );
+        mysqli_stmt_bind_param($stmt, 'si', $status, $limit);
+    }
+
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $posts = [];
@@ -782,6 +822,269 @@ function getInstagramPostsByStatus(mysqli $con, string $status, int $limit = 20)
     mysqli_stmt_close($stmt);
 
     return $posts;
+}
+
+/**
+ * Phase 7 recovery scan: image/carousel posts stuck in 'publishing' across
+ * cron runs. Reels are deliberately excluded — they legitimately sit in
+ * 'publishing' while Meta processes them asynchronously (see
+ * getInstagramPostsByStatus($con, 'publishing', 20, 'reel') in the
+ * scheduler's existing Phase A) — an image/carousel post has no such
+ * legitimate async state, so finding one here always means the previous
+ * cron run's process died mid-publish, never a normal in-progress state.
+ */
+function getStuckSocialPosts(mysqli $con, int $limit = 20): array
+{
+    ensureInstagramPostsTable($con);
+
+    $stmt = mysqli_prepare(
+        $con,
+        "SELECT * FROM instagramPosts
+         WHERE status = 'publishing' AND mediaType IN ('image', 'carousel')
+         ORDER BY updatedAt ASC
+         LIMIT ?"
+    );
+    mysqli_stmt_bind_param($stmt, 'i', $limit);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $posts = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $posts[] = $row;
+    }
+
+    mysqli_stmt_close($stmt);
+
+    return $posts;
+}
+
+/**
+ * Pure decision function — no DB access, no Meta call. Given a post row
+ * (fresh or recovered), decides which requested platforms still need a
+ * publish attempt versus which are already recorded-done. "Done" is
+ * determined solely from a persisted result (instagramMediaId /
+ * facebookPostId), never from the row's overall `status` — this is what
+ * makes recovery safe: a platform whose success was already written to the
+ * database is never re-attempted, regardless of why the row was revisited.
+ */
+function socialScheduledRecoveryPlan(array $post): array
+{
+    $platforms = array_values(array_filter(array_map('trim', explode(',', (string)($post['platforms'] ?? 'instagram')))));
+
+    if (empty($platforms)) {
+        $platforms = ['instagram'];
+    }
+
+    $instagramSelected = in_array('instagram', $platforms, true);
+    $facebookSelected = in_array('facebook', $platforms, true);
+
+    $instagramDone = $instagramSelected && trim((string)($post['instagramMediaId'] ?? '')) !== '';
+    $facebookDone = $facebookSelected && trim((string)($post['facebookPostId'] ?? '')) !== '';
+
+    return [
+        'platforms' => $platforms,
+        'instagramSelected' => $instagramSelected,
+        'facebookSelected' => $facebookSelected,
+        'instagramDone' => $instagramDone,
+        'facebookDone' => $facebookDone,
+        'instagramNeeded' => $instagramSelected && !$instagramDone,
+        'facebookNeeded' => $facebookSelected && !$facebookDone,
+        'alreadyComplete' => ($instagramSelected === $instagramDone) && ($facebookSelected === $facebookDone),
+    ];
+}
+
+function markFacebookScheduledPublished(mysqli $con, int $id, string $postId): void
+{
+    $stmt = mysqli_prepare(
+        $con,
+        "UPDATE instagramPosts SET facebookStatus = 'published', facebookPostId = ?, facebookErrorMessage = NULL WHERE id = ?"
+    );
+    mysqli_stmt_bind_param($stmt, 'si', $postId, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function markFacebookScheduledFailed(mysqli $con, int $id, string $message): void
+{
+    $stmt = mysqli_prepare(
+        $con,
+        "UPDATE instagramPosts SET facebookStatus = 'failed', facebookErrorMessage = ? WHERE id = ?"
+    );
+    mysqli_stmt_bind_param($stmt, 'si', $message, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function setInstagramPostOverallStatus(mysqli $con, int $id, string $status): void
+{
+    $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET status = ? WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, 'si', $status, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+/**
+ * Records Instagram's own OWN result fields (instagramMediaId/publishedAt/
+ * errorMessage) for a multi-platform scheduled post — deliberately does
+ * NOT touch `status`, unlike markInstagramPostPublished()/
+ * markInstagramPostFailed() (which remain unchanged and are still used
+ * as-is by the legacy single-platform scheduler path and Reel/carousel
+ * handling). `status` for a multi-platform post is only ever decided once,
+ * explicitly, by finalizeSocialScheduledPost() below — never as a side
+ * effect of recording one platform's own result — so a still-unresolved
+ * sibling platform can never be short-circuited by this one's outcome.
+ */
+function recordInstagramPlatformResult(mysqli $con, int $id, bool $success, string $mediaId, string $errorMessage): void
+{
+    if ($success) {
+        $stmt = mysqli_prepare(
+            $con,
+            "UPDATE instagramPosts SET instagramMediaId = ?, publishedAt = NOW(), errorMessage = '' WHERE id = ?"
+        );
+        mysqli_stmt_bind_param($stmt, 'si', $mediaId, $id);
+    } else {
+        $stmt = mysqli_prepare($con, "UPDATE instagramPosts SET errorMessage = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, 'si', $errorMessage, $id);
+    }
+
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+/**
+ * publishSocialPost() returns an EMPTY 'platforms' array when its own
+ * top-level validation rejects the whole request before dispatching to any
+ * individual platform (e.g. missing Facebook Page, invalid account) — a
+ * fundamentally different situation from a platform simply not being
+ * attempted because recovery already found it done.
+ * finalizeSocialScheduledPost() must never confuse the two (an empty
+ * 'platforms' array would otherwise be silently read as "trust the
+ * existing recorded state", hiding a real, actionable failure). This
+ * normalizes a validation-level rejection into an explicit failure entry
+ * for every platform that was actually intended to be attempted this run.
+ */
+function normalizeSocialEngineResult(array $engineResult, array $platformsAttempted): array
+{
+    if (!empty($engineResult['platforms'])) {
+        return $engineResult['platforms'];
+    }
+
+    $normalized = [];
+
+    foreach ($platformsAttempted as $platform) {
+        $normalized[$platform] = [
+            'success' => false,
+            'postId' => null,
+            'message' => (string)($engineResult['message'] ?? 'Publishing failed.'),
+        ];
+    }
+
+    return $normalized;
+}
+
+/**
+ * Records a fresh publishSocialPost() attempt's results onto a scheduled
+ * post row, then computes the row's overall status. $engineResultPlatforms
+ * is $result['platforms'] — it may be MISSING a platform's key entirely
+ * when that platform wasn't attempted this run (already done, per
+ * socialScheduledRecoveryPlan()); in that case its already-recorded state
+ * is trusted instead of being treated as a failure.
+ *
+ * Two-phase by design: phase 1 resolves each platform's own outcome and
+ * writes only that platform's own fields (never `status`); phase 2 decides
+ * `status` exactly once, from both platforms together. Splitting these is
+ * what makes a still-unresolved sibling platform safe — recording one
+ * platform's success can never prematurely flip the shared `status` to a
+ * terminal value while the other platform hasn't been decided yet.
+ *
+ * A platform result carrying 'transient' => true (see
+ * SocialPostEngine.php's InstagramTransientApiException handling) is a
+ * network-level blip, not Meta rejecting the post — its state is left
+ * completely untouched (not marked failed) so the next scheduler run's
+ * recovery scan retries exactly that platform. When any requested platform
+ * is left unresolved this way, `status` is deliberately never written in
+ * this call — it stays 'publishing' so getStuckSocialPosts() picks the row
+ * back up, the same recovery path a crash uses.
+ */
+function finalizeSocialScheduledPost(mysqli $con, array $post, array $engineResultPlatforms): void
+{
+    $postId = (int)$post['id'];
+    $plan = socialScheduledRecoveryPlan($post);
+
+    $instagramOutcome = null;
+    $instagramUnresolved = false;
+
+    if ($plan['instagramSelected']) {
+        if (isset($engineResultPlatforms['instagram'])) {
+            $platformResult = $engineResultPlatforms['instagram'];
+
+            if (!empty($platformResult['transient'])) {
+                $instagramUnresolved = true;
+            } else {
+                $instagramOutcome = !empty($platformResult['success']);
+                recordInstagramPlatformResult(
+                    $con,
+                    $postId,
+                    $instagramOutcome,
+                    (string)($platformResult['postId'] ?? ''),
+                    (string)($platformResult['message'] ?? 'Instagram publishing failed.')
+                );
+            }
+        } else {
+            // Not attempted this run — recovery already found it done;
+            // nothing new to write for it.
+            $instagramOutcome = $plan['instagramDone'];
+        }
+    }
+
+    $facebookOutcome = null;
+    $facebookUnresolved = false;
+
+    if ($plan['facebookSelected']) {
+        if (isset($engineResultPlatforms['facebook'])) {
+            $platformResult = $engineResultPlatforms['facebook'];
+
+            if (!empty($platformResult['transient'])) {
+                $facebookUnresolved = true;
+            } else {
+                $facebookOutcome = !empty($platformResult['success']);
+
+                if ($facebookOutcome) {
+                    markFacebookScheduledPublished($con, $postId, (string)($platformResult['postId'] ?? ''));
+                } else {
+                    markFacebookScheduledFailed($con, $postId, (string)($platformResult['message'] ?? 'Facebook publishing failed.'));
+                }
+            }
+        } else {
+            $facebookOutcome = $plan['facebookDone'];
+        }
+    }
+
+    if ($instagramUnresolved || $facebookUnresolved) {
+        // Leave `status` completely untouched here (still 'publishing').
+        // Any platform result recorded above (e.g. Instagram just
+        // succeeded while Facebook is the one still unresolved) is already
+        // safely persisted via recordInstagramPlatformResult()/
+        // markFacebookScheduledPublished() without needing `status` to move.
+        return;
+    }
+
+    $outcomes = array_values(array_filter([$instagramOutcome, $facebookOutcome], static fn($v) => $v !== null));
+
+    if (empty($outcomes)) {
+        return;
+    }
+
+    $successCount = count(array_filter($outcomes, static fn($v) => $v === true));
+    $totalCount = count($outcomes);
+
+    if ($successCount === $totalCount) {
+        setInstagramPostOverallStatus($con, $postId, 'published');
+    } elseif ($successCount === 0) {
+        setInstagramPostOverallStatus($con, $postId, 'failed');
+    } else {
+        setInstagramPostOverallStatus($con, $postId, 'partial');
+    }
 }
 
 function markInstagramPostPublishing(mysqli $con, int $id): void

@@ -37,11 +37,28 @@ $mediaType = trim((string)($_POST['mediaType'] ?? 'image'));
 $caption = trim((string)($_POST['caption'] ?? ''));
 $action = trim((string)($_POST['action'] ?? 'draft'));
 $scheduledAtInput = trim((string)($_POST['scheduledAt'] ?? ''));
+$platformsInput = isset($_POST['platforms']) && is_array($_POST['platforms']) ? array_map('strval', $_POST['platforms']) : ['instagram'];
 
 $allowedMediaTypes = ['image', 'reel', 'carousel'];
 
 if (!in_array($mediaType, $allowedMediaTypes, true)) {
     respond(false, 'Invalid media type.');
+}
+
+$platforms = array_values(array_unique(array_intersect(
+    array_map('strtolower', array_map('trim', $platformsInput)),
+    ['instagram', 'facebook']
+)));
+
+if (empty($platforms)) {
+    $platforms = ['instagram'];
+}
+
+// Facebook publishing is image-only (no verified Facebook equivalent for
+// reels/carousels yet — see docs §22.7/§22.8) — reject the combination at
+// save time rather than silently dropping it at publish time.
+if (in_array('facebook', $platforms, true) && $mediaType !== 'image') {
+    respond(false, 'Facebook scheduling is only supported for image posts.');
 }
 
 if ($clientId <= 0 || !instagramClientExists($con, $clientId)) {
@@ -135,6 +152,7 @@ try {
             'caption' => $caption,
             'status' => $status,
             'scheduledAt' => $scheduledAt,
+            'platforms' => $platforms,
         ],
         getLoggedInUserId()
     );
@@ -158,7 +176,7 @@ try {
         'InstagramAutomation',
         $savedId,
         $isUpdate ? 'update' : 'create',
-        'Instagram post ' . ($isUpdate ? 'updated' : 'created') . ' (' . $auditLabel . ') for Client: ' . $clientLabel . '.'
+        'Instagram post ' . ($isUpdate ? 'updated' : 'created') . ' (' . $auditLabel . ', platforms: ' . implode('+', $platforms) . ') for Client: ' . $clientLabel . '.'
     );
 
     respond(true, $successMessage, [

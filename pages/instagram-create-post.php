@@ -277,14 +277,17 @@ function applyMediaTypeUi(mediaType) {
     $('#mediaInputHint').text(config.hint);
     $('#mediaInputLabel').text(mediaType === 'reel' ? 'Video' : (mediaType === 'carousel' ? 'Images' : 'Image'));
 
-    // Publish Now (the Phase 6 Unified Social Post Engine) only supports
-    // image posts today — reels/carousels still go through the existing
-    // Draft/Schedule + cron flow above, untouched.
+    // Publish Now (Phase 6) only supports image posts. Facebook scheduling
+    // (Phase 7) is also image-only — no verified Facebook equivalent for
+    // reels/carousels yet (docs §22.7/§22.8) — enforced here and again
+    // server-side in api/saveInstagramPost.php.
     const isImage = mediaType === 'image';
     $('#publishNowBtn').prop('disabled', !isImage);
     $('#publishNowHint').text(isImage
         ? 'Publishes immediately to the platforms checked above.'
         : 'Publish Now supports image posts only — use Schedule Post for reels/carousels.');
+
+    updateFacebookPlatformAvailability();
 }
 
 function updateFacebookPlatformAvailability() {
@@ -292,10 +295,28 @@ function updateFacebookPlatformAvailability() {
     const accounts = window.instagramComposerAccounts || [];
     const account = accounts.find(a => String(a.id) === String(accountId));
     const hasPage = !!(account && account.facebookPageId);
+    const mediaType = $('#mediaType').val();
+    const canUseFacebook = hasPage && mediaType === 'image';
 
-    $('#platformFacebook').prop('disabled', !hasPage);
-    $('#platformFacebook').prop('checked', hasPage);
-    $('#noFacebookPageHint').toggleClass('d-none', hasPage);
+    $('#platformFacebook').prop('disabled', !canUseFacebook);
+
+    if (!hasPage) {
+        $('#noFacebookPageHint').text('This account has no linked Facebook Page.').removeClass('d-none');
+    } else if (mediaType !== 'image') {
+        $('#noFacebookPageHint').text('Facebook scheduling is only supported for image posts.').removeClass('d-none');
+    } else {
+        $('#noFacebookPageHint').addClass('d-none');
+    }
+
+    const pendingEditPlatforms = window.instagramComposerEditPlatforms;
+
+    if (pendingEditPlatforms) {
+        $('#platformInstagram').prop('checked', pendingEditPlatforms.indexOf('instagram') !== -1);
+        $('#platformFacebook').prop('checked', canUseFacebook && pendingEditPlatforms.indexOf('facebook') !== -1);
+        window.instagramComposerEditPlatforms = null;
+    } else {
+        $('#platformFacebook').prop('checked', canUseFacebook);
+    }
 }
 
 function escapeComposerHtml(value) {
@@ -456,6 +477,13 @@ function bindInstagramPostForEdit(post) {
     $('#caption').val(post.caption || '').trigger('input');
     $('#existingMediaNote').removeClass('d-none');
 
+    // Set after applyMediaTypeUi() above (whose own call to
+    // updateFacebookPlatformAvailability() must NOT see this yet) so it's
+    // only consumed once loadInstagramAccountsForClient() below finishes
+    // loading accounts and calls updateFacebookPlatformAvailability() again
+    // with the account's facebookPageId known.
+    window.instagramComposerEditPlatforms = (post.platforms || 'instagram').split(',').map(function(p) { return p.trim(); });
+
     if (post.clientId) {
         $('#clientSelect').val(String(post.clientId));
         loadInstagramAccountsForClient(post.clientId, post.instagramAccountId);
@@ -521,6 +549,20 @@ function submitInstagramPost(action) {
         return;
     }
 
+    const platforms = [];
+    if ($('#platformInstagram').is(':checked')) platforms.push('instagram');
+    if ($('#platformFacebook').is(':checked')) platforms.push('facebook');
+
+    if (!platforms.length) {
+        window.showToast && window.showToast('warning', 'Please select at least one platform.');
+        return;
+    }
+
+    if (platforms.indexOf('facebook') !== -1 && mediaType !== 'image') {
+        window.showToast && window.showToast('warning', 'Facebook scheduling is only supported for image posts.');
+        return;
+    }
+
     if (action === 'schedule') {
         const scheduledAt = $('#scheduledAt').val();
 
@@ -536,6 +578,7 @@ function submitInstagramPost(action) {
     const formData = new FormData(document.getElementById('instagramPostForm'));
     formData.set('action', action);
     formData.set('csrfToken', CSRF_TOKEN);
+    platforms.forEach(function(p) { formData.append('platforms[]', p); });
 
     const $btn = action === 'schedule' ? $('#schedulePostBtn') : $('#saveDraftBtn');
     const originalText = $btn.text();

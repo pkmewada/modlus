@@ -42,6 +42,7 @@
                                 <option value="scheduled">Scheduled</option>
                                 <option value="publishing">Publishing</option>
                                 <option value="published">Published</option>
+                                <option value="partial">Partial</option>
                                 <option value="failed">Failed</option>
                             </select>
                         </div>
@@ -56,6 +57,7 @@
                                         <th>Media</th>
                                         <th>Type</th>
                                         <th>Caption</th>
+                                        <th>Platforms</th>
                                         <th>Status</th>
                                         <th>Scheduled / Published</th>
                                         <th class="text-end">Action</th>
@@ -63,7 +65,7 @@
                                 </thead>
                                 <tbody id="instagramPostsBody">
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">Loading posts...</td>
+                                        <td colspan="8" class="text-center text-muted">Loading posts...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -154,6 +156,7 @@ function statusBadge(status) {
         scheduled: 'info',
         publishing: 'warning',
         published: 'success',
+        partial: 'orange',
         failed: 'danger',
     };
     const color = map[status] || 'secondary';
@@ -165,6 +168,24 @@ function statusBadge(status) {
 function typeBadge(mediaType) {
     const labels = { image: 'Image', reel: 'Reel', carousel: 'Carousel' };
     return `<span class="badge bg-primary-transparent">${labels[mediaType] || mediaType}</span>`;
+}
+
+function platformsBadges(post) {
+    const platforms = (post.platforms || 'instagram').split(',').map(p => p.trim()).filter(Boolean);
+    const facebookColors = { pending: 'info', published: 'success', failed: 'danger', not_applicable: 'secondary' };
+
+    return platforms.map(function(platform) {
+        if (platform === 'instagram') {
+            return '<span class="badge bg-primary-transparent me-1">Instagram</span>';
+        }
+
+        if (platform === 'facebook') {
+            const color = facebookColors[post.facebookStatus] || 'secondary';
+            return `<span class="badge bg-${color}-transparent me-1">Facebook</span>`;
+        }
+
+        return `<span class="badge bg-secondary-transparent me-1">${escapeHtml(platform)}</span>`;
+    }).join('');
 }
 
 function mediaThumb(post) {
@@ -204,13 +225,13 @@ function renderInstagramPosts(posts) {
     $body.empty();
 
     if (!posts.length) {
-        $body.append('<tr><td colspan="7" class="text-center text-muted">No Instagram posts found.</td></tr>');
+        $body.append('<tr><td colspan="8" class="text-center text-muted">No Instagram posts found.</td></tr>');
         return;
     }
 
     posts.forEach(function(post) {
-        const canEdit = ['draft', 'scheduled', 'failed'].indexOf(post.status) !== -1;
-        const canDelete = ['draft', 'scheduled', 'failed'].indexOf(post.status) !== -1;
+        const canEdit = ['draft', 'scheduled', 'failed', 'partial'].indexOf(post.status) !== -1;
+        const canDelete = ['draft', 'scheduled', 'failed', 'partial'].indexOf(post.status) !== -1;
         const caption = post.caption ? post.caption.substring(0, 60) + (post.caption.length > 60 ? '…' : '') : '<span class="text-muted">No caption</span>';
         const scheduleInfo = post.status === 'published'
             ? escapeHtml(post.publishedAt || '—')
@@ -223,8 +244,11 @@ function renderInstagramPosts(posts) {
             actions += `<a href="instagram-create-post?postId=${post.id}" class="btn btn-sm btn-outline-primary me-1">Edit</a>`;
         }
 
-        if (post.status === 'failed') {
-            actions += `<button type="button" class="btn btn-sm btn-outline-warning me-1 view-instagram-post-error" data-error-message="${escapeHtml(post.errorMessage || '')}">View Error</button>`;
+        if (post.status === 'failed' || post.status === 'partial' || post.facebookStatus === 'failed') {
+            const errorParts = [];
+            if (post.errorMessage) { errorParts.push('Instagram: ' + post.errorMessage); }
+            if (post.facebookErrorMessage) { errorParts.push('Facebook: ' + post.facebookErrorMessage); }
+            actions += `<button type="button" class="btn btn-sm btn-outline-warning me-1 view-instagram-post-error" data-error-message="${escapeHtml(errorParts.join('\n') || 'No error details recorded.')}">View Error</button>`;
         }
 
         if (canDelete) {
@@ -237,6 +261,7 @@ function renderInstagramPosts(posts) {
                 <td>${mediaThumb(post)}</td>
                 <td>${typeBadge(post.mediaType)}</td>
                 <td class="text-wrap" style="max-width: 320px;">${caption}</td>
+                <td>${platformsBadges(post)}</td>
                 <td>${statusBadge(post.status)}</td>
                 <td>${scheduleInfo}</td>
                 <td class="text-end">${actions}</td>
