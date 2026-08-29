@@ -288,6 +288,64 @@ function saveInstagramAccountFromOAuth(mysqli $con, array $account, int $userId)
     return $newId;
 }
 
+/**
+ * Enables Meta webhook delivery for one Facebook Page by calling the Page
+ * Subscribed Apps edge. This is a separate, required step from the
+ * App Dashboard's app-level webhook subscription (App Dashboard controls
+ * what the app is capable of receiving at all; this call is what actually
+ * enrolls THIS specific Page/Instagram account to have its events sent to
+ * the app) — confirmed against current Meta documentation during the Phase
+ * 11 webhook investigation. Without this call, Meta never delivers webhook
+ * events for the Page at all, even though the App Dashboard shows the field
+ * as "Subscribed".
+ *
+ * Never throws: called right after a successful OAuth connect, where the
+ * account itself already connected successfully. A failure here must not be
+ * reported as an OAuth/connection failure — only webhook delivery is
+ * affected, publishing/analytics/comments-admin are untouched. Failures are
+ * logged (via the existing instagramWriteApiDebugLog()/error_log()
+ * convention already used by instagramGraphApiRequest()) so they're
+ * developer-visible without needing a new DB column or notification system.
+ * Matches the existing "log on failure, silent on success" convention (see
+ * instagramGraphApiRequest()) so a log entry itself is what distinguishes
+ * failure from success.
+ */
+function subscribeInstagramPageWebhooks(string $facebookPageId, string $pageAccessToken): bool
+{
+    if ($facebookPageId === '' || $pageAccessToken === '') {
+        return false;
+    }
+
+    try {
+        $result = instagramGraphApiRequest(
+            'https://graph.facebook.com/v19.0/' . $facebookPageId . '/subscribed_apps',
+            [
+                'access_token' => $pageAccessToken,
+                'subscribed_fields' => 'comments',
+            ],
+            'POST'
+        );
+
+        if (empty($result['success'])) {
+            instagramWriteApiDebugLog(
+                'Instagram Page webhook subscription for Page ' . $facebookPageId
+                . ' did not confirm success. Response: ' . json_encode($result)
+            );
+
+            return false;
+        }
+
+        return true;
+    } catch (Throwable $e) {
+        $message = 'Instagram Page webhook subscription failed for Page '
+            . $facebookPageId . ': ' . $e->getMessage();
+        error_log($message);
+        instagramWriteApiDebugLog($message);
+
+        return false;
+    }
+}
+
 function disconnectInstagramAccount(mysqli $con, int $accountId): bool
 {
     ensureInstagramAccountsTable($con);

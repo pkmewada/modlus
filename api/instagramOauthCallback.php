@@ -115,6 +115,12 @@ try {
 
         if ($accountId > 0) {
             $connectedCount++;
+
+            // Enrolls this Page for Meta webhook delivery (see
+            // subscribeInstagramPageWebhooks() doc comment) — independent of
+            // account connection success, so its return value deliberately
+            // does not affect $connectedCount or the redirect status below.
+            subscribeInstagramPageWebhooks((string)($page['id'] ?? ''), $pageAccessToken);
         }
     }
 
