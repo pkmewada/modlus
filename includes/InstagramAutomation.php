@@ -289,15 +289,29 @@ function saveInstagramAccountFromOAuth(mysqli $con, array $account, int $userId)
 }
 
 /**
- * Enables Meta webhook delivery for one Facebook Page by calling the Page
- * Subscribed Apps edge. This is a separate, required step from the
- * App Dashboard's app-level webhook subscription (App Dashboard controls
- * what the app is capable of receiving at all; this call is what actually
- * enrolls THIS specific Page/Instagram account to have its events sent to
- * the app) — confirmed against current Meta documentation during the Phase
- * 11 webhook investigation. Without this call, Meta never delivers webhook
- * events for the Page at all, even though the App Dashboard shows the field
- * as "Subscribed".
+ * Enables Meta webhook delivery for one Instagram Business Account by
+ * calling ITS OWN Subscribed Apps edge (POST /{ig-user-id}/subscribed_apps)
+ * — not the linked Facebook Page's edge. Confirmed by a real production call
+ * during the Phase 11 webhook investigation: POST /{facebookPageId}/
+ * subscribed_apps rejected "comments" with "(#100) Param subscribed_fields[0]
+ * must be one of {feed, mention, name, picture, ...}" — the Page's edge only
+ * accepts Page-object fields; "comments" is an Instagram-object field and
+ * belongs on the IG User node's own edge instead. Host/token stay
+ * graph.facebook.com + the stored Page Access Token — the same combination
+ * already proven working against this exact node
+ * (publishInstagramImagePost() etc. already call
+ * https://graph.facebook.com/v19.0/{instagramUserId}/media with this same
+ * token) — this is the "Instagram API with Facebook Login" architecture,
+ * not the separate "Instagram API with Instagram Login" product (which uses
+ * graph.instagram.com and a different token obtained via a different OAuth
+ * flow Modlus does not implement).
+ *
+ * This is still a separate, required step from the App Dashboard's
+ * app-level webhook subscription (App Dashboard controls what the app is
+ * capable of receiving at all; this call is what actually enrolls THIS
+ * specific Instagram account to have its events sent to the app). Without
+ * it, Meta never delivers webhook events for the account at all, even
+ * though the App Dashboard shows the field as "Subscribed".
  *
  * Never throws: called right after a successful OAuth connect, where the
  * account itself already connected successfully. A failure here must not be
@@ -310,15 +324,15 @@ function saveInstagramAccountFromOAuth(mysqli $con, array $account, int $userId)
  * instagramGraphApiRequest()) so a log entry itself is what distinguishes
  * failure from success.
  */
-function subscribeInstagramPageWebhooks(string $facebookPageId, string $pageAccessToken): bool
+function subscribeInstagramAccountWebhooks(string $instagramUserId, string $pageAccessToken): bool
 {
-    if ($facebookPageId === '' || $pageAccessToken === '') {
+    if ($instagramUserId === '' || $pageAccessToken === '') {
         return false;
     }
 
     try {
         $result = instagramGraphApiRequest(
-            'https://graph.facebook.com/v19.0/' . $facebookPageId . '/subscribed_apps',
+            'https://graph.facebook.com/v19.0/' . $instagramUserId . '/subscribed_apps',
             [
                 'access_token' => $pageAccessToken,
                 'subscribed_fields' => 'comments',
@@ -328,7 +342,7 @@ function subscribeInstagramPageWebhooks(string $facebookPageId, string $pageAcce
 
         if (empty($result['success'])) {
             instagramWriteApiDebugLog(
-                'Instagram Page webhook subscription for Page ' . $facebookPageId
+                'Instagram account webhook subscription for account ' . $instagramUserId
                 . ' did not confirm success. Response: ' . json_encode($result)
             );
 
@@ -337,8 +351,8 @@ function subscribeInstagramPageWebhooks(string $facebookPageId, string $pageAcce
 
         return true;
     } catch (Throwable $e) {
-        $message = 'Instagram Page webhook subscription failed for Page '
-            . $facebookPageId . ': ' . $e->getMessage();
+        $message = 'Instagram account webhook subscription failed for account '
+            . $instagramUserId . ': ' . $e->getMessage();
         error_log($message);
         instagramWriteApiDebugLog($message);
 
