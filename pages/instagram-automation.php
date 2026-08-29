@@ -144,6 +144,90 @@
                 </div>
             </div>
         </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-xl-7">
+                <form id="linkedinSettingsForm" autocomplete="off">
+                    <?= getCsrfInput() ?>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">LinkedIn API Configuration</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label" for="linkedinClientId">LinkedIn Client ID</label>
+                                    <input type="text" class="form-control" id="linkedinClientId" name="linkedinClientId" maxlength="191" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="linkedinClientSecret">LinkedIn Client Secret</label>
+                                    <input type="password" class="form-control" id="linkedinClientSecret" name="linkedinClientSecret" maxlength="255" autocomplete="new-password" placeholder="">
+                                    <div class="form-text">Never displayed once saved. Leave blank to keep the existing secret.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="linkedinRedirectUrl">Redirect URL</label>
+                                    <input type="url" class="form-control" id="linkedinRedirectUrl" name="redirectUrl" maxlength="255">
+                                    <div class="form-text">Add this exact URL to your LinkedIn App's Authorized Redirect URLs.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary" id="saveLinkedinSettingsBtn">
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-xl-5">
+                <div class="card custom-card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">LinkedIn</h5>
+                    </div>
+
+                    <div class="card-body d-flex flex-column gap-3" id="linkedinConnectionCard">
+                        <div id="linkedinNotConnected">
+                            <p class="mb-3 text-muted">Status: <span class="badge bg-secondary-transparent">Not Connected</span></p>
+                            <button type="button" class="btn btn-outline-primary" id="connectLinkedinBtn">
+                                <i class="ti ti-brand-linkedin me-1"></i>
+                                Connect LinkedIn
+                            </button>
+                            <div class="alert alert-info mb-0 mt-3 d-none" id="linkedinConnectDisabledHint">
+                                Save your LinkedIn Client ID and Client Secret, and select a client above, to enable connection.
+                            </div>
+                        </div>
+
+                        <div id="linkedinConnectedNoOrg" class="d-none">
+                            <p class="mb-1">LinkedIn Member: <strong id="linkedinMemberName"></strong></p>
+                            <p class="mb-3 text-muted">No organization selected yet.</p>
+
+                            <label class="form-label" for="linkedinOrganizationSelect">Organizations</label>
+                            <select class="form-select mb-2" id="linkedinOrganizationSelect">
+                                <option value="">Loading organizations...</option>
+                            </select>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-primary btn-sm" id="saveLinkedinOrganizationBtn">Save</button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="disconnectLinkedinBtnNoOrg">Disconnect</button>
+                            </div>
+                            <div class="alert alert-warning mb-0 mt-3 d-none" id="linkedinOrgDiscoveryError"></div>
+                        </div>
+
+                        <div id="linkedinConnectedWithOrg" class="d-none">
+                            <p class="mb-1">Status: <span class="badge bg-success-transparent">Connected</span></p>
+                            <p class="mb-1">LinkedIn Member: <strong id="linkedinMemberNameConnected"></strong></p>
+                            <p class="mb-1">Organization: <strong id="linkedinOrganizationName"></strong></p>
+                            <p class="mb-3 text-muted">Organization ID: <span id="linkedinOrganizationId"></span></p>
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="disconnectLinkedinBtn">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -155,6 +239,7 @@ let instagramSettingsLoaded = null;
 $(function() {
     loadInstagramClients();
     loadInstagramSettings();
+    loadLinkedinSettings();
 
     $('#instagramSettingsForm').on('change keyup', 'input', function() {
         hasUnsavedInstagramChanges = true;
@@ -166,9 +251,36 @@ $(function() {
         saveInstagramSettings();
     });
 
+    $('#linkedinSettingsForm').on('submit', function(e) {
+        e.preventDefault();
+        saveLinkedinSettingsRequest();
+    });
+
     $('#clientSelect').on('change', function() {
         loadInstagramAccountsForSelectedClient();
         updateConnectButtonState();
+        loadLinkedinAccountForSelectedClient();
+        updateLinkedinConnectButtonState();
+    });
+
+    $('#connectLinkedinBtn').on('click', function() {
+        const clientId = $('#clientSelect').val();
+
+        if (!clientId) {
+            window.showToast && window.showToast('warning', 'Please select a client first.');
+            return;
+        }
+
+        window.location.href = API_BASE + '/linkedinOauthStart.php?clientId=' + encodeURIComponent(clientId);
+    });
+
+    $('#saveLinkedinOrganizationBtn').on('click', function() {
+        saveLinkedinOrganizationSelection();
+    });
+
+    $('#disconnectLinkedinBtn, #disconnectLinkedinBtnNoOrg').on('click', function() {
+        const accountId = $(this).data('account-id') || linkedinAccountLoaded && linkedinAccountLoaded.id;
+        disconnectLinkedinAccountRequest(accountId);
     });
 
     $('#connectInstagramBtn').on('click', function() {
@@ -197,6 +309,7 @@ $(function() {
     });
 
     handleInstagramOauthRedirectStatus();
+    handleLinkedinOauthRedirectStatus();
 });
 
 function handleInstagramOauthRedirectStatus() {
@@ -403,6 +516,257 @@ function saveInstagramSettings() {
         },
         complete: function() {
             $btn.prop('disabled', false).text('Save Settings');
+        }
+    });
+}
+
+/*
+|--------------------------------------------------------------------------
+| LinkedIn (Phase 12 foundation) — mirrors the Instagram functions above:
+| same client selector, same CSRF/toast/AJAX conventions, no new UI
+| framework. See docs/INSTAGRAM_AUTOMATION_PRODUCTION_STATE.md Phase 12.
+|--------------------------------------------------------------------------
+*/
+let linkedinSettingsLoaded = null;
+let linkedinAccountLoaded = null;
+
+function handleLinkedinOauthRedirectStatus() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('liStatus');
+    const message = params.get('liMessage');
+    const clientId = params.get('clientId');
+
+    if (clientId) {
+        $('#clientSelect').data('pending-select', clientId);
+    }
+
+    if (!status) {
+        return;
+    }
+
+    window.showToast && window.showToast(status === 'success' ? 'success' : 'danger', message || 'LinkedIn connection update.');
+
+    params.delete('liStatus');
+    params.delete('liMessage');
+    params.delete('clientId');
+
+    const newQuery = params.toString();
+    const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+    window.history.replaceState({}, document.title, newUrl);
+}
+
+function loadLinkedinSettings() {
+    $.getJSON(API_BASE + '/getLinkedinSettings.php')
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load LinkedIn settings.');
+                return;
+            }
+
+            const settings = res.data.linkedinSettings || {};
+            linkedinSettingsLoaded = settings;
+
+            $('#linkedinClientId').val(settings.linkedinClientId || '');
+            $('#linkedinRedirectUrl').val(settings.redirectUrl || res.data.defaultRedirectUrl || '');
+            $('#linkedinClientSecret').val('').attr('placeholder', settings.hasClientSecret ? 'Saved — leave blank to keep current secret' : '');
+
+            updateLinkedinConnectButtonState();
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load LinkedIn settings.');
+        });
+}
+
+function saveLinkedinSettingsRequest() {
+    const linkedinClientId = $('#linkedinClientId').val().trim();
+
+    if (!linkedinClientId) {
+        window.showToast && window.showToast('warning', 'LinkedIn Client ID is required.');
+        return;
+    }
+
+    const $btn = $('#saveLinkedinSettingsBtn');
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
+
+    $.ajax({
+        url: API_BASE + '/saveLinkedinSettings.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: {
+            linkedinClientId: linkedinClientId,
+            linkedinClientSecret: $('#linkedinClientSecret').val(),
+            redirectUrl: $('#linkedinRedirectUrl').val().trim(),
+            csrfToken: CSRF_TOKEN,
+        },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Invalid server response.'
+            );
+
+            if (res && res.success) {
+                const settings = res.data.linkedinSettings || {};
+                linkedinSettingsLoaded = settings;
+                $('#linkedinClientSecret').val('').attr('placeholder', settings.hasClientSecret ? 'Saved — leave blank to keep current secret' : '');
+                updateLinkedinConnectButtonState();
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save LinkedIn settings.');
+        },
+        complete: function() {
+            $btn.prop('disabled', false).text('Save Settings');
+        }
+    });
+}
+
+function updateLinkedinConnectButtonState() {
+    const clientId = $('#clientSelect').val();
+    const settings = linkedinSettingsLoaded || {};
+    const ready = !!(clientId && settings.linkedinClientId && settings.hasClientSecret);
+
+    $('#connectLinkedinBtn').prop('disabled', !ready);
+    $('#linkedinConnectDisabledHint').toggleClass('d-none', ready);
+}
+
+function loadLinkedinAccountForSelectedClient() {
+    const clientId = $('#clientSelect').val();
+    linkedinAccountLoaded = null;
+
+    if (!clientId) {
+        renderLinkedinAccountCard(null);
+        return;
+    }
+
+    $.getJSON(API_BASE + '/getLinkedinSettings.php', { clientId: clientId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load LinkedIn connection.');
+                return;
+            }
+
+            renderLinkedinAccountCard(res.data.linkedinAccount || null);
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load LinkedIn connection.');
+        });
+}
+
+function renderLinkedinAccountCard(account) {
+    linkedinAccountLoaded = account;
+
+    $('#linkedinNotConnected, #linkedinConnectedNoOrg, #linkedinConnectedWithOrg').addClass('d-none');
+
+    if (!account) {
+        $('#linkedinNotConnected').removeClass('d-none');
+        return;
+    }
+
+    if (!account.linkedinOrganizationId) {
+        $('#linkedinConnectedNoOrg').removeClass('d-none');
+        $('#linkedinMemberName').text(account.memberName || '(name unavailable)');
+        $('#disconnectLinkedinBtnNoOrg').data('account-id', account.id);
+        loadLinkedinOrganizationsForSelect();
+        return;
+    }
+
+    $('#linkedinConnectedWithOrg').removeClass('d-none');
+    $('#linkedinMemberNameConnected').text(account.memberName || '(name unavailable)');
+    $('#linkedinOrganizationName').text(account.organizationName || '(unnamed)');
+    $('#linkedinOrganizationId').text(account.linkedinOrganizationId);
+    $('#disconnectLinkedinBtn').data('account-id', account.id);
+}
+
+function loadLinkedinOrganizationsForSelect() {
+    const clientId = $('#clientSelect').val();
+    const $select = $('#linkedinOrganizationSelect');
+    const $error = $('#linkedinOrgDiscoveryError');
+
+    $select.html('<option value="">Loading organizations...</option>');
+    $error.addClass('d-none').text('');
+
+    $.getJSON(API_BASE + '/getLinkedinOrganizations.php', { clientId: clientId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                $select.html('<option value="">No organizations available</option>');
+                $error.removeClass('d-none').text(res && res.message ? res.message : 'Unable to load organizations.');
+                return;
+            }
+
+            const organizations = res.data.organizations || [];
+
+            if (!organizations.length) {
+                $select.html('<option value="">No organizations found for this LinkedIn member</option>');
+                return;
+            }
+
+            let options = '<option value="">Select Organization</option>';
+            organizations.forEach(function(org) {
+                options += `<option value="${org.id}">${$('<div>').text(org.name).html()}</option>`;
+            });
+            $select.html(options);
+        })
+        .fail(function() {
+            $select.html('<option value="">No organizations available</option>');
+            $error.removeClass('d-none').text('Unable to load organizations.');
+        });
+}
+
+function saveLinkedinOrganizationSelection() {
+    const clientId = $('#clientSelect').val();
+    const organizationId = $('#linkedinOrganizationSelect').val();
+
+    if (!organizationId) {
+        window.showToast && window.showToast('warning', 'Please select an organization.');
+        return;
+    }
+
+    $.ajax({
+        url: API_BASE + '/saveLinkedinOrganization.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: { clientId: clientId, organizationId: organizationId, csrfToken: CSRF_TOKEN },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Unable to save organization.'
+            );
+
+            if (res && res.success) {
+                renderLinkedinAccountCard(res.data.linkedinAccount || null);
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save organization.');
+        }
+    });
+}
+
+function disconnectLinkedinAccountRequest(accountId) {
+    if (!accountId) {
+        return;
+    }
+
+    $.ajax({
+        url: API_BASE + '/disconnectLinkedinAccount.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: { accountId: accountId, csrfToken: CSRF_TOKEN },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Unable to disconnect LinkedIn account.'
+            );
+
+            if (res && res.success) {
+                renderLinkedinAccountCard(null);
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to disconnect LinkedIn account.');
         }
     });
 }

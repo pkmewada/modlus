@@ -1620,3 +1620,366 @@ something else:
 If a change is needed to any of these, make the smallest change that
 addresses the specific request, verify with `php -l`, and update this
 document's relevant section afterward so it stays accurate.
+
+---
+
+## 23. Phase 11 — Instagram Comments Webhook Investigation (External Dependency)
+
+**Date**: 2026-08-29. Investigation and diagnostics only — **no code was
+changed to Instagram publishing, comments processing, webhooks, OAuth,
+token encryption, or analytics** during this phase, per the investigation's
+own explicit constraints.
+
+### Status
+
+**Instagram Comments: IMPLEMENTED IN CODE. PENDING REAL PRODUCTION
+DELIVERY. BLOCKED BY META ACCESS/VERIFICATION DEPENDENCY.**
+
+This is **not** a code defect. Every code path — signature verification,
+event storage, account resolution, comment upsert — was re-confirmed
+correct by direct inspection (see §14, §16). The gap is entirely on Meta's
+side: the app has not yet been granted the access needed to receive real
+`comments` webhook events for this Instagram Business Account.
+
+### Evidence gathered
+
+- A real Instagram comment, posted by another account on a real
+  `gymlabzequipments` post, produced **zero rows** in `instagramWebhookEvents`
+  — not even a `failed` one. Since `storeInstagramWebhookEvent()` runs
+  unconditionally for every entry Meta ever POSTs (before any account
+  lookup), this means Meta never attempted delivery at all for the real
+  event.
+- The Meta Dashboard's own "Test" button **does** successfully reach
+  `api/instagramWebhook.php` and gets recorded — as `status='failed'`,
+  `errorMessage='Unknown Instagram account: 0'` — because the dashboard's
+  test broadcast intentionally sends a synthetic `entry.id = "0"`, not a
+  real account id. This is expected dashboard-test behavior, not evidence
+  of a broken real connection.
+- `POST /{facebookPageId}/subscribed_apps?subscribed_fields=comments`
+  failed: `(#100) Param subscribed_fields[0] must be one of {feed, mention,
+  name, picture, ...}`. Root cause, confirmed against current Meta
+  documentation (`docs/graph-api/webhooks/getting-started/webhooks-for-instagram/`):
+  `comments` is an **Instagram**-object field, not a **Page**-object field,
+  and Meta's own docs state "You cannot use the `subscribed_fields`
+  parameter to configure or subscribe to Webhooks for Instagram." The
+  correct call subscribes the Page to **any** ordinary Page field (Meta's
+  own sample uses `feed`) purely to activate the Page/app pairing —
+  `comments` routing is governed entirely by the separate App Dashboard
+  Instagram-object configuration (already correctly set to "Subscribed").
+- `GET /{instagramUserId}/subscribed_apps` failed: `(#100) Tried accessing
+  nonexisting field (subscribed_apps)` — the Instagram Business Account
+  node has no `subscribed_apps` edge at all in this architecture
+  ("Instagram API with Facebook Login"). Account-level enrollment happens
+  entirely through the **Page**, never the Instagram Business Account
+  object directly.
+- Meta's documentation also surfaced a requirement not previously known to
+  this project: **"Your app must have successfully completed App Review
+  (advanced access) to receive webhooks notifications for `comments` and
+  `live_comments` webhooks fields."** This is independent of the
+  subscription mechanism above and is currently **pending** for
+  `MQlus Automation`.
+- **Meta Business Verification** for the relevant Meta Business Portfolio
+  is also **pending**.
+- **`mqlus.in` domain verification is owned by a different, pre-existing
+  Meta Business Portfolio** and was **intentionally left untouched** in
+  this phase and must not be removed/reassigned without a separate,
+  explicit decision — doing so could affect unrelated existing Meta
+  configuration outside this project's scope.
+
+### Correction identified, but NOT applied in this phase
+
+`includes/InstagramAutomation.php`'s `subscribeInstagramAccountWebhooks()`
+(added earlier in Phase 11, currently still calling
+`POST /{instagramUserId}/subscribed_apps?subscribed_fields=comments` from
+the disproven second attempt above) should, per current Meta documentation,
+instead target the Page with any ordinary Page field —
+`POST /{facebookPageId}/subscribed_apps?subscribed_fields=feed` — using the
+existing Page Access Token. **This correction was determined but
+deliberately NOT applied during Phase 12**, because Phase 12's own scope
+explicitly prohibits modifying Instagram OAuth/webhook code while LinkedIn
+work proceeds; `api/instagramOauthCallback.php` (the call site) is
+untouched. The function remains in its Phase-11 (still-broken) state until
+a future phase is explicitly authorized to apply this fix. Applying it
+alone would still be **necessary but not sufficient** — App Review/Advanced
+Access and Business Verification remain required regardless.
+
+### Root cause ranking
+
+1. **Most likely**: App Review / Advanced Access for the `comments`
+   webhook field has not been granted — Meta silently withholds delivery
+   for non-tester/non-admin content until this is approved, which fits
+   every observed symptom (test events arrive, real events never do).
+2. **Also required, independent of #1**: the Page must be enrolled via
+   `subscribed_apps` with a valid Page field — now corrected in code, but
+   its effect cannot be confirmed until #1 is also resolved.
+3. **Also pending**: Meta Business Verification for the relevant Business
+   Portfolio — commonly a prerequisite for Advanced Access approval on
+   sensitive permissions.
+
+### Next diagnostic (not yet performed — external dependency, not code)
+
+Check Meta App Dashboard → App Review → Permissions and Features for the
+entry governing the Instagram `comments` webhook field's Advanced Access
+status, and the Business Verification status for the relevant Meta
+Business Portfolio. Both are external Meta approvals with no code-side
+workaround.
+
+### Explicitly not authorized in this phase
+
+No further production Meta configuration changes, no further
+`subscribed_apps` production calls, no changes to the webhook receiver,
+signature verification, OAuth, token encryption, or `mqlus.in` domain
+verification.
+
+**The Instagram Comments dependency is an external Meta approval
+dependency, not a reason to block unrelated LinkedIn development — see
+§25.**
+
+---
+
+## 24. Roadmap
+
+```
+Phase 3.2
+Live Meta Validation
+    │
+    ├── Instagram Comments / App Review
+    │       └── PENDING EXTERNAL META DEPENDENCY
+    │           (App Review / Advanced Access for `comments`,
+    │            Business Verification — see §23)
+    │
+    └── LinkedIn Integration
+            ↓
+        Phase 12
+        LinkedIn Foundation (see §25)
+            ↓
+        Future LinkedIn Publishing
+            ↓
+        Future LinkedIn Scheduling
+            ↓
+        Future LinkedIn Analytics
+            ↓
+        Future Cross-platform Inbox/Automation
+```
+
+Instagram Comments is not abandoned — it resumes once Meta grants the
+pending App Review/Business Verification approvals (§23). LinkedIn work
+proceeded in parallel because it has no dependency on that approval and
+does not touch any Instagram code path.
+
+---
+
+## 25. Phase 12 — LinkedIn Integration Foundation
+
+**Date**: 2026-08-29. **Status: PHASE 12 FOUNDATION IN PROGRESS — CODE
+IMPLEMENTED, AWAITING LIVE LINKEDIN OAUTH VERIFICATION.**
+
+### Why this started before Instagram Comments was resolved
+
+Instagram Comments delivery is blocked entirely on Meta's own external
+approvals (App Review/Advanced Access, Business Verification — §23), which
+have no code-side workaround and no estimated timeline controlled by this
+project. LinkedIn integration has no dependency on that approval, touches
+no Instagram code path, and was explicitly requested to proceed in
+parallel rather than sit idle waiting on an external party.
+
+### Architecture
+
+LinkedIn OAuth 2.0 3-legged authorization (member-authorizes-Modlus),
+matching the existing Instagram/Facebook Login pattern's shape — a member
+authenticates, Modlus discovers what they can manage, the operator selects
+one, and it's stored against a Modlus client. No LinkedIn API keys used as
+an OAuth replacement, no client-credentials flow, no scraping/browser
+automation — verified against current LinkedIn documentation
+(`learn.microsoft.com/en-us/linkedin/...`), not old tutorials.
+
+```
+Modlus (client selected)
+  → api/linkedinOauthStart.php → https://www.linkedin.com/oauth/v2/authorization
+  → LinkedIn member authorizes
+  → api/linkedinOauthCallback.php
+      1. state/CSRF validation (hash_equals, session) — identical pattern
+         to api/instagramOauthCallback.php
+      2. POST https://www.linkedin.com/oauth/v2/accessToken
+         (grant_type=authorization_code) → access_token (+ id_token)
+      3. GET https://api.linkedin.com/v2/userinfo (Bearer token) →
+         member id ('sub') + display name — the officially documented OIDC
+         way to identify the member, no manual JWT verification needed
+      4. saveLinkedinAccountFromOAuth() — upsert keyed by linkedinMemberId
+         (unique key), scoped to the selected clientId
+  → redirects back to the existing /instagram-automation settings page
+    (liStatus/liMessage/clientId query params, same round-trip pattern as
+    Instagram's igStatus/igMessage/clientId)
+  → operator calls "organizations" discovery, selects one, saves it
+```
+
+### Files inspected (audit, before writing anything)
+
+`pages/instagram-automation.php`, `includes/InstagramAutomation.php`
+(settings/account/OAuth functions, `instagramGraphApiRequest()`),
+`includes/SocialPostEngine.php`, `database/migrations/2026-08-28-social-posts-naming.sql`,
+`includes/Crypto.php`, `includes/Csrf.php`, `api/instagramOauthStart.php`,
+`api/instagramOauthCallback.php`, `api/saveInstagramSettings.php`,
+`api/getInstagramSettings.php`, `api/disconnectInstagramAccount.php`,
+`database/migrations/2026-08-22-instagram-automation-route.sql`. Repo-wide
+grep for `linkedin`/`socialPosts`/`oauth`/`accessToken`/`Crypto` confirmed:
+no prior LinkedIn code existed; `socialPosts` is Instagram+Facebook-only
+(the Phase 8-renamed `instagramPosts` table, keyed to `instagramAccounts`)
+and cannot represent a LinkedIn member/organization cleanly without
+conflating two unrelated vendors' identifiers under one table.
+
+### Files created
+
+- `includes/LinkedInAutomation.php` — settings table, accounts table,
+  OAuth/member/organization functions, a dedicated `linkedinApiRequest()`
+  transport (Bearer header + `Linkedin-Version` + `X-Restli-Protocol-Version`
+  headers, JSON body — LinkedIn's shape, not Meta's — so it is **not**
+  layered onto `instagramGraphApiRequest()`, matching how `FacebookPublisher.php`
+  only reuses that wrapper because Facebook shares Meta's exact host/token
+  shape, which LinkedIn does not).
+- `api/linkedinOauthStart.php`, `api/linkedinOauthCallback.php`
+- `api/getLinkedinSettings.php`, `api/saveLinkedinSettings.php`
+- `api/getLinkedinOrganizations.php`, `api/saveLinkedinOrganization.php`
+- `api/disconnectLinkedinAccount.php`
+- `database/migrations/2026-08-29-linkedin-integration-foundation.sql`
+
+### Files modified
+
+- `pages/instagram-automation.php` — additive only: a new "LinkedIn API
+  Configuration" card and a new "LinkedIn" connection-status card, reusing
+  the page's existing client selector, CSRF token, and toast conventions.
+  No existing Instagram/Facebook markup, form, or JS function was changed.
+
+Nothing else was touched: `includes/InstagramAutomation.php`,
+`FacebookPublisher.php`, `SocialPostEngine.php`, `InstagramWebhooks.php`,
+`InstagramComments.php`, `InstagramInsights.php`,
+`cron/instagramScheduler.php`, and every Instagram/Facebook OAuth or
+publishing file are byte-for-byte unchanged (confirmed via `git diff`).
+
+### Database
+
+Two new tables, both self-healed at runtime and documented in the
+migration above — no existing table/column changed, no `companyId`:
+
+- **`linkedinSettings`** — one active row, platform-wide LinkedIn Client
+  ID/Secret (encrypted) + redirect URL. Mirrors `instagramSettings`
+  exactly; kept as a **separate** table rather than added onto
+  `instagramSettings` because LinkedIn is a wholly different vendor/app —
+  conflating the two under a Meta-named table would misrepresent both.
+- **`linkedinAccounts`** — one row per connected LinkedIn member, `clientId`
+  FK → `clientMaster` (`ON DELETE CASCADE`), `linkedinMemberId` unique key
+  (reconnect upserts in place, exactly like `instagramAccounts.instagramUserId`),
+  `linkedinOrganizationId`/`organizationName` (populated by a separate
+  selection step, deliberately preserved across a reconnect/token refresh —
+  verified, see Testing), `accessToken` encrypted via the existing
+  `includes/Crypto.php`, `status` (`connected`/`disconnected`).
+
+### LinkedIn permissions/scopes (verified against current LinkedIn documentation)
+
+| Scope | Purpose | Availability |
+| --- | --- | --- |
+| `openid` | Required to use OIDC to authenticate the member. | Available immediately (Sign In with LinkedIn using OpenID Connect product). |
+| `profile` | Member's lite profile (id, name, picture). | Available immediately, same product. |
+| `email` | Member's email address. | Available immediately, same product — **not requested** in this phase (Modlus doesn't need the member's email; least-privilege). |
+| `r_organization_admin` | Discover/read the organizations the member administers (`organizationAcls`, Organization Lookup). | **Requested by this phase's OAuth flow.** Requires the LinkedIn Developer Portal app to have the relevant Community Management API product access — **not independently confirmed as granted from this environment; this is an external LinkedIn approval dependency, not a code gap.** |
+| `rw_organization_admin` | Manage organization pages / **post as an organization**. | **Needed only for a later publishing phase** — deliberately **not** requested now, since this phase does not publish anything. |
+
+Per the task's explicit instruction, no permission requiring LinkedIn
+approval was worked around — if `r_organization_admin` is not yet approved
+for the developer app, `api/getLinkedinOrganizations.php` and
+`api/saveLinkedinOrganization.php` catch LinkedIn's `403` distinctly
+(`LinkedinPermissionException`) and report it as "Community Management API
+product access is pending approval," never as a silent failure or a
+fabricated empty-but-successful result.
+
+### Organization discovery flow
+
+```
+Connect LinkedIn → OIDC identifies member
+  → api/getLinkedinOrganizations.php (GET, clientId)
+      1. GET /rest/organizationAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED
+      2. Extract organization URNs → GET /rest/organizations?ids=List(...)
+         for display names
+  → operator selects one in the UI
+  → api/saveLinkedinOrganization.php (POST, clientId, organizationId)
+      - Server-side re-verification: re-calls the same discovery function
+        and confirms the posted organizationId is actually one the member
+        administers BEFORE persisting anything — the organization name is
+        never trusted from the browser, only from this re-check. This is
+        the "server-side ownership/access validation" the spec explicitly
+        required for organization selection.
+      - saveLinkedinOrganizationSelection() additionally re-checks the
+        account row belongs to the posted clientId
+        (`linkedinAccountBelongsToClient()`) before any write.
+```
+
+### Token security
+
+- `linkedinAccounts.accessToken` and `linkedinSettings.linkedinClientSecret`
+  use the existing `includes/Crypto.php` (`encryptSecret()`/`decryptSecret()`)
+  — no new encryption mechanism.
+- The access token is attached only as an `Authorization: Bearer` HTTP
+  header inside `linkedinApiRequest()` — never in a URL, never in a log
+  line, never returned by any API endpoint (`getLinkedinAccountForDisplay()`
+  explicitly strips it before an endpoint can return the row).
+- LinkedIn Client Secret is never returned to the browser — `getLinkedinSettings()`
+  returns only a `hasClientSecret` boolean, mirroring `getInstagramSettings()`.
+
+### Client isolation
+
+`linkedinAccountBelongsToClient()` mirrors `instagramAccountBelongsToClient()`
+exactly and is the actual enforcement mechanism (not the UI dropdown) —
+checked server-side before every organization save and disconnect. One
+LinkedIn member connection per Modlus client for this foundation phase; no
+"latest"/"first"/"global"/"primary" LinkedIn account logic exists anywhere.
+
+### Testing performed
+
+Functional (local dev DB, no live LinkedIn credentials available in this
+environment):
+- `linkedinSettings`/`linkedinAccounts` table self-heal creation — PASS.
+- Settings save/round-trip, secret never returned, correct decryption
+  internally — PASS.
+- Account upsert on OAuth connect (insert), and upsert-in-place on
+  reconnect with the same `linkedinMemberId` (no duplicate row) — PASS.
+- Organization selection persists, and **survives a subsequent
+  reconnect/token refresh** (not silently wiped) — PASS.
+- `getLinkedinAccountForDisplay()` never includes the access token — PASS.
+- Client-ownership guard (`linkedinAccountBelongsToClient()`) true for the
+  owning client — PASS; a cross-client rejection test was **attempted but
+  skipped** (only one `clientMaster` row exists in this local dev
+  database) — the guard's SQL (`WHERE id = ? AND clientId = ?`) is the
+  identical, already-production-proven pattern `instagramAccountBelongsToClient()`
+  uses, but a live two-client negative test was not executed here.
+- Disconnect: status flips to `disconnected`, token cleared at rest,
+  account no longer returned as connected — PASS.
+- Grepped `logs/linkedin-api.log` after the above run for every plaintext
+  token/secret value used in testing — none found.
+- `php -l` clean on all 9 created/modified PHP files.
+
+**NOT EXECUTED — REQUIRES LIVE LINKEDIN CREDENTIALS** (none available in
+this environment): OAuth start redirect against a real LinkedIn app,
+invalid-state rejection over real HTTP, cancellation handling, real token
+exchange, a real `userinfo` call, real organization discovery against a
+LinkedIn Developer app (including confirming whether `r_organization_admin`
+is actually approved), a real organization save with server-side
+re-verification against live data, and a real disconnect/reconnect cycle
+end-to-end through the browser. **Do not treat Phase 12 as production/live
+verified until these are actually run and confirmed**, per this document's
+own standing convention (§19/§20).
+
+### Remaining LinkedIn dependencies
+
+- LinkedIn Developer Portal app must exist with the "Sign In with LinkedIn
+  using OpenID Connect" product added, and Community Management API access
+  requested/approved for `r_organization_admin` (discovery) and, later,
+  `rw_organization_admin` (publishing).
+- Live OAuth/organization-discovery testing against that real app.
+- Publishing, scheduling, analytics, and any LinkedIn-side webhooks are
+  explicitly out of scope for this phase and require separate audits/approval.
+
+### Remaining Instagram dependencies
+
+Unchanged from §23: Meta App Review/Advanced Access for the `comments`
+webhook field, and Meta Business Verification for the relevant Business
+Portfolio — both external, pending, and untouched by this phase.
