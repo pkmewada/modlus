@@ -110,7 +110,6 @@ $menuGroups = [
         'items' => [
             ['route' => 'calendar', 'label' => 'Calendar'],
             ['route' => 'social-data-entry', 'label' => 'Social Media Data'],
-            ['route' => 'social-overview', 'label' => 'Social Media Overview'],
         ],
     ],
     [
@@ -180,7 +179,9 @@ $renderMenuGroup = static function (array $group) use ($canRenderMenuRoute, $isA
     </li>
     <?php
 };
+$hideAppChrome = !empty($hideAppChrome);
 ?>
+<?php if (!$hideAppChrome): ?>
 <!-- Start::app-sidebar -->
 <aside class="app-sidebar sticky" id="sidebar">
 
@@ -260,3 +261,4 @@ $renderMenuGroup = static function (array $group) use ($canRenderMenuRoute, $isA
 
 </aside>
 <!-- End::app-sidebar -->
+<?php endif; ?>

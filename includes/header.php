@@ -4,9 +4,15 @@ require_once __DIR__ . '/Csrf.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Pages embedded inside another page's modal (e.g. social-overview.php
+// inside the social-data-entry.php "Add Entry" overlay) can set
+// $hideAppChrome = true before including this file to skip the top
+// navbar + sidebar, since the parent page already shows its own.
+$hideAppChrome = !empty($hideAppChrome);
 ?>
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="doublemenu" data-page-style="regular"
+<html lang="en" dir="ltr" data-nav-layout="vertical" <?= $hideAppChrome ? '' : 'data-vertical-style="doublemenu"' ?> data-page-style="regular"
     data-theme-mode="light" data-header-styles="transparent" data-width="default" data-menu-position="fixed"
     data-menu-styles="light" data-toggled="close" loader="enable">
 
@@ -81,6 +87,22 @@ ini_set('display_errors', 1);
             display: none;              /* Chrome, Safari */
         }
     </style>
+    <?php if ($hideAppChrome): ?>
+    <style>
+        /* No header/sidebar in this view (embedded in a modal) — the base
+           theme CSS still reserves space for both on .app-content, so
+           reclaim it here instead of touching that shared stylesheet. */
+        @media (min-width: 992px) {
+            .app-content {
+                margin-inline-start: 0 !important;
+                margin-block-start: 0 !important;
+            }
+        }
+        .main-content {
+            padding-block-start: 0 !important;
+        }
+    </style>
+    <?php endif; ?>
 </head>
 
 <body>
@@ -92,6 +114,7 @@ ini_set('display_errors', 1);
     <!-- Loader -->
 
     <div class="page">
+        <?php if (!$hideAppChrome): ?>
         <!-- app-header -->
         <header class="app-header sticky" id="header">
 
@@ -417,3 +440,4 @@ ini_set('display_errors', 1);
 
         </header>
         <!-- /app-header -->
+        <?php endif; ?>

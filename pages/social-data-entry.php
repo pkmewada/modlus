@@ -353,6 +353,19 @@ include __DIR__ . '/../includes/sidebar.php';
     }
     .sde-actions { justify-content: flex-start; }
 }
+
+/* ---------- full-page "Social Media Overview" modal ---------- */
+.sde-overview-body {
+    padding: 0;
+    overflow: hidden;
+}
+
+.sde-overview-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
 </style>
 
 <div class="main-content app-content">
@@ -369,9 +382,6 @@ include __DIR__ . '/../includes/sidebar.php';
                 </ol>
             </div>
             <div class="d-flex gap-2">
-                <a href="social-overview" class="btn btn-light btn-sm">
-                    <i class="ri-grid-line me-1"></i> Client Overview
-                </a>
                 <a href="calendar" class="btn btn-light btn-sm">
                     <i class="ri-calendar-event-line me-1"></i> Calendar Planner
                 </a>
@@ -462,6 +472,19 @@ include __DIR__ . '/../includes/sidebar.php';
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<!-- ============================ SOCIAL MEDIA OVERVIEW (full-page) MODAL ============================ -->
+<!-- No modal-header here on purpose — the embedded Overview page shows its
+     own page title and its own "Close" button beside "Open Client Editor". -->
+<div class="modal fade" id="sdeOverviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-body sde-overview-body">
+                <iframe id="sdeOverviewFrame" class="sde-overview-frame" title="Social Media Overview"></iframe>
+            </div>
         </div>
     </div>
 </div>
@@ -599,7 +622,7 @@ $(function () {
     let entrySeq = 1;
 
     /* TODO(api): replace with GET api/get-client-calendar-plan.php (selectedDates) */
-    function getPlan(clientId, month) {
+    function getClientPlan(clientId, month) {
         const key = clientId + '|' + month;
         if (planCache[key]) return planCache[key];
 
@@ -625,11 +648,34 @@ $(function () {
         return plan;
     }
 
+    // clientId === '' (All Clients) merges every client's plan for the month,
+    // tagging each slot with its clientId so the board can tell them apart.
+    function getPlan(clientId, month) {
+        if (clientId) {
+            const plan = getClientPlan(clientId, month);
+            const out = {};
+            Object.keys(plan).forEach(date => {
+                out[date] = plan[date].map(s => ({ ...s, clientId: clientId }));
+            });
+            return out;
+        }
+
+        const merged = {};
+        DUMMY_DB.clients.forEach(c => {
+            const plan = getClientPlan(c.id, month);
+            Object.keys(plan).forEach(date => {
+                const slots = plan[date].map(s => ({ ...s, clientId: c.id }));
+                merged[date] = (merged[date] || []).concat(slots);
+            });
+        });
+        return merged;
+    }
+
     /* TODO(api): replace with GET api/getSocialContent.php */
-    function seedEntries(clientId, month) {
+    function seedEntriesForClient(clientId, month) {
         if (entries.some(e => e.clientId === clientId && e.date.startsWith(month))) return;
 
-        const plan = getPlan(clientId, month);
+        const plan = getClientPlan(clientId, month);
         const rand = seeded(clientId * 104729 + parseInt(month.replace('-', ''), 10));
         const statuses = ['draft', 'ready', 'scheduled', 'posted'];
 
@@ -654,11 +700,20 @@ $(function () {
         });
     }
 
+    function seedEntries(clientId, month) {
+        if (clientId) { seedEntriesForClient(clientId, month); return; }
+        DUMMY_DB.clients.forEach(c => seedEntriesForClient(c.id, month));
+    }
+
     // ----------------------------------------------------------------------
     // 2. HELPERS
     // ----------------------------------------------------------------------
     function esc(str) {
         return $('<div>').text(str == null ? '' : String(str)).html();
+    }
+
+    function clientById(id) {
+        return DUMMY_DB.clients.find(c => c.id === Number(id)) || { name: 'Unknown' };
     }
 
     function platformById(id) {
@@ -719,6 +774,7 @@ $(function () {
     };
 
     let entryModal = null;
+    let overviewModal = null;
     let formDirty = false;
 
     // ----------------------------------------------------------------------
@@ -736,11 +792,14 @@ $(function () {
         return html;
     }
 
-    $('#sdeClient').html(DUMMY_DB.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
+    $('#sdeClient').html(
+        '<option value="">All Clients</option>' +
+        DUMMY_DB.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')
+    );
     $('#sdeMonth').html(buildMonthOptions());
     $('#sdePlatform').append(DUMMY_DB.platforms.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join(''));
 
-    state.clientId = Number($('#sdeClient').val());
+    state.clientId = $('#sdeClient').val() ? Number($('#sdeClient').val()) : '';
     state.month = $('#sdeMonth').val();
 
     // ----------------------------------------------------------------------
@@ -755,7 +814,7 @@ $(function () {
         }
 
         return slots.map(s => {
-            const entry = findEntry(state.clientId, date, s.platformId, s.featureId);
+            const entry = findEntry(s.clientId, date, s.platformId, s.featureId);
             return { ...s, entry: entry || null, status: entry ? entry.status : 'pending' };
         }).filter(s => {
             if (state.status && s.status !== state.status) return false;
@@ -780,10 +839,14 @@ $(function () {
         const monthLabel = $('#sdeMonth option:selected').text();
         $('#sdeRailTitle').text(monthLabel);
 
+        let totalSlots = 0, totalFilled = 0;
+
         const rows = dates.map(date => {
             const slots = visibleSlots(date);
             if (!slots.length) return null;
             const filled = slots.filter(s => s.entry).length;
+            totalSlots += slots.length;
+            totalFilled += filled;
             const pct = Math.round((filled / slots.length) * 100);
             const d = new Date(date + 'T00:00:00');
             const barClass = pct === 100 ? 'is-done' : (pct === 0 ? 'is-empty' : '');
@@ -805,8 +868,16 @@ $(function () {
 
         $('#sdeRailCount').text(rows.length);
 
+        const allDatesRow = `
+            <button type="button" class="sde-date-item ${!state.activeDate ? 'active' : ''}" data-date="">
+                <span class="sde-date-num"><b><i class="ri-list-check-2"></i></b></span>
+                <span><span class="sde-date-dow">All Dates</span></span>
+                <span class="sde-date-count">${totalFilled}/${totalSlots}</span>
+            </button>
+        `;
+
         if (!rows.length) {
-            rail.html(`
+            rail.html(allDatesRow + `
                 <div class="sde-empty py-4">
                     <i class="ri-calendar-close-line"></i>
                     <div class="fs-12">No planned dates match the current filters.</div>
@@ -815,71 +886,36 @@ $(function () {
             return;
         }
 
-        rail.html(rows.join(''));
+        rail.html(allDatesRow + rows.join(''));
     }
 
     // ----------------------------------------------------------------------
     // 6. RENDER — DAY BOARD
     // ----------------------------------------------------------------------
-    function renderBoard() {
-        const board = $('#sdeBoard');
-
-        if (!state.activeDate) {
-            $('#sdeDayTitle').text('Select a date');
-            $('#sdeDayStats').empty();
-            $('#sdeAddForDateBtn').prop('disabled', true);
-            board.html(`
-                <div class="sde-empty">
-                    <i class="ri-calendar-check-line"></i>
-                    <div>Pick a date from the left to view and update its content.</div>
-                </div>
-            `);
-            return;
-        }
-
-        const slots = visibleSlots(state.activeDate);
-        const filled = slots.filter(s => s.entry).length;
-        const pending = slots.length - filled;
-
-        $('#sdeDayTitle').html(
-            `${fmtLongDate(state.activeDate)} <span class="text-muted fw-normal fs-13">· ` +
-            `${new Date(state.activeDate + 'T00:00:00').toLocaleString('en', { weekday: 'long' })}</span>`
-        );
-
-        $('#sdeDayStats').html(`
-            <span class="sde-stat"><i class="ri-circle-fill text-primary"></i> Planned <b>${slots.length}</b></span>
-            <span class="sde-stat"><i class="ri-circle-fill text-success"></i> Filled <b>${filled}</b></span>
-            <span class="sde-stat"><i class="ri-circle-fill text-warning"></i> Pending <b>${pending}</b></span>
-        `);
-
-        $('#sdeAddForDateBtn').prop('disabled', false);
-
-        if (!slots.length) {
-            board.html(`
-                <div class="sde-empty">
-                    <i class="ri-filter-off-line"></i>
-                    <div>Nothing on this date matches the current filters.</div>
-                </div>
-            `);
-            return;
-        }
-
-        // group the slots by platform
+    // groups slots by platform and returns the board HTML for them (used for
+    // both the single-date view and the "All Dates" aggregated view)
+    function renderSlotGroups(slots) {
+        // in "All Clients" mode, split groups per client too, so the header
+        // can read e.g. "Instagram - Acme Retail Pvt Ltd" instead of mixing clients
         const groups = {};
         slots.forEach(s => {
-            (groups[s.platformId] = groups[s.platformId] || []).push(s);
+            const key = state.clientId ? s.platformId : s.platformId + '|' + s.clientId;
+            (groups[key] = groups[key] || []).push(s);
         });
 
         let html = '';
-        Object.keys(groups).forEach(pid => {
-            const platform = platformById(pid);
-            const list = groups[pid];
+        Object.keys(groups).forEach(key => {
+            const list = groups[key];
+            const platform = platformById(list[0].platformId);
+            const groupLabel = state.clientId
+                ? esc(platform.name)
+                : `${esc(platform.name)} - ${esc(clientById(list[0].clientId).name)}`;
 
             html += `
                 <div class="sde-group">
                     <div class="sde-group-head">
                         <i class="${platform.icon} sde-plat-icon"></i>
-                        ${esc(platform.name)}
+                        ${groupLabel}
                         <span class="badge bg-light text-default ms-auto fw-normal">${list.length} slot${list.length > 1 ? 's' : ''}</span>
                     </div>
                     <div class="sde-slot-head">
@@ -919,6 +955,92 @@ $(function () {
             html += `</div>`;
         });
 
+        return html;
+    }
+
+    function renderBoard() {
+        const board = $('#sdeBoard');
+
+        if (!state.activeDate) {
+            renderAllDatesBoard();
+            return;
+        }
+
+        const slots = visibleSlots(state.activeDate);
+        const filled = slots.filter(s => s.entry).length;
+        const pending = slots.length - filled;
+
+        $('#sdeDayTitle').html(
+            `${fmtLongDate(state.activeDate)} <span class="text-muted fw-normal fs-13">· ` +
+            `${new Date(state.activeDate + 'T00:00:00').toLocaleString('en', { weekday: 'long' })}</span>`
+        );
+
+        $('#sdeDayStats').html(`
+            <span class="sde-stat"><i class="ri-circle-fill text-primary"></i> Planned <b>${slots.length}</b></span>
+            <span class="sde-stat"><i class="ri-circle-fill text-success"></i> Filled <b>${filled}</b></span>
+            <span class="sde-stat"><i class="ri-circle-fill text-warning"></i> Pending <b>${pending}</b></span>
+        `);
+
+        $('#sdeAddForDateBtn').prop('disabled', false);
+
+        if (!slots.length) {
+            board.html(`
+                <div class="sde-empty">
+                    <i class="ri-filter-off-line"></i>
+                    <div>Nothing on this date matches the current filters.</div>
+                </div>
+            `);
+            return;
+        }
+
+        board.html(renderSlotGroups(slots));
+    }
+
+    // aggregated view across every planned date in the month (and, when
+    // "All Clients" is selected, across every client too)
+    function renderAllDatesBoard() {
+        const board = $('#sdeBoard');
+        const plan = getPlan(state.clientId, state.month);
+        const dates = Object.keys(plan).sort();
+
+        const dateSlots = dates
+            .map(date => ({ date: date, slots: visibleSlots(date) }))
+            .filter(d => d.slots.length);
+
+        let totalSlots = 0, totalFilled = 0;
+        dateSlots.forEach(d => {
+            totalSlots += d.slots.length;
+            totalFilled += d.slots.filter(s => s.entry).length;
+        });
+
+        $('#sdeDayTitle').text('All Dates');
+        $('#sdeDayStats').html(`
+            <span class="sde-stat"><i class="ri-circle-fill text-primary"></i> Planned <b>${totalSlots}</b></span>
+            <span class="sde-stat"><i class="ri-circle-fill text-success"></i> Filled <b>${totalFilled}</b></span>
+            <span class="sde-stat"><i class="ri-circle-fill text-warning"></i> Pending <b>${totalSlots - totalFilled}</b></span>
+        `);
+
+        // adding an entry needs one specific date, picked from the rail
+        $('#sdeAddForDateBtn').prop('disabled', true);
+
+        if (!dateSlots.length) {
+            board.html(`
+                <div class="sde-empty">
+                    <i class="ri-filter-off-line"></i>
+                    <div>Nothing matches the current filters.</div>
+                </div>
+            `);
+            return;
+        }
+
+        let html = '';
+        dateSlots.forEach(d => {
+            html += `<div class="mb-3">
+                <div class="fw-semibold fs-13 mb-2">${esc(fmtLongDate(d.date))}</div>
+                ${renderSlotGroups(d.slots)}
+            </div>`;
+        });
+
         board.html(html);
     }
 
@@ -928,9 +1050,10 @@ $(function () {
         const plan = getPlan(state.clientId, state.month);
         const dates = Object.keys(plan).sort();
 
-        // keep the active date if it still exists, otherwise fall back to the first
-        if (!state.activeDate || dates.indexOf(state.activeDate) === -1) {
-            state.activeDate = dates.length ? dates[0] : null;
+        // drop the active date if it no longer exists under the current filters;
+        // otherwise leave it as-is (including null, which means "All Dates")
+        if (state.activeDate && dates.indexOf(state.activeDate) === -1) {
+            state.activeDate = null;
         }
 
         renderRail();
@@ -1121,7 +1244,8 @@ $(function () {
     // 8. EVENTS
     // ----------------------------------------------------------------------
     $('#sdeClient').on('change', function () {
-        state.clientId = Number($(this).val());
+        const val = $(this).val();
+        state.clientId = val ? Number(val) : '';
         state.activeDate = null;
         renderAll();
         notify('info', 'Switched to ' + $('#sdeClient option:selected').text() + '.');
@@ -1153,13 +1277,33 @@ $(function () {
     });
 
     $('#sdeRail').on('click', '.sde-date-item', function () {
-        state.activeDate = $(this).data('date');
+        state.activeDate = $(this).data('date') || null;
         renderRail();
         renderBoard();
     });
 
-    $('#sdeAddBtn, #sdeAddForDateBtn').on('click', function () {
+    $('#sdeAddForDateBtn').on('click', function () {
         openEntryModal('add', { date: state.activeDate });
+    });
+
+    // "Add Entry" now opens the full-page Social Media Overview inside a
+    // full-screen modal; that page's own "Fill Now" opens its own data-entry
+    // modal on top of it — nothing to duplicate here.
+    $('#sdeAddBtn').on('click', function () {
+        if (!overviewModal) overviewModal = new bootstrap.Modal(document.getElementById('sdeOverviewModal'));
+        $('#sdeOverviewFrame').attr('src', 'social-overview?embed=1');
+        overviewModal.show();
+    });
+
+    $('#sdeOverviewModal').on('hidden.bs.modal', function () {
+        $('#sdeOverviewFrame').attr('src', 'about:blank');
+    });
+
+    // the embedded Overview page's own "Close" button asks us to close its modal
+    window.addEventListener('message', function (e) {
+        if (e.origin === window.location.origin && e.data && e.data.type === 'sde-overview-close' && overviewModal) {
+            overviewModal.hide();
+        }
     });
 
     $('#sdeBoard').on('click', '.sde-fill', function () {

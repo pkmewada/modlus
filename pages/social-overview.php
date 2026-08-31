@@ -22,6 +22,11 @@
 */
 include __DIR__ . "/../includes/auth.php";
 include __DIR__ . "/../includes/db.php";
+
+// Loaded inside social-data-entry.php's "Add Entry" full-screen modal iframe
+// (?embed=1) — skip the top navbar + sidebar, the parent page already has them.
+$hideAppChrome = isset($_GET['embed']) && $_GET['embed'] === '1';
+
 include __DIR__ . '/../includes/header.php';
 include __DIR__ . '/../includes/sidebar.php';
 ?>
@@ -42,6 +47,20 @@ include __DIR__ . '/../includes/sidebar.php';
 
 .sov-filterbar .form-select,
 .sov-filterbar .form-control { border-radius: 30px; }
+
+/* Choices.js (Find Client) dropdown ships with z-index:1, which sits below
+   the KPI/matrix cards that follow it in the DOM — raise it so the open
+   dropdown list always renders on top of the rest of the page. */
+.sov-filterbar .choices {
+    position: relative;
+    z-index: 3;
+}
+.sov-filterbar .choices.is-open {
+    z-index: 1050;
+}
+.sov-filterbar .choices__list--dropdown {
+    z-index: 1050;
+}
 
 .sov-check {
     display: flex;
@@ -325,6 +344,46 @@ include __DIR__ . '/../includes/sidebar.php';
                 <a href="social-data-entry" class="btn btn-light btn-sm">
                     <i class="ri-edit-box-line me-1"></i> Open Client Editor
                 </a>
+                <?php if ($hideAppChrome): ?>
+                <button type="button" class="btn btn-light btn-sm" id="sovEmbedCloseBtn">
+                    <i class="ri-close-line me-1"></i> Close
+                </button>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- ============================ FILTER BAR ============================ -->
+        <div class="card custom-card sov-filterbar">
+            <div class="card-body py-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-xl-2 col-md-4">
+                        <label for="sovMonth">Month</label>
+                        <select class="form-select form-select-sm" id="sovMonth"></select>
+                    </div>
+                    <div class="col-xl-2 col-md-4">
+                        <label for="sovPlatform">Platform</label>
+                        <select class="form-select form-select-sm" id="sovPlatform">
+                            <option value="">All Platforms</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-md-4">
+                        <label for="sovClientSearch">Find Client</label>
+                        <select class="form-select form-select-sm" id="sovClientSearch">
+                            <option value="">All Clients</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-md-6 d-flex align-items-center pt-3">
+                        <label class="sov-check mb-0">
+                            <input type="checkbox" class="form-check-input" id="sovAttentionOnly">
+                            Only clients needing attention
+                        </label>
+                    </div>
+                    <div class="col-xl-2 col-md-6 d-flex justify-content-md-end pt-3">
+                        <button class="btn btn-light btn-sm" id="sovResetBtn">
+                            <i class="ri-refresh-line me-1"></i> Reset Filters
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -349,39 +408,6 @@ include __DIR__ . '/../includes/sidebar.php';
             <div class="sov-kpi" id="kpiNoPlan" data-kpi="noplan">
                 <div class="num" id="kpiNoPlanNum">0</div>
                 <div class="lbl">No Calendar Plan</div>
-            </div>
-        </div>
-
-        <!-- ============================ FILTER BAR ============================ -->
-        <div class="card custom-card sov-filterbar">
-            <div class="card-body py-3">
-                <div class="row g-2 align-items-end">
-                    <div class="col-xl-2 col-md-4">
-                        <label for="sovMonth">Month</label>
-                        <select class="form-select form-select-sm" id="sovMonth"></select>
-                    </div>
-                    <div class="col-xl-2 col-md-4">
-                        <label for="sovPlatform">Platform</label>
-                        <select class="form-select form-select-sm" id="sovPlatform">
-                            <option value="">All Platforms</option>
-                        </select>
-                    </div>
-                    <div class="col-xl-3 col-md-4">
-                        <label for="sovClientSearch">Find Client</label>
-                        <input type="text" class="form-control form-control-sm" id="sovClientSearch" placeholder="Search by client name...">
-                    </div>
-                    <div class="col-xl-3 col-md-6 d-flex align-items-center pt-3">
-                        <label class="sov-check mb-0">
-                            <input type="checkbox" class="form-check-input" id="sovAttentionOnly">
-                            Only clients needing attention
-                        </label>
-                    </div>
-                    <div class="col-xl-2 col-md-6 d-flex justify-content-md-end pt-3">
-                        <button class="btn btn-light btn-sm" id="sovResetBtn">
-                            <i class="ri-refresh-line me-1"></i> Reset Filters
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -745,7 +771,20 @@ $(function () {
     $('#sovMonth').html(buildMonthOptions());
     $('#sovPlatform').append(PLATFORMS.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join(''));
     $('#sovQueueClient').append(CLIENTS.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
+    $('#sovClientSearch').append(CLIENTS.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
     state.month = $('#sovMonth').val();
+
+    // searchable client dropdown — type to filter, pick one, reuses the
+    // Choices.js library already loaded site-wide (includes/header.php)
+    let sovClientChoices = null;
+    if (window.Choices) {
+        sovClientChoices = new Choices('#sovClientSearch', {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search by client name...',
+            itemSelectText: '',
+            shouldSort: false
+        });
+    }
 
     // ----------------------------------------------------------------------
     // 5. COMPUTE CLIENT HEALTH (matrix rows + pending pool), for the month
@@ -839,8 +878,7 @@ $(function () {
         let filtered = rows;
 
         if (state.clientSearch) {
-            const q = state.clientSearch.toLowerCase();
-            filtered = filtered.filter(r => r.client.name.toLowerCase().indexOf(q) !== -1);
+            filtered = filtered.filter(r => String(r.client.id) === state.clientSearch);
         }
         if (state.attentionOnly) {
             filtered = filtered.filter(r => r.overallPct === null || r.overallPct < 100);
@@ -1150,16 +1188,15 @@ $(function () {
     $('#sovPlatform').on('change', function () { state.platform = $(this).val(); state.queuePage = 1; renderAll(); });
     $('#sovAttentionOnly').on('change', function () { state.attentionOnly = $(this).is(':checked'); renderMatrixBody(currentHealth.rows); });
 
-    let clientSearchTimer = null;
-    $('#sovClientSearch').on('input', function () {
-        const val = $(this).val().trim();
-        clearTimeout(clientSearchTimer);
-        clientSearchTimer = setTimeout(function () { state.clientSearch = val; renderMatrixBody(currentHealth.rows); }, 200);
+    $('#sovClientSearch').on('change', function () {
+        state.clientSearch = $(this).val();
+        renderMatrixBody(currentHealth.rows);
     });
 
     $('#sovResetBtn').on('click', function () {
         $('#sovPlatform').val('');
-        $('#sovClientSearch').val('');
+        if (sovClientChoices) sovClientChoices.setChoiceByValue('');
+        else $('#sovClientSearch').val('');
         $('#sovAttentionOnly').prop('checked', false);
         $('#sovQueueClient').val('');
         $('#sovQueueSearch').val('');
@@ -1293,6 +1330,14 @@ $(function () {
     });
 
     $('#sovEntryModal').on('hidden.bs.modal', function () { formDirty = false; activeModalContext = null; });
+
+    // when embedded (?embed=1) in social-data-entry.php's full-screen modal,
+    // "Close" asks the parent page to close that modal
+    $('#sovEmbedCloseBtn').on('click', function () {
+        if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'sde-overview-close' }, window.location.origin);
+        }
+    });
 
     // ----------------------------------------------------------------------
     // 18. INITIAL RENDER
