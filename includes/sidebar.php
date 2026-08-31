@@ -109,6 +109,8 @@ $menuGroups = [
         'icon' => 'ti ti-world',
         'items' => [
             ['route' => 'calendar', 'label' => 'Calendar'],
+            ['route' => 'social-data-entry', 'label' => 'Social Media Data'],
+            ['route' => 'social-overview', 'label' => 'Social Media Overview'],
         ],
     ],
     [
