@@ -369,6 +369,9 @@ include __DIR__ . '/../includes/sidebar.php';
                 </ol>
             </div>
             <div class="d-flex gap-2">
+                <a href="social-overview" class="btn btn-light btn-sm">
+                    <i class="ri-grid-line me-1"></i> Client Overview
+                </a>
                 <a href="calendar" class="btn btn-light btn-sm">
                     <i class="ri-calendar-event-line me-1"></i> Calendar Planner
                 </a>
@@ -535,7 +538,7 @@ include __DIR__ . '/../includes/sidebar.php';
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="<?= ASSET_URL ?>/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 /* ==========================================================================
