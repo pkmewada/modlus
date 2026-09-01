@@ -312,6 +312,97 @@
                 </div>
             </div>
         </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-xl-7">
+                <form id="gbpSettingsForm" autocomplete="off">
+                    <?= getCsrfInput() ?>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Google Business Profile API Configuration</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label" for="gbpClientId">Google Client ID</label>
+                                    <input type="text" class="form-control" id="gbpClientId" name="googleClientId" maxlength="191" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="gbpClientSecret">Google Client Secret</label>
+                                    <input type="password" class="form-control" id="gbpClientSecret" name="googleClientSecret" maxlength="255" autocomplete="new-password" placeholder="">
+                                    <div class="form-text">Never displayed once saved. Leave blank to keep the existing secret.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="gbpRedirectUrl">Redirect URL</label>
+                                    <input type="url" class="form-control" id="gbpRedirectUrl" name="redirectUrl" maxlength="255">
+                                    <div class="form-text">Add this exact URL to your Google Cloud OAuth Client's Authorized Redirect URIs.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary" id="saveGbpSettingsBtn">
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-xl-5">
+                <div class="card custom-card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Google Business Profile</h5>
+                    </div>
+
+                    <div class="card-body d-flex flex-column gap-3" id="gbpConnectionCard">
+                        <div id="gbpNotConnected">
+                            <p class="mb-3 text-muted">Status: <span class="badge bg-secondary-transparent">Not Connected</span></p>
+                            <button type="button" class="btn btn-outline-primary" id="connectGbpBtn">
+                                <i class="ti ti-brand-google me-1"></i>
+                                Connect Google Business Profile
+                            </button>
+                            <div class="alert alert-info mb-0 mt-3 d-none" id="gbpConnectDisabledHint">
+                                Save your Google Client ID and Client Secret, and select a client above, to enable connection.
+                            </div>
+                        </div>
+
+                        <div id="gbpConnectedNoLocation" class="d-none">
+                            <p class="mb-1">Google Account: <strong id="gbpUserEmail"></strong></p>
+                            <p class="mb-3 text-muted">No Business Profile account/location selected yet.</p>
+
+                            <label class="form-label" for="gbpAccountSelect">Business Profile Accounts</label>
+                            <select class="form-select mb-2" id="gbpAccountSelect">
+                                <option value="">Loading accounts...</option>
+                            </select>
+
+                            <label class="form-label" for="gbpLocationSelect">Locations</label>
+                            <select class="form-select mb-2" id="gbpLocationSelect" disabled>
+                                <option value="">Select an account first</option>
+                            </select>
+
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-primary btn-sm" id="saveGbpLocationBtn">Save</button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="disconnectGbpBtnNoLocation">Disconnect</button>
+                            </div>
+                            <div class="alert alert-warning mb-0 mt-3 d-none" id="gbpDiscoveryError"></div>
+                        </div>
+
+                        <div id="gbpConnectedWithLocation" class="d-none">
+                            <p class="mb-1">Status: <span class="badge bg-success-transparent">Connected</span></p>
+                            <p class="mb-1">Google Account: <strong id="gbpUserEmailConnected"></strong></p>
+                            <p class="mb-1">Business Profile Account: <strong id="gbpAccountName"></strong></p>
+                            <p class="mb-1">Location: <strong id="gbpLocationTitle"></strong></p>
+                            <p class="mb-3 text-muted">Location ID: <span id="gbpLocationId"></span></p>
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="disconnectGbpBtn">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -325,6 +416,7 @@ $(function() {
     loadInstagramSettings();
     loadLinkedinSettings();
     loadPinterestSettings();
+    loadGbpSettings();
 
     $('#instagramSettingsForm').on('change keyup', 'input', function() {
         hasUnsavedInstagramChanges = true;
@@ -346,6 +438,11 @@ $(function() {
         savePinterestSettingsRequest();
     });
 
+    $('#gbpSettingsForm').on('submit', function(e) {
+        e.preventDefault();
+        saveGbpSettingsRequest();
+    });
+
     $('#clientSelect').on('change', function() {
         loadInstagramAccountsForSelectedClient();
         updateConnectButtonState();
@@ -353,6 +450,8 @@ $(function() {
         updateLinkedinConnectButtonState();
         loadPinterestAccountForSelectedClient();
         updatePinterestConnectButtonState();
+        loadGbpAccountForSelectedClient();
+        updateGbpConnectButtonState();
     });
 
     $('#connectLinkedinBtn').on('click', function() {
@@ -395,6 +494,30 @@ $(function() {
         disconnectPinterestAccountRequest(accountId);
     });
 
+    $('#connectGbpBtn').on('click', function() {
+        const clientId = $('#clientSelect').val();
+
+        if (!clientId) {
+            window.showToast && window.showToast('warning', 'Please select a client first.');
+            return;
+        }
+
+        window.location.href = API_BASE + '/googleBusinessProfileOauthStart.php?clientId=' + encodeURIComponent(clientId);
+    });
+
+    $('#gbpAccountSelect').on('change', function() {
+        loadGbpLocationsForSelect();
+    });
+
+    $('#saveGbpLocationBtn').on('click', function() {
+        saveGbpLocationSelection();
+    });
+
+    $('#disconnectGbpBtn, #disconnectGbpBtnNoLocation').on('click', function() {
+        const accountId = $(this).data('account-id') || gbpAccountLoaded && gbpAccountLoaded.id;
+        disconnectGbpAccountRequest(accountId);
+    });
+
     $('#connectInstagramBtn').on('click', function() {
         const clientId = $('#clientSelect').val();
 
@@ -423,6 +546,7 @@ $(function() {
     handleInstagramOauthRedirectStatus();
     handleLinkedinOauthRedirectStatus();
     handlePinterestOauthRedirectStatus();
+    handleGbpOauthRedirectStatus();
 });
 
 function handleInstagramOauthRedirectStatus() {
@@ -1159,6 +1283,309 @@ function disconnectPinterestAccountRequest(accountId) {
         },
         error: function() {
             window.showToast && window.showToast('danger', 'Unable to disconnect Pinterest account.');
+        }
+    });
+}
+
+/*
+|--------------------------------------------------------------------------
+| Google Business Profile (Phase 14 foundation) — mirrors the Pinterest
+| functions above, with one extra discovery step: Google's hierarchy is
+| account -> location (two discovery calls, not one), so a location can
+| only be loaded once a Business Profile account is chosen from the first
+| dropdown. Same client selector, same CSRF/toast/AJAX conventions, no new
+| UI framework. See docs/GMB_INTEGRATION_FOUNDATION_PHASE_14.md.
+|--------------------------------------------------------------------------
+*/
+let gbpSettingsLoaded = null;
+let gbpAccountLoaded = null;
+
+function handleGbpOauthRedirectStatus() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('gbpStatus');
+    const message = params.get('gbpMessage');
+    const clientId = params.get('clientId');
+
+    if (clientId) {
+        $('#clientSelect').data('pending-select', clientId);
+    }
+
+    if (!status) {
+        return;
+    }
+
+    window.showToast && window.showToast(status === 'success' ? 'success' : 'danger', message || 'Google Business Profile connection update.');
+
+    params.delete('gbpStatus');
+    params.delete('gbpMessage');
+    params.delete('clientId');
+
+    const newQuery = params.toString();
+    const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+    window.history.replaceState({}, document.title, newUrl);
+}
+
+function loadGbpSettings() {
+    $.getJSON(API_BASE + '/getGoogleBusinessProfileSettings.php')
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Google Business Profile settings.');
+                return;
+            }
+
+            const settings = res.data.googleBusinessProfileSettings || {};
+            gbpSettingsLoaded = settings;
+
+            $('#gbpClientId').val(settings.googleClientId || '');
+            $('#gbpRedirectUrl').val(settings.redirectUrl || res.data.defaultRedirectUrl || '');
+            $('#gbpClientSecret').val('').attr('placeholder', settings.hasClientSecret ? 'Saved — leave blank to keep current secret' : '');
+
+            updateGbpConnectButtonState();
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load Google Business Profile settings.');
+        });
+}
+
+function saveGbpSettingsRequest() {
+    const googleClientId = $('#gbpClientId').val().trim();
+
+    if (!googleClientId) {
+        window.showToast && window.showToast('warning', 'Google Client ID is required.');
+        return;
+    }
+
+    const $btn = $('#saveGbpSettingsBtn');
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
+
+    $.ajax({
+        url: API_BASE + '/saveGoogleBusinessProfileSettings.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: {
+            googleClientId: googleClientId,
+            googleClientSecret: $('#gbpClientSecret').val(),
+            redirectUrl: $('#gbpRedirectUrl').val().trim(),
+            csrfToken: CSRF_TOKEN,
+        },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Invalid server response.'
+            );
+
+            if (res && res.success) {
+                const settings = res.data.googleBusinessProfileSettings || {};
+                gbpSettingsLoaded = settings;
+                $('#gbpClientSecret').val('').attr('placeholder', settings.hasClientSecret ? 'Saved — leave blank to keep current secret' : '');
+                updateGbpConnectButtonState();
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save Google Business Profile settings.');
+        },
+        complete: function() {
+            $btn.prop('disabled', false).text('Save Settings');
+        }
+    });
+}
+
+function updateGbpConnectButtonState() {
+    const clientId = $('#clientSelect').val();
+    const settings = gbpSettingsLoaded || {};
+    const ready = !!(clientId && settings.googleClientId && settings.hasClientSecret);
+
+    $('#connectGbpBtn').prop('disabled', !ready);
+    $('#gbpConnectDisabledHint').toggleClass('d-none', ready);
+}
+
+function loadGbpAccountForSelectedClient() {
+    const clientId = $('#clientSelect').val();
+    gbpAccountLoaded = null;
+
+    if (!clientId) {
+        renderGbpAccountCard(null);
+        return;
+    }
+
+    $.getJSON(API_BASE + '/getGoogleBusinessProfileSettings.php', { clientId: clientId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Google Business Profile connection.');
+                return;
+            }
+
+            renderGbpAccountCard(res.data.googleBusinessProfileAccount || null);
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load Google Business Profile connection.');
+        });
+}
+
+function renderGbpAccountCard(account) {
+    gbpAccountLoaded = account;
+
+    $('#gbpNotConnected, #gbpConnectedNoLocation, #gbpConnectedWithLocation').addClass('d-none');
+
+    if (!account) {
+        $('#gbpNotConnected').removeClass('d-none');
+        return;
+    }
+
+    if (!account.googleLocationId) {
+        $('#gbpConnectedNoLocation').removeClass('d-none');
+        $('#gbpUserEmail').text(account.googleUserEmail || '(email unavailable)');
+        $('#disconnectGbpBtnNoLocation').data('account-id', account.id);
+        $('#gbpLocationSelect').html('<option value="">Select an account first</option>').prop('disabled', true);
+        loadGbpAccountsForSelect();
+        return;
+    }
+
+    $('#gbpConnectedWithLocation').removeClass('d-none');
+    $('#gbpUserEmailConnected').text(account.googleUserEmail || '(email unavailable)');
+    $('#gbpAccountName').text(account.googleAccountName || '(unnamed)');
+    $('#gbpLocationTitle').text(account.locationTitle || account.googleLocationName || '(unnamed)');
+    $('#gbpLocationId').text(account.googleLocationId);
+    $('#disconnectGbpBtn').data('account-id', account.id);
+}
+
+function loadGbpAccountsForSelect() {
+    const clientId = $('#clientSelect').val();
+    const $select = $('#gbpAccountSelect');
+    const $error = $('#gbpDiscoveryError');
+
+    $select.html('<option value="">Loading accounts...</option>');
+    $error.addClass('d-none').text('');
+
+    $.getJSON(API_BASE + '/getGoogleBusinessProfileAccounts.php', { clientId: clientId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                $select.html('<option value="">No accounts available</option>');
+                $error.removeClass('d-none').text(res && res.message ? res.message : 'Unable to load Business Profile accounts.');
+                return;
+            }
+
+            const accounts = res.data.accounts || [];
+
+            if (!accounts.length) {
+                $select.html('<option value="">No Business Profile accounts found for this Google user</option>');
+                return;
+            }
+
+            let options = '<option value="">Select Business Profile Account</option>';
+            accounts.forEach(function(account) {
+                options += `<option value="${account.id}">${$('<div>').text(account.name + (account.type ? ' (' + account.type + ')' : '')).html()}</option>`;
+            });
+            $select.html(options);
+        })
+        .fail(function() {
+            $select.html('<option value="">No accounts available</option>');
+            $error.removeClass('d-none').text('Unable to load Business Profile accounts.');
+        });
+}
+
+function loadGbpLocationsForSelect() {
+    const clientId = $('#clientSelect').val();
+    const googleAccountId = $('#gbpAccountSelect').val();
+    const $select = $('#gbpLocationSelect');
+    const $error = $('#gbpDiscoveryError');
+
+    if (!googleAccountId) {
+        $select.html('<option value="">Select an account first</option>').prop('disabled', true);
+        return;
+    }
+
+    $select.prop('disabled', false).html('<option value="">Loading locations...</option>');
+    $error.addClass('d-none').text('');
+
+    $.getJSON(API_BASE + '/getGoogleBusinessProfileLocations.php', { clientId: clientId, googleAccountId: googleAccountId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                $select.html('<option value="">No locations available</option>');
+                $error.removeClass('d-none').text(res && res.message ? res.message : 'Unable to load locations.');
+                return;
+            }
+
+            const locations = res.data.locations || [];
+
+            if (!locations.length) {
+                $select.html('<option value="">No locations found for this account</option>');
+                return;
+            }
+
+            let options = '<option value="">Select Location</option>';
+            locations.forEach(function(location) {
+                options += `<option value="${location.id}">${$('<div>').text(location.title).html()}</option>`;
+            });
+            $select.html(options);
+        })
+        .fail(function() {
+            $select.html('<option value="">No locations available</option>');
+            $error.removeClass('d-none').text('Unable to load locations.');
+        });
+}
+
+function saveGbpLocationSelection() {
+    const clientId = $('#clientSelect').val();
+    const googleAccountId = $('#gbpAccountSelect').val();
+    const googleLocationId = $('#gbpLocationSelect').val();
+
+    if (!googleAccountId) {
+        window.showToast && window.showToast('warning', 'Please select a Business Profile account.');
+        return;
+    }
+
+    if (!googleLocationId) {
+        window.showToast && window.showToast('warning', 'Please select a location.');
+        return;
+    }
+
+    $.ajax({
+        url: API_BASE + '/saveGoogleBusinessProfileLocation.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: { clientId: clientId, googleAccountId: googleAccountId, googleLocationId: googleLocationId, csrfToken: CSRF_TOKEN },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Unable to save location.'
+            );
+
+            if (res && res.success) {
+                renderGbpAccountCard(res.data.googleBusinessProfileAccount || null);
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save location.');
+        }
+    });
+}
+
+function disconnectGbpAccountRequest(accountId) {
+    if (!accountId) {
+        return;
+    }
+
+    $.ajax({
+        url: API_BASE + '/disconnectGoogleBusinessProfileAccount.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: { accountId: accountId, csrfToken: CSRF_TOKEN },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Unable to disconnect Google Business Profile account.'
+            );
+
+            if (res && res.success) {
+                renderGbpAccountCard(null);
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to disconnect Google Business Profile account.');
         }
     });
 }

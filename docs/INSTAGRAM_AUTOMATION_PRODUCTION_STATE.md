@@ -1760,29 +1760,54 @@ Live Meta Validation
     │   Future LinkedIn Publishing / Scheduling / Analytics — on hold until
     │   the Company Page prerequisite is resolved and Phase 12 is live-verified
     │
-    └── Pinterest Integration
+    ├── Pinterest Integration
+    │       ↓
+    │   Phase 13
+    │   Pinterest Foundation (see §26)
+    │       ✅ IMPLEMENTED IN CODE — FOUNDATION COMPLETE
+    │       ⏳ Trial Access is sufficient for the foundation's own read-only
+    │         scopes; Standard Access (video-demo review) remains pending,
+    │         required only before a future publishing phase
+    │       ↓
+    │   Future Pinterest Publishing / Scheduling / Analytics — deferred
+    │       until Pinterest Standard Access is granted and Phase 13 is
+    │       live-verified
+    │
+    └── Google Business Profile Integration
             ↓
-        Phase 13
-        Pinterest Foundation (see §26)
+        Phase 14
+        Google Business Profile Foundation (see §27)
             ↓ CURRENT PRIORITY
-        Future Pinterest Publishing
+            ✅ IMPLEMENTED IN CODE — LOCAL TESTS PASS
+            ⏳ LIVE GOOGLE API ACCESS PENDING EXTERNAL PREREQUISITES
+              (verified/active GBP for 60+ days, Google API access approval —
+              see §27)
             ↓
-        Future Pinterest Scheduling
-            ↓
-        Future Pinterest Analytics
+        Future GBP Publishing / Reviews / Analytics
             ↓
         Future Cross-platform Inbox/Automation
 ```
 
+Roadmap summary:
+
+```
+Pinterest — Foundation complete, Trial Access pending
+LinkedIn — Foundation complete, live validation paused
+Google Business Profile — Foundation current phase, live validation pending Google prerequisites
+```
+
 Instagram Comments is not abandoned — it resumes once Meta grants the
-pending App Review/Business Verification approvals (§23). LinkedIn and
-Pinterest work proceeded in parallel because neither has a dependency on
-that approval and neither touches any Instagram code path. LinkedIn is
-itself paused on its own external prerequisite (a Company Page for the
-required Developer App — see §25) while Pinterest becomes the active
-platform-integration priority; **LinkedIn's code is untouched and not
-abandoned** — resuming it requires no rewrite, only a Company Page and live
-OAuth verification.
+pending App Review/Business Verification approvals (§23). LinkedIn,
+Pinterest, and Google Business Profile work proceeded in sequence because
+none has a dependency on that Meta approval and none touches any Instagram
+code path. LinkedIn is paused on its own external prerequisite (a Company
+Page for the required Developer App — see §25); Pinterest's foundation is
+complete and functionally usable within Trial Access, with Standard Access
+pending only for a future publishing phase (see §26); Google Business
+Profile is now the active platform-integration priority, itself gated on
+Google's own external prerequisites (see §27). **None of LinkedIn's or
+Pinterest's code is touched, rewritten, or abandoned by this** — each
+resumes independently once its own external prerequisite clears.
 
 ---
 
@@ -2295,6 +2320,403 @@ convention (§19/§20).
 A LinkedIn Company Page for the required Developer App does not currently
 exist — Phase 12 stays paused, code untouched, until that prerequisite is
 available.
+
+### Remaining Instagram dependencies (unchanged from §23)
+
+Meta App Review/Advanced Access for the `comments` webhook field, and Meta
+Business Verification for the relevant Business Portfolio — both external,
+pending, and untouched by this phase.
+
+---
+
+## 27. Phase 14 — Google Business Profile Integration Foundation
+
+**Date**: 2026-09-01. **Status: CODE IMPLEMENTED — LIVE GOOGLE BUSINESS
+PROFILE VALIDATION PENDING.**
+
+Source of truth for this phase:
+`docs/GMB_INTEGRATION_FOUNDATION_PHASE_14.md` — that document, not this
+section, is authoritative on scope/constraints; this section records what
+was actually built and tested against it.
+
+### Why this started before Pinterest reached Standard Access
+
+Pinterest's Phase 13 foundation (§26) is complete and functionally usable
+within its default Trial access — Standard access is a real but
+non-blocking dependency (needed only for a future *publishing* phase, not
+for foundation functionality). Google Business Profile has its own,
+separate external prerequisite chain (a verified/active Business Profile
+for 60+ days, then a Google API access approval) that Modlus currently
+does not satisfy for live testing — per the source document (§2), this is
+explicitly **not** a reason to block foundation implementation. Google
+Business Profile becomes the active platform-integration priority while
+that approval chain proceeds independently. LinkedIn's and Pinterest's
+code, tables, and routes are completely untouched by this phase.
+
+### Architecture
+
+Google OAuth 2.0 authorization-code flow with offline access (member
+authorizes Modlus, Modlus can refresh tokens without the user present),
+matching the existing Instagram/LinkedIn/Pinterest pattern's shape — but
+with one structural difference the other three platforms don't have:
+Google's resource hierarchy is **three levels deep**
+(`Google Account → Business Profile account → Location`), not a flat
+"member → one selectable resource" shape. This phase therefore performs
+two rounds of server-side discovery — accounts, then locations for a
+chosen account — before anything is persisted, and stores the account and
+location identifiers as separate, non-collapsed columns (source doc §4).
+Verified against current Google documentation
+(`developers.google.com/my-business/...`), not old tutorials/unofficial
+libraries/scraping.
+
+```
+Modlus (client selected)
+  → api/googleBusinessProfileOauthStart.php
+    → https://accounts.google.com/o/oauth2/v2/auth
+      (scope=openid email https://www.googleapis.com/auth/business.manage,
+       access_type=offline, prompt=consent)
+  → Google user authorizes
+  → api/googleBusinessProfileOauthCallback.php
+      1. state/CSRF validation (hash_equals, session) — identical pattern
+         to the other three platforms' OAuth callbacks
+      2. POST https://oauth2.googleapis.com/token
+         (grant_type=authorization_code; client_id/client_secret sent as
+         ordinary POST body fields — Google's documented shape, distinct
+         from Pinterest's HTTP Basic Auth and LinkedIn's own POST-body
+         shape hosted at a different endpoint)
+         → access_token, refresh_token, expires_in
+      3. GET https://openidconnect.googleapis.com/v1/userinfo (Bearer) →
+         Google user id ('sub') + email
+      4. saveGoogleBusinessProfileAccountFromOAuth() — upsert anchored on
+         clientId (not the Google identity alone — see "Upsert anchoring"
+         below), scoped to the selected clientId
+  → redirects back to the existing /instagram-automation settings page
+    (gbpStatus/gbpMessage/clientId query params, same round-trip pattern
+    as the other three platforms)
+  → operator calls "accounts" discovery, selects one, then calls
+    "locations" discovery for that account, selects one, saves both
+    together (api/saveGoogleBusinessProfileLocation.php)
+```
+
+### Files inspected (audit, before writing anything)
+
+Per the source document's Step 1 and this session's own investigation:
+`includes/LinkedInAutomation.php`, `includes/PinterestAutomation.php`,
+`api/linkedinOauthStart.php`, `api/linkedinOauthCallback.php`,
+`api/getLinkedinSettings.php`, `api/saveLinkedinSettings.php`,
+`api/getLinkedinOrganizations.php`, `api/saveLinkedinOrganization.php`,
+`api/disconnectLinkedinAccount.php`, `api/getPinterestSettings.php`,
+`api/savePinterestSettings.php`, `api/getPinterestBoards.php`,
+`api/savePinterestBoard.php`, `api/disconnectPinterestAccount.php`,
+`pages/instagram-automation.php`, `includes/Crypto.php`,
+`includes/Csrf.php`, `includes/leadActivityLogger.php`, this document.
+
+Official Google documentation
+(`developers.google.com/my-business/reference/accountmanagement/rest/v1/accounts/list`,
+`.../businessinformation/rest/v1/accounts.locations/list`, plus the
+Account/Location resource schema pages) was read directly for the exact
+endpoint hosts, required `readMask` parameter, and JSON field names below
+— not inferred from memory or third-party tutorials.
+
+### Files created
+
+- `includes/GoogleBusinessProfileAutomation.php` — settings table,
+  accounts table, OAuth token exchange + refresh, a dedicated
+  `googleBusinessProfileApiRequest()` transport (Bearer header + JSON body
+  for REST calls) and a separate `googleBusinessProfileTokenRequest()`
+  (form-urlencoded with `client_id`/`client_secret` as POST body fields,
+  used only for the token endpoint) — **not** layered onto
+  `linkedinApiRequest()` or `pinterestApiRequest()`, per the source
+  document's explicit instruction (§3) not to reuse vendor-specific
+  transports.
+- `api/googleBusinessProfileOauthStart.php`, `api/googleBusinessProfileOauthCallback.php`
+- `api/getGoogleBusinessProfileSettings.php`, `api/saveGoogleBusinessProfileSettings.php`
+- `api/getGoogleBusinessProfileAccounts.php`, `api/getGoogleBusinessProfileLocations.php`, `api/saveGoogleBusinessProfileLocation.php`
+- `api/disconnectGoogleBusinessProfileAccount.php`
+- `database/migrations/2026-09-01-google-business-profile-integration-foundation.sql`
+
+### Files modified
+
+- `pages/instagram-automation.php` — additive only: a new "Google Business
+  Profile API Configuration" card and a new "Google Business Profile"
+  connection-status card (with a two-step account → location discovery
+  UI), reusing the page's existing client selector, CSRF token, and toast
+  conventions. No existing Instagram/Facebook/LinkedIn/Pinterest markup,
+  form, or JS function was changed.
+
+Nothing else was touched: `includes/InstagramAutomation.php`,
+`FacebookPublisher.php`, `LinkedInAutomation.php`,
+`PinterestAutomation.php`, `SocialPostEngine.php`, `InstagramWebhooks.php`,
+`InstagramComments.php`, `InstagramInsights.php`,
+`cron/instagramScheduler.php`, and every Instagram/Facebook/LinkedIn/
+Pinterest OAuth or publishing file are byte-for-byte unchanged.
+
+### Database
+
+Two new tables, both self-healed at runtime and documented in the
+migration above — no existing table/column changed, no `companyId`:
+
+- **`googleBusinessProfileSettings`** — one active row, platform-wide
+  Google Cloud OAuth Client ID/Secret (encrypted) + redirect URL. Mirrors
+  `linkedinSettings`/`pinterestSettings` exactly.
+- **`googleBusinessProfileAccounts`** — one row per connected client's
+  Google Business Profile selection, `clientId` FK → `clientMaster`
+  (`ON DELETE CASCADE`), `accessToken` **and** `refreshToken` (both
+  encrypted via the existing `includes/Crypto.php`), `tokenExpiry`.
+  Unlike LinkedIn's/Pinterest's flat "member → one resource" tables, this
+  table preserves the full three-level hierarchy without collapsing
+  identifiers (source doc §4): `googleUserId`/`googleUserEmail` (the
+  Google identity), `googleAccountId`/`googleAccountName`/
+  `googleAccountType` (the selected Business Profile account),
+  `googleLocationId`/`googleLocationName`/`locationTitle`/
+  `locationAddress` (the selected location — `locationAddress` stores the
+  full `storefrontAddress` object as JSON, not a flattened string, so no
+  structured data is discarded). The unique key is
+  `(googleUserId, googleAccountId)`, not the vendor identity alone —
+  deliberately different from LinkedIn/Pinterest — because a single
+  Google identity may legitimately manage more than one Business Profile
+  account across different Modlus clients (source doc §10); see "Upsert
+  anchoring" below for how this interacts with reconnect behavior.
+
+### Google OAuth mechanism, scope, and token behavior (verified against current Google documentation)
+
+| Item | Value |
+| --- | --- |
+| Authorization URL | `https://accounts.google.com/o/oauth2/v2/auth` |
+| Token endpoint | `https://oauth2.googleapis.com/token` |
+| App authentication on token endpoint | `client_id`/`client_secret` as ordinary POST body fields (not Basic Auth, not query string) |
+| Offline access | `access_type=offline&prompt=consent` — required to reliably receive a `refresh_token` on every (re)connect, per source doc §7 |
+| User identity endpoint | `GET https://openidconnect.googleapis.com/v1/userinfo` |
+| Account discovery endpoint | `GET https://mybusinessaccountmanagement.googleapis.com/v1/accounts` |
+| Location discovery endpoint | `GET https://mybusinessbusinessinformation.googleapis.com/v1/accounts/{id}/locations?readMask=name,title,storefrontAddress` (`readMask` is a **required** query parameter per Google's current documentation) |
+| Refresh mechanism | `grant_type=refresh_token` to the token endpoint. Per source doc §20, Google may or may not return a new `refresh_token` on a given refresh call — `refreshGoogleBusinessProfileAccessToken()`/`googleBusinessProfileNormalizeTokenResponse()` always persist a newly returned one and only fall back to the prior stored refresh token when Google's response genuinely omits one (verified by test — see Testing below) |
+
+**Scope requested**: `openid email https://www.googleapis.com/auth/business.manage`.
+`https://www.googleapis.com/auth/business.manage` is the current,
+non-deprecated Business Profile management scope (the older
+`plus.business.manage` is deprecated and is not used anywhere in this
+module). `openid`/`email` are additionally requested, least-privilege,
+solely because this module's schema stores `googleUserId`/
+`googleUserEmail` (source doc §6) and none of Google's Business Profile
+APIs expose an identity endpoint of their own — the OIDC userinfo
+endpoint is the officially documented way to get that, the same rationale
+`LinkedInAutomation.php`'s OIDC userinfo call already uses in this
+codebase.
+
+### Account/location discovery flow
+
+```
+Connect Google → userinfo identifies the Google user
+  → api/getGoogleBusinessProfileAccounts.php (GET, clientId)
+      GET /v1/accounts (Bearer token) → account id/name/type list
+      (a Google identity may have more than one — source doc §10 — all
+      are returned, not just the first)
+  → operator selects one account in the UI
+  → api/getGoogleBusinessProfileLocations.php (GET, clientId, googleAccountId)
+      - Re-verifies the requested account is actually accessible to this
+        Google identity before querying its locations
+      GET /v1/accounts/{id}/locations?readMask=... (Bearer token) →
+      location id/title/address list
+  → operator selects one location in the UI
+  → api/saveGoogleBusinessProfileLocation.php (POST, clientId, googleAccountId, googleLocationId)
+      - Server-side re-verification (source doc §11, steps 1-5 followed
+        exactly): (1) account row belongs to the posted clientId
+        (`googleBusinessProfileAccountBelongsToClient()`); (2) re-queries
+        Google using the authenticated token; (3) confirms the account is
+        actually accessible; (4) confirms the location actually belongs
+        to that account; (5) saves the server-verified id/name/data —
+        never the browser-submitted name/title.
+```
+
+### Upsert anchoring (why this differs from LinkedIn/Pinterest)
+
+`saveGoogleBusinessProfileAccountFromOAuth()` is anchored on **clientId
+first**, not the Google identity alone (unlike
+`saveLinkedinAccountFromOAuth()`/`savePinterestAccountFromOAuth()`, which
+upsert by the vendor member/user id). Reasoning: because a single Google
+identity can legitimately manage multiple Business Profile accounts
+across different Modlus clients (source doc §10), a vendor-identity-only
+upsert would incorrectly move an already-connected client's row to
+whichever client last reconnected with that same Google login. Anchoring
+on clientId means reconnecting for the *same* client always updates that
+client's own row — preserving any already-selected
+account/location, exactly like the LinkedIn/Pinterest "does not touch the
+selection fields on update" rule — and only inserts a new row when that
+specific client has no connection yet. A second, narrower fallback anchor
+(an existing not-yet-account-selected row for the same Google identity,
+regardless of client) exists purely to avoid violating the
+`(googleUserId, googleAccountId)` unique key in the edge case of two
+different clients starting, but not finishing, a connection with the same
+Google login concurrently — accepted as a "last reconnect wins" limitation
+for that specific pre-selection edge case only, the same class of
+limitation LinkedIn/Pinterest already accept for their own upsert
+behavior. This reasoning and its consequences are documented in code
+comments directly on `saveGoogleBusinessProfileAccountFromOAuth()`.
+
+### Token security
+
+- `googleBusinessProfileAccounts.accessToken`,
+  `googleBusinessProfileAccounts.refreshToken`, and
+  `googleBusinessProfileSettings.googleClientSecret` use the existing
+  `includes/Crypto.php` (`encryptSecret()`/`decryptSecret()`) — no new
+  encryption mechanism.
+- The client secret is sent only as a POST body field on the token
+  endpoint (`googleBusinessProfileTokenRequest()`) — never in a URL,
+  never logged (redacted before any debug log write, alongside `code` and
+  `refresh_token`).
+- Access/refresh tokens are attached only as `Authorization: Bearer`
+  headers inside `googleBusinessProfileApiRequest()` — never in a URL,
+  never in a log line, never returned by any API endpoint
+  (`getGoogleBusinessProfileAccountForDisplay()` explicitly strips
+  **both** tokens before an endpoint can return the row — verified, see
+  Testing).
+- Google Client Secret is never returned to the browser —
+  `getGoogleBusinessProfileSettings()` returns only a `hasClientSecret`
+  boolean, mirroring the other three platforms' settings endpoints.
+- `googleBusinessProfileWriteApiDebugLog()` never logs the `Authorization`
+  header, and the token-request path redacts `client_secret`, `code`, and
+  `refresh_token` before writing — same sanitization pattern as the other
+  three platforms' debug logs.
+- `googleBusinessProfileValidAccessToken()` (the token-refresh-when-needed
+  helper called by every discovery/save endpoint) never exposes a token in
+  its return path beyond the caller that immediately uses it for one
+  Bearer-header API call.
+
+### Client isolation
+
+`googleBusinessProfileAccountBelongsToClient()` mirrors
+`pinterestAccountBelongsToClient()`/`linkedinAccountBelongsToClient()`
+exactly and is the actual enforcement mechanism (not the UI dropdown) —
+checked server-side before every location save and disconnect, and before
+`saveGoogleBusinessProfileLocationSelection()` writes anything. One Google
+Business Profile connection per Modlus client for this foundation phase;
+no "latest"/"first"/"global"/"primary" account logic exists anywhere. No
+`companyId` introduced.
+
+### Testing performed
+
+Functional (local dev DB, no live Google credentials available in this
+environment) — 30 assertions run, **all PASS** except one explicitly
+skipped item (below):
+
+1. `googleBusinessProfileSettings` table self-heal creation — PASS.
+2. `googleBusinessProfileAccounts` table self-heal creation — PASS.
+3. Settings save/get round-trip — PASS.
+4. Client secret never returned by the settings endpoint — PASS.
+5. Account insert on OAuth connect — PASS.
+6. Reconnect/upsert-in-place behavior (same client, no duplicate row) —
+   PASS; **a real bug was caught here**: the UPDATE branch's
+   `mysqli_stmt_bind_param()` type string had one extra character
+   (`'issssssi'`, 8 types for 7 placeholders), which threw
+   `ArgumentCountError` on the very first reconnect test. Fixed to
+   `'isssssi'` (7 types), re-linted, and the full suite re-run clean — see
+   the file's current state, this was corrected before any other testing
+   completed.
+7. Access token encryption verified directly against the raw DB column
+   (not just via the decrypting getter) — PASS.
+8. Refresh token encryption verified the same way — PASS.
+9. `getGoogleBusinessProfileAccountForDisplay()` never returns either
+   token — PASS.
+10. OAuth state validation exercised via the same `hash_equals()`/
+    non-empty logic the callback uses: matching state accepted, tampered
+    state rejected, empty state rejected — PASS.
+11. Ownership guard true for the owning client — PASS.
+12. Ownership guard false for a non-owning client id — PASS.
+13. Location selection rejected when the posted clientId does not own the
+    account, and the real, already-saved selection is confirmed unchanged
+    after the rejected attempt — PASS. A **full two-real-client**
+    cross-ownership negative test (Client A's real row vs. Client B's real
+    row) was attempted but **SKIPPED — only one `clientMaster` row exists
+    in this local dev database**, matching the established LinkedIn/
+    Pinterest testing convention; item 13's synthetic-non-owning-clientId
+    check exercises the same guard logic but is not a substitute for a
+    genuine second-client negative test. No synthetic client row was
+    manufactured to force this test to pass.
+14. Disconnect clears both tokens at rest — PASS.
+15. Disconnect flips status to `disconnected`, and the account is no
+    longer returned as connected — PASS.
+16. Grepped `logs/` for every plaintext test credential (client secret,
+    access tokens, refresh tokens) used in testing — none found. No
+    `google-business-profile-api.log` file was created during this test
+    run (expected — the transport layer was never exercised against the
+    live Google network from this environment).
+17. Grepped every created/modified API response path (`respond()` calls)
+    for `accessToken`/`refreshToken`/`googleClientSecret` — every match
+    found was an internal-use variable passed into the transport layer,
+    never present in a JSON response payload.
+18. `php -l` clean on all 10 created/modified PHP files (after the fix in
+    item 6 above).
+
+**NOT EXECUTED — REQUIRES LIVE GOOGLE CREDENTIALS AND AN APPROVED PROJECT**
+(none available in this environment, and Google provides no sandbox for
+Business Profile API calls — source doc §16): OAuth start redirect against
+a real Google Cloud OAuth client, invalid-state rejection over real HTTP,
+cancellation handling, a real authorization-code token exchange, a real
+`userinfo` call, real Business Profile account discovery, real location
+discovery, a real location save with server-side re-verification against
+live data, a real `refresh_token`-grant call confirming Google's actual
+refresh-token-rotation behavior, and a real disconnect/reconnect cycle
+end-to-end through the browser. **Do not treat Phase 14 as production/live
+verified until these are actually run and confirmed against real Google
+infrastructure with an approved Business Profile API project**, per this
+document's own standing convention (§19/§20) and per the source document's
+explicit instruction (§17) not to mark this live/verified until OAuth,
+refresh, account discovery, location discovery, location selection,
+server-side re-verification, reconnect, and disconnect have all succeeded
+against real Google infrastructure.
+
+### Exact Google prerequisites still pending
+
+Per `docs/GMB_INTEGRATION_FOUNDATION_PHASE_14.md` §2/§16, verified against
+Google's current official documentation (2026-09-01):
+
+1. A Google Account.
+2. A Google Business Profile, verified and active for **60+ days**
+   (may belong to the operator or to a client they manage).
+3. A website representing the business, listed on that Business Profile.
+4. A Google Cloud project.
+5. A Google Business Profile API access request submitted through
+   Google's access process, using an email that is an owner/manager on
+   the qualifying Business Profile.
+6. Google's approval (API quota is the signal: 0 QPM = not approved,
+   300 QPM = approved).
+7. Business Profile APIs enabled on that approved project.
+8. OAuth consent screen configuration in Google Cloud.
+9. OAuth web client credentials (Client ID/Secret) generated and entered
+   into the "Google Business Profile API Configuration" card built in
+   this phase.
+10. The authorized redirect URI registered in Google Cloud, exactly
+    matching `googleBusinessProfileSettings.redirectUrl` (or the
+    `BASE_URL`-derived default if left blank).
+11. Live OAuth test against that real, approved project.
+
+**Modlus currently does not have a qualifying, 60+-day-verified Google
+Business Profile available for this.** This is an external dependency,
+not a code gap, per the source document's explicit framing (§2).
+
+### Confirmation: publishing/reviews/analytics/SocialPostEngine were NOT implemented
+
+Per source doc §18 and the implementation constraints (§22), none of the
+following were implemented in this phase: Google Business Profile posts,
+post publishing, post scheduling, review listing, review replies, review
+analytics, performance/insights dashboards, media/photo management, Q&A,
+notifications/webhooks, or any `SocialPostEngine.php` integration.
+`SocialPostEngine.php` itself was not opened for editing in this phase.
+These remain explicitly out of scope until the foundation is live-verified
+against real Google infrastructure.
+
+### Remaining LinkedIn dependencies (unchanged from §25)
+
+A LinkedIn Company Page for the required Developer App does not currently
+exist — Phase 12 stays paused, code untouched, until that prerequisite is
+available.
+
+### Remaining Pinterest dependencies (unchanged from §26)
+
+A Pinterest Developer App under the operator's own Pinterest Business
+account exists in code-support terms only — Standard access (video-demo
+review) remains pending, required only before a future publishing phase.
+Foundation functionality itself is not blocked.
 
 ### Remaining Instagram dependencies (unchanged from §23)
 
