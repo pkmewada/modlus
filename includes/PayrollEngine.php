@@ -374,7 +374,15 @@ class PayrollEngine
             ? $dailyRate / (float)$settings['standardWorkingHours']
             : 0.0;
 
-        $attendance = $this->getAttendanceSummary($employeeId, $periodStart, $periodEnd);
+        // Dates with ANY approved leave application (paid or unpaid, full or
+        // half) overlapping them — their pay impact is already fully and
+        // correctly computed by getLeaveSummary()/$leaveDeduction below. A
+        // half-day leave still leaves an employeeAttendance row for the
+        // half of the day actually worked, which getAttendanceSummary()
+        // would otherwise also charge via $halfDayDeduction — see its
+        // 'deductibleHalfDays' field for why that double-charge is avoided.
+        $leaveCoveredDates = $this->getApprovedLeaveDates($employeeId, $periodStart, $periodEnd);
+        $attendance = $this->getAttendanceSummary($employeeId, $periodStart, $periodEnd, $leaveCoveredDates);
         $leave = $this->getLeaveSummary($employeeId, $periodStart, $periodEnd, $settings, $employee);
         $overtime = !empty($settings['includeApprovedOvertime'])
             ? $this->getApprovedOvertimeHours($employeeId, $periodStart, $periodEnd)
@@ -430,21 +438,33 @@ if(
     $halfDayDeduction =
         $dailyRate
         *
-        (float)$attendance['halfDays']
+        (float)$attendance['deductibleHalfDays']
         *
         ((float)$settings['halfDayDeductionPercent'] / 100);
 
 }
 
-        $leaveDeduction = $dailyRate * (
-            ((float)$leave['paidLeaveCoveredDays'] * ((float)$settings['approvedPaidLeaveDeductionPercent'] / 100)) +
-            ((float)$leave['approvedPaidLeaveExcessDays'] * ((float)$settings['approvedUnpaidLeaveDeductionPercent'] / 100)) +
-            ((float)$leave['approvedUnpaidLeaveDays'] * ((float)$settings['approvedUnpaidLeaveDeductionPercent'] / 100)) +
-            ((float)$leave['probationLeaveDays'] * ((float)$settings['probationLeaveDeductionPercent'] / 100)) +
-            ((float)$leave['noticeLeaveDays'] * ((float)$settings['noticeLeaveDeductionPercent'] / 100)) +
-            ((float)$leave['informedLeaveDays'] * ((float)$settings['informedLeaveDeductionPercent'] / 100)) +
-            ((float)$leave['uninformedLeaveDays'] * ((float)$settings['uninformedLeaveDeductionPercent'] / 100))
-        );
+        // Broken into named, per-category amounts (rather than only a single
+        // summed $leaveDeduction) so the salary slip can show HR exactly how
+        // much of the leave deduction came from paid-leave-within-entitlement
+        // (normally 0) versus excess/unpaid/other leave — see
+        // getEarningsRows()'s sibling, the Deductions table in
+        // pages/salary-slip.php, which renders these individually.
+        $paidLeaveCoveredAmount = $dailyRate * (float)$leave['paidLeaveCoveredDays'] * ((float)$settings['approvedPaidLeaveDeductionPercent'] / 100);
+        $excessPaidLeaveAmount = $dailyRate * (float)$leave['approvedPaidLeaveExcessDays'] * ((float)$settings['approvedUnpaidLeaveDeductionPercent'] / 100);
+        $unpaidLeaveAmount = $dailyRate * (float)$leave['approvedUnpaidLeaveDays'] * ((float)$settings['approvedUnpaidLeaveDeductionPercent'] / 100);
+        $probationLeaveAmount = $dailyRate * (float)$leave['probationLeaveDays'] * ((float)$settings['probationLeaveDeductionPercent'] / 100);
+        $noticeLeaveAmount = $dailyRate * (float)$leave['noticeLeaveDays'] * ((float)$settings['noticeLeaveDeductionPercent'] / 100);
+        $informedLeaveAmount = $dailyRate * (float)$leave['informedLeaveDays'] * ((float)$settings['informedLeaveDeductionPercent'] / 100);
+        $uninformedLeaveAmount = $dailyRate * (float)$leave['uninformedLeaveDays'] * ((float)$settings['uninformedLeaveDeductionPercent'] / 100);
+
+        $leaveDeduction = $paidLeaveCoveredAmount
+            + $excessPaidLeaveAmount
+            + $unpaidLeaveAmount
+            + $probationLeaveAmount
+            + $noticeLeaveAmount
+            + $informedLeaveAmount
+            + $uninformedLeaveAmount;
 
         $overtimeAmount = $hourlyRate
             * $overtime
@@ -477,7 +497,7 @@ if(
             - (float)$leave['noticeLeaveDays']
             - (float)$leave['informedLeaveDays']
             - (float)$leave['uninformedLeaveDays']
-            - ((float)$attendance['halfDays'] * ((float)$settings['halfDayDeductionPercent'] / 100))
+            - ((float)$attendance['deductibleHalfDays'] * ((float)$settings['halfDayDeductionPercent'] / 100))
         );
 
         $grossEarnings = $baseGrossEarnings;
@@ -540,6 +560,13 @@ if(
                 ],
                 'deductions' => [
                     'leaveDeduction' => $this->roundAmount($leaveDeduction, 'two_decimal'),
+                    'paidLeaveCoveredAmount' => $this->roundAmount($paidLeaveCoveredAmount, 'two_decimal'),
+                    'excessPaidLeaveAmount' => $this->roundAmount($excessPaidLeaveAmount, 'two_decimal'),
+                    'unpaidLeaveAmount' => $this->roundAmount($unpaidLeaveAmount, 'two_decimal'),
+                    'probationLeaveAmount' => $this->roundAmount($probationLeaveAmount, 'two_decimal'),
+                    'noticeLeaveAmount' => $this->roundAmount($noticeLeaveAmount, 'two_decimal'),
+                    'informedLeaveAmount' => $this->roundAmount($informedLeaveAmount, 'two_decimal'),
+                    'uninformedLeaveAmount' => $this->roundAmount($uninformedLeaveAmount, 'two_decimal'),
                     'halfDayDeduction' => $this->roundAmount($halfDayDeduction, 'two_decimal'),
                     'manualDeduction' => $this->roundAmount($manualDeductionAmount, 'two_decimal'),
                     'fixedEmployeeDeduction' => $this->roundAmount($fixedEmployeeDeduction, 'two_decimal'),
@@ -760,11 +787,26 @@ if(
         return $joiningDate > $periodStart ? $joiningDate : $periodStart;
     }
 
-    private function getAttendanceSummary(int $employeeId, string $periodStart, string $periodEnd): array
-    {
+    private function getAttendanceSummary(
+        int $employeeId,
+        string $periodStart,
+        string $periodEnd,
+        array $leaveCoveredDates = []
+    ): array {
         $summary = [
             'presentDays' => 0.0,
             'halfDays' => 0.0,
+            // Same count as 'halfDays', minus any date that already has an
+            // approved leave application covering it. A half-day leave
+            // still leaves an employeeAttendance row for the half of the
+            // day the employee actually worked, and that date's pay impact
+            // is already fully accounted for by the leave-based deduction
+            // (see getLeaveSummary()/$leaveDeduction) — deducting it again
+            // here would charge the employee twice for the same half-day.
+            // Only this field feeds the payroll deduction math; 'halfDays'
+            // is left unchanged so the Attendance Summary panel keeps
+            // showing the true attendance fact.
+            'deductibleHalfDays' => 0.0,
             'absentDays' => 0.0,
             'lateDays' => 0.0,
             'workingSeconds' => 0,
@@ -772,7 +814,7 @@ if(
 
         $stmt = mysqli_prepare(
             $this->con,
-            "SELECT attendanceStatus, totalWorkingSeconds
+            "SELECT attendanceDate, attendanceStatus, totalWorkingSeconds
              FROM employeeAttendance
              WHERE employeeId = ?
              AND attendanceDate BETWEEN ? AND ?"
@@ -792,6 +834,10 @@ if(
 
             if ($status === 'half_day') {
                 $summary['halfDays'] += 1;
+
+                if (empty($leaveCoveredDates[(string)$row['attendanceDate']])) {
+                    $summary['deductibleHalfDays'] += 1;
+                }
             } elseif ($status === 'absent') {
                 $summary['absentDays'] += 1;
             } elseif ($status === 'late') {
@@ -805,6 +851,58 @@ if(
         mysqli_stmt_close($stmt);
 
         return $summary;
+    }
+
+    /**
+     * Set of 'Y-m-d' dates (within the period) that have ANY approved leave
+     * application overlapping them, regardless of paid/unpaid or full/half
+     * type — used only to keep getAttendanceSummary()'s half-day deduction
+     * from double-charging a date whose pay impact getLeaveSummary() already
+     * accounts for. Not a second leave-balance system: it reuses
+     * leaveApplications as-is and computes nothing about entitlement.
+     */
+    private function getApprovedLeaveDates(int $employeeId, string $periodStart, string $periodEnd): array
+    {
+        $dates = [];
+
+        $stmt = mysqli_prepare(
+            $this->con,
+            "SELECT fromDate, toDate
+             FROM leaveApplications
+             WHERE employeeId = ?
+             AND status = 'approved'
+             AND fromDate <= ?
+             AND toDate >= ?"
+        );
+
+        if (!$stmt) {
+            return $dates;
+        }
+
+        mysqli_stmt_bind_param($stmt, 'iss', $employeeId, $periodEnd, $periodStart);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $from = max(strtotime((string)$row['fromDate']), strtotime($periodStart));
+            $to = min(strtotime((string)$row['toDate']), strtotime($periodEnd));
+
+            if (!$from || !$to || $to < $from) {
+                continue;
+            }
+
+            $cursor = new DateTime(date('Y-m-d', $from));
+            $end = new DateTime(date('Y-m-d', $to));
+
+            while ($cursor <= $end) {
+                $dates[$cursor->format('Y-m-d')] = true;
+                $cursor->modify('+1 day');
+            }
+        }
+
+        mysqli_stmt_close($stmt);
+
+        return $dates;
     }
 
     private function ensureSettingsColumn(string $column, string $definition): void

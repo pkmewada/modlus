@@ -474,6 +474,36 @@ function renderEarningRows(rows) {
     }).join('');
 }
 
+function buildLeaveDeductionRows(leave, deductions) {
+    // Breaks the single "Leave Deduction" total into the same per-category
+    // day counts already computed server-side (PayrollEngine::getLeaveSummary()),
+    // so HR can see paid-vs-unpaid leave directly in the Deductions section
+    // instead of only an opaque lump sum. A category is only shown when its
+    // day count is greater than zero, so this stays empty (no rows) for an
+    // employee with no leave impact that period. Paid leave within the
+    // monthly entitlement is shown even though its amount is normally 0 --
+    // that's the point: it confirms those days were taken and are NOT
+    // reducing pay.
+    const categories = [
+        {days: leave.paidLeaveCoveredDays, amount: deductions.paidLeaveCoveredAmount, label: 'Paid Leave (Within Entitlement)'},
+        {days: leave.approvedPaidLeaveExcessDays, amount: deductions.excessPaidLeaveAmount, label: 'Excess Paid Leave (Beyond Entitlement)'},
+        {days: leave.approvedUnpaidLeaveDays, amount: deductions.unpaidLeaveAmount, label: 'Unpaid Leave'},
+        {days: leave.probationLeaveDays, amount: deductions.probationLeaveAmount, label: 'Probation Period Leave'},
+        {days: leave.noticeLeaveDays, amount: deductions.noticeLeaveAmount, label: 'Notice Period Leave'},
+        {days: leave.informedLeaveDays, amount: deductions.informedLeaveAmount, label: 'Pending Leave (Informed)'},
+        {days: leave.uninformedLeaveDays, amount: deductions.uninformedLeaveAmount, label: 'Absent / Uninformed Leave'},
+    ];
+
+    return categories
+        .filter(function(category) { return Number(category.days || 0) > 0; })
+        .map(function(category) {
+            return {
+                label: `${category.label} (${numberValue(category.days)} ${Number(category.days) === 1 ? 'Day' : 'Days'})`,
+                amount: category.amount
+            };
+        });
+}
+
 function renderMetricRows(rows) {
     return rows.map(function(row) {
         return `
@@ -553,16 +583,16 @@ function bindSalarySlip(data) {
     $('#earningsTableBody').html(renderEarningRows(earnings.rows || []));
 
     const statutoryDeductionRows = deductions.rows || [];
+    const leaveDeductionRows = buildLeaveDeductionRows(leave, deductions);
     const operationalDeductionRows = [
         {label: `Training Hold (${numberValue(data.settings.trainingHoldDays)} Days)`,amount: deductions.trainingHoldDeduction},
-        {label: 'Leave Deduction', amount: deductions.leaveDeduction},
         {label: 'Half Day Deduction', amount: deductions.halfDayDeduction},
         {label: 'Manual Deduction', amount: deductions.manualDeduction},
         {label: 'Fixed Employee Deduction', amount: deductions.fixedEmployeeDeduction},
         {label: `Point Deduction (${numberValue(points.impactPoints)} pts / ${numberValue(points.hitCount)} hits)`, amount: deductions.pointDeduction},
     ];
 
-    $('#deductionsTableBody').html(renderAmountRows(statutoryDeductionRows.concat(operationalDeductionRows)));
+    $('#deductionsTableBody').html(renderAmountRows(statutoryDeductionRows.concat(leaveDeductionRows).concat(operationalDeductionRows)));
     $('#reimbursementsTableBody').html(renderAmountRows(reimbursements.rows || []));
     $('#netPayWords').text(
         `${money(netFormula.grossEarnings)} - ${money(netFormula.totalDeductions)} + ${money(netFormula.totalReimbursements)}`
