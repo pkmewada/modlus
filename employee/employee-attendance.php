@@ -434,15 +434,15 @@ $(function() {
 
         getSummary:
             API_BASE +
-            '/getEmployeeAttendanceSummary.php',
+            '/attendance/getEmployeeAttendanceSummary.php',
 
         getHistory:
             API_BASE +
-            '/getEmployeeAttendanceHistory.php',
+            '/attendance/getEmployeeAttendanceHistory.php',
             
         getBreakHistory:
             API_BASE +
-            '/getAttendanceBreakHistory.php'
+            '/attendance/getAttendanceBreakHistory.php'
     };
 
     // =========================================

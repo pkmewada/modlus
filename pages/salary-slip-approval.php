@@ -412,7 +412,7 @@ function viewSalarySlip(row) {
     window.currentSalarySlipRow = row;
     
     $.ajax({
-        url: API_BASE + '/calculatePayrollPreview.php',
+        url: API_BASE + '/payroll/calculatePayrollPreview.php',
         type: 'GET',
         dataType: 'json',
         data: {
@@ -749,7 +749,7 @@ function renderSalarySlipApprovalRows(rows) {
 function loadSalarySlipApprovals() {
    $('#salarySlipApprovalBody').html('<tr><td colspan="9" class="text-center text-muted py-4">Loading salary slips...</td></tr>');
 
-   $.getJSON(API_BASE + '/getSalarySlipApprovals.php', {
+   $.getJSON(API_BASE + '/payroll/getSalarySlipApprovals.php', {
       status: $('#filterStatus').val(),
       month: $('#filterMonth').val()
    }).done(function (res) {
@@ -832,7 +832,7 @@ function rejectSalarySlip() {
 
 function reviewSalarySlip(payload, done) {
    $.ajax({
-      url: API_BASE + '/reviewSalarySlipApproval.php',
+      url: API_BASE + '/payroll/reviewSalarySlipApproval.php',
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
@@ -873,7 +873,7 @@ function saveSalarySlipPayment() {
    }
 
    $.ajax({
-      url: API_BASE + '/saveSalarySlipPayment.php',
+      url: API_BASE + '/payroll/saveSalarySlipPayment.php',
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
@@ -964,7 +964,7 @@ function sendSalarySlipPreviewEmail(row) {
     };
     
     $.ajax({
-        url: API_BASE + '/sendSalarySlipPreview.php',
+        url: API_BASE + '/payroll/sendSalarySlipPreview.php',
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',

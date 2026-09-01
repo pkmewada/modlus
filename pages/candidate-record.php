@@ -671,7 +671,7 @@ if ($selectStmt) {
                                 <div class="form-text">Accepted format: CSV only</div>
                             </div>
         
-                            <a href="../api/downloadCandidateImportTemplate.php" class="btn btn-outline-primary btn-sm">
+                            <a href="../api/recruitment/downloadCandidateImportTemplate.php" class="btn btn-outline-primary btn-sm">
                                 <i class="ri-download-line me-1"></i>
                                 Download Sample CSV
                             </a>
@@ -1084,12 +1084,12 @@ if ($selectStmt) {
         $(function() {
             var statusColumnIndex = 4;
             var roleColumnIndex = 2;
-            var addCandidateApiUrl = API_BASE + '/addCandidate.php';
-            var updateCandidateApiUrl = API_BASE + '/updateCandidate.php';
-            var updateCandidateStatusApiUrl = API_BASE + '/updateCandidateStatus.php';
-            var deleteCandidateApiUrl = API_BASE + '/deleteCandidate.php';
-            var getCandidateRemarks = API_BASE + '/getCandidateRemarks.php';
-            var addCandidateRemark = API_BASE + '/addCandidateRemark.php';
+            var addCandidateApiUrl = API_BASE + '/recruitment/addCandidate.php';
+            var updateCandidateApiUrl = API_BASE + '/recruitment/updateCandidate.php';
+            var updateCandidateStatusApiUrl = API_BASE + '/recruitment/updateCandidateStatus.php';
+            var deleteCandidateApiUrl = API_BASE + '/recruitment/deleteCandidate.php';
+            var getCandidateRemarks = API_BASE + '/recruitment/getCandidateRemarks.php';
+            var addCandidateRemark = API_BASE + '/recruitment/addCandidateRemark.php';
 
             var table = $('#candidates-datatable').DataTable(window.ModlusUI.withDataTableDefaults({
 
@@ -1312,7 +1312,7 @@ if ($selectStmt) {
                 }
 
                 $.ajax({
-                    url: API_BASE + '/getFollowUpByDate.php',
+                    url: API_BASE + '/leads/getFollowUpByDate.php',
                     type: 'POST',
                     data: {
                         followUpDate: date
@@ -1383,7 +1383,7 @@ if ($selectStmt) {
                 let select = $(this);
 
                 $.ajax({
-                    url: API_BASE + '/updateFollowUpStatus.php',
+                    url: API_BASE + '/leads/updateFollowUpStatus.php',
                     type: 'POST',
                     data: {
                         id: id,
@@ -2163,7 +2163,7 @@ if ($selectStmt) {
             // =====================================================
             // IMPORT CANDIDATES
             // =====================================================
-            var importCandidatesApiUrl = API_BASE + '/importCandidates.php';
+            var importCandidatesApiUrl = API_BASE + '/recruitment/importCandidates.php';
             
             $(document).on("submit", "#importCandidateForm", function(event) {
                 event.preventDefault();

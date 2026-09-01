@@ -69,7 +69,7 @@ $(function () {
 
         // Load Clients
         $.ajax({
-            url: API_BASE + '/getClients.php',
+            url: API_BASE + '/client/getClients.php',
             method: 'GET',
             success: function(response) {
                 let options = '<option value="">All Clients</option>';
@@ -89,7 +89,7 @@ $(function () {
 
         // Load Services (Platforms)
         $.ajax({
-            url: API_BASE + '/getDeliverableStructure.php',
+            url: API_BASE + '/deliverables/getDeliverableStructure.php',
             method: 'GET',
             success: function(response) {
                 if (response.success) {
@@ -150,7 +150,7 @@ $(function () {
         `);
 
         $.ajax({
-            url: API_BASE + '/getDeliverableStructure.php',
+            url: API_BASE + '/deliverables/getDeliverableStructure.php',
             method: 'GET',
             success: function(structResponse) {
                 if (structResponse.success) {
@@ -184,7 +184,7 @@ $(function () {
 
     function loadDeliverableData(clientId, month, service) {
         $.ajax({
-            url: API_BASE + '/getDeliverablesPivot.php',
+            url: API_BASE + '/deliverables/getDeliverablesPivot.php',
             method: 'GET',
             data: { clientId: clientId, month: month },
             success: function(response) {
@@ -671,7 +671,7 @@ $(function () {
         }
 
         $.ajax({
-            url: API_BASE + '/saveDeliverableCell.php',
+            url: API_BASE + '/deliverables/saveDeliverableCell.php',
             method: 'POST',
             data: JSON.stringify(saveData),
             contentType: 'application/json',

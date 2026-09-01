@@ -655,7 +655,7 @@ include __DIR__ . '/../includes/header.php'; ?>
                                 />
                             </div>
 
-                            <a href="../api/downloadLeadImportTemplate.php" class="btn btn-outline-primary btn-sm">
+                            <a href="../api/leads/downloadLeadImportTemplate.php" class="btn btn-outline-primary btn-sm">
                                 <i class="ri-download-line me-1"></i>
                                 Download Sample CSV
                             </a>

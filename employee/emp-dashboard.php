@@ -988,7 +988,7 @@ $(function() {
 function loadAttendanceState() {
     $.ajax({
 
-        url: API_BASE + '/getAttendanceState.php',
+        url: API_BASE + '/attendance/getAttendanceState.php',
 
         type: 'GET',
 
@@ -1322,7 +1322,7 @@ function formatReminderTime(time) {
 function handlePunchIn() {
     $.ajax({
 
-        url: API_BASE + '/punchIn.php',
+        url: API_BASE + '/attendance/punchIn.php',
 
         type: 'POST',
 
@@ -1387,7 +1387,7 @@ function handlePunchOut() {
 
             $.ajax({
 
-                url: API_BASE + '/punchOut.php',
+                url: API_BASE + '/attendance/punchOut.php',
 
                 type: 'POST',
 
@@ -1442,7 +1442,7 @@ function handlePunchOut() {
 function handleStartBreak() {
     $.ajax({
 
-        url: API_BASE + '/getBreakTypes.php',
+        url: API_BASE + '/attendance/getBreakTypes.php',
 
         type: 'GET',
 
@@ -1542,7 +1542,7 @@ function handleStartBreak() {
 function startBreakRequest(breakTypeId) {
     $.ajax({
 
-        url: API_BASE + '/startBreak.php',
+        url: API_BASE + '/attendance/startBreak.php',
 
         type: 'POST',
 
@@ -1611,7 +1611,7 @@ function handleEndBreak() {
 
             $.ajax({
 
-                url: API_BASE + '/endBreak.php',
+                url: API_BASE + '/attendance/endBreak.php',
 
                 type: 'POST',
 

@@ -250,8 +250,8 @@ include __DIR__ . '/../includes/sidebar.php';
 $(function() {
 
     const API = {
-        list: API_BASE + '/getAllLeaves.php',
-        update: API_BASE + '/updateLeaveStatus.php'
+        list: API_BASE + '/leave/getAllLeaves.php',
+        update: API_BASE + '/leave/updateLeaveStatus.php'
     };
 
     let table;

@@ -621,7 +621,7 @@ $(function () {
     let entries = [];       // the fake "clientSocialContent" table
     let entrySeq = 1;
 
-    /* TODO(api): replace with GET api/get-client-calendar-plan.php (selectedDates) */
+    /* TODO(api): replace with GET api/deliverables/get-client-calendar-plan.php (selectedDates) */
     function getClientPlan(clientId, month) {
         const key = clientId + '|' + month;
         if (planCache[key]) return planCache[key];

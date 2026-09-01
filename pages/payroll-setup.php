@@ -627,7 +627,7 @@ function savePayrollSetup() {
         .html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
 
     $.ajax({
-        url: API_BASE + '/savePayrollSetup.php',
+        url: API_BASE + '/payroll/savePayrollSetup.php',
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',
@@ -723,7 +723,7 @@ function bindPayrollState(settings) {
 }
 
 function loadPayrollSetup() {
-    $.getJSON(API_BASE + '/getPayrollSetup.php')
+    $.getJSON(API_BASE + '/payroll/getPayrollSetup.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load payroll setup.');

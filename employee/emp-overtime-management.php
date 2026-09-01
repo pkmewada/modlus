@@ -599,7 +599,7 @@ $(function () {
 
         ajax: {
 
-            url: API_BASE + '/emp-getOvertime.php',
+            url: API_BASE + '/overtime/emp-getOvertime.php',
 
             dataSrc: function (response) {
 
@@ -880,7 +880,7 @@ $(function () {
 
         $.post(
 
-            API_BASE + '/emp-addOvertime.php',
+            API_BASE + '/overtime/emp-addOvertime.php',
 
             form.serialize(),
 
@@ -1016,7 +1016,7 @@ $(function () {
 
         $.post(
 
-            API_BASE + '/emp-updateOvertime.php',
+            API_BASE + '/overtime/emp-updateOvertime.php',
 
             form.serialize(),
 
@@ -1111,7 +1111,7 @@ $(function () {
 
                 $.post(
 
-                    API_BASE + '/emp-deleteOvertime.php',
+                    API_BASE + '/overtime/emp-deleteOvertime.php',
 
                     {
                         id: id

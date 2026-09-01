@@ -543,7 +543,7 @@ function loadPointSetup() {
 
     $.ajax({
 
-        url: API_BASE + '/getPointSetup.php',
+        url: API_BASE + '/points/getPointSetup.php',
 
         type: 'GET',
 
@@ -1155,7 +1155,7 @@ $(document).on(
 
                 url:
                     API_BASE +
-                    '/deletePointCategory.php',
+                    '/points/deletePointCategory.php',
 
                 type: 'POST',
 
@@ -1317,7 +1317,7 @@ $('#savePointSetupBtn').on(
 
             url:
                 API_BASE +
-                '/savePointSetup.php',
+                '/points/savePointSetup.php',
 
             type: 'POST',
 

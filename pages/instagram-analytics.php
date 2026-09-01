@@ -155,7 +155,7 @@ function renderSyncStatus() {
 
 function loadInstagramAnalyticsClients() {
     $.ajax({
-        url: API_BASE + '/getClients.php',
+        url: API_BASE + '/client/getClients.php',
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -179,7 +179,7 @@ function loadInstagramAccountsForAnalytics(clientId) {
         return;
     }
 
-    $.getJSON(API_BASE + '/getInstagramSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php', { clientId: clientId })
         .done(function(res) {
             const accounts = ((res && res.data && res.data.instagramAccounts) || []).filter(a => a.status === 'connected');
             instagramAnalyticsAccounts = accounts;
@@ -201,7 +201,7 @@ function loadInstagramWebhookEvents() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getInstagramWebhookEvents.php', { clientId: clientId, accountId: accountId })
+    $.getJSON(API_BASE + '/instagram/getInstagramWebhookEvents.php', { clientId: clientId, accountId: accountId })
         .done(function(res) {
             if (!res || !res.success) {
                 return;
@@ -245,7 +245,7 @@ function loadInstagramAnalytics() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getInstagramInsights.php', { clientId: clientId, accountId: accountId, days: 30 })
+    $.getJSON(API_BASE + '/instagram/getInstagramInsights.php', { clientId: clientId, accountId: accountId, days: 30 })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load analytics.');

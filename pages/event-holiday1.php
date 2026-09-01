@@ -1383,7 +1383,7 @@ function reArrangeSno() {
 ========================================================== */
 function refreshUpcomingCount() {
     $.ajax({
-        url: API_BASE + '/getUpcomingEventCount.php',
+        url: API_BASE + '/holidays/getUpcomingEventCount.php',
         type: 'GET',
         dataType: 'json',
         success: function(res) {
@@ -1615,7 +1615,7 @@ $(function() {
         text.text('Saving...');
 
         $.ajax({
-            url: API_BASE + '/addEventHoliday.php',
+            url: API_BASE + '/holidays/addEventHoliday.php',
             type: 'POST',
             data: formData,
             processData: false,
@@ -1704,7 +1704,7 @@ $(function() {
             );
     
             $.ajax({
-                url: API_BASE + '/deleteEventHoliday.php',
+                url: API_BASE + '/holidays/deleteEventHoliday.php',
                 type: 'POST',
                 data: {
                     id: id
@@ -1768,7 +1768,7 @@ $(function() {
         $('#editEventHolidayModal').modal('show');
 
         $.ajax({
-            url: API_BASE + '/getEventHolidayById.php',
+            url: API_BASE + '/holidays/getEventHolidayById.php',
             type: 'GET',
             data: {
                 id: id
@@ -1831,7 +1831,7 @@ $(function() {
         text.text('Updating...');
 
         $.ajax({
-            url: API_BASE + '/updateEventHoliday.php',
+            url: API_BASE + '/holidays/updateEventHoliday.php',
             type: 'POST',
             data: formData,
             processData: false,

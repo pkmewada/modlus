@@ -620,7 +620,7 @@ function loadCommissionSetup() {
 
     $.ajax({
 
-        url: API_BASE + '/getCommissionSetup.php',
+        url: API_BASE + '/commission/getCommissionSetup.php',
 
         type: 'GET',
 
@@ -1528,7 +1528,7 @@ $('#saveCommissionSetupBtn').on(
 
             url:
                 API_BASE +
-                '/saveCommissionSetup.php',
+                '/commission/saveCommissionSetup.php',
 
             type: 'POST',
 

@@ -230,7 +230,7 @@ function loadLeadSetup() {
 
     $.ajax({
 
-        url: API_BASE + '/getLeadSetup.php',
+        url: API_BASE + '/leads/getLeadSetup.php',
 
         type: 'GET',
 
@@ -1147,7 +1147,7 @@ function () {
 
         url:
             API_BASE +
-            '/saveLeadSetup.php',
+            '/leads/saveLeadSetup.php',
 
         type: 'POST',
 

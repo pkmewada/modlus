@@ -19,7 +19,7 @@ require_once __DIR__ . '/InstagramAutomation.php';
 | $account must be the array shape returned by getInstagramAccountById():
 | requires 'facebookPageId' (the connected account's linked Facebook Page)
 | and 'accessToken', which is the Page Access Token obtained during OAuth
-| (api/instagramOauthCallback.php stores $page['access_token'], not the
+| (api/instagram/instagramOauthCallback.php stores $page['access_token'], not the
 | user token) — no separate Facebook OAuth flow is needed to publish.
 |
 | Publishing to a Page requires the pages_manage_posts permission on that

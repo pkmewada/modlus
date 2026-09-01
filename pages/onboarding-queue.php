@@ -771,7 +771,7 @@ $(function() {
     /* ─── 7. API CALL WRAPPER ────────────────────────────────────── */
     function callReviewApi(candidateId, nextStatus, reviewRemark, onDone, onAlways) {
         $.ajax({
-            url: API_BASE + '/updateOnboardingReviewStatus.php',
+            url: API_BASE + '/onboarding/updateOnboardingReviewStatus.php',
             type: 'POST',
             data: {
                 id: candidateId,
@@ -973,7 +973,7 @@ $(function() {
         );
 
         $.ajax({
-            url: API_BASE + '/getEmployeeVerificationData.php',
+            url: API_BASE + '/onboarding/getEmployeeVerificationData.php',
             type: 'GET',
             dataType: 'json',
             data: {
@@ -1382,7 +1382,7 @@ $(function() {
         $btn.prop('disabled', true);
     
         $.ajax({
-            url: API_BASE + '/submitHrReview.php',
+            url: API_BASE + '/onboarding/submitHrReview.php',
             type: 'POST',
             dataType: 'json',
     
@@ -1440,7 +1440,7 @@ $(function() {
        var reviewRemark = '';
 
         $.ajax({
-            url: API_BASE + '/updateHrVerificationField.php',
+            url: API_BASE + '/onboarding/updateHrVerificationField.php',
             type: 'POST',
             dataType: 'json',
             
@@ -1554,7 +1554,7 @@ $(function() {
         }
 
         $.ajax({
-            url: API_BASE + '/updateHrVerificationField.php',
+            url: API_BASE + '/onboarding/updateHrVerificationField.php',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -1593,7 +1593,7 @@ $(function() {
     $('#joiningListModal').modal('show');
 
     $.ajax({
-        url: API_BASE + '/getJoiningList.php',
+        url: API_BASE + '/onboarding/getJoiningList.php',
         type: 'GET',
         dataType: 'json',
 
@@ -1702,7 +1702,7 @@ $(function() {
         var joiningStatus = $(this).val();
 
         $.ajax({
-            url: API_BASE + '/updateJoiningStatus.php',
+            url: API_BASE + '/onboarding/updateJoiningStatus.php',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -1775,7 +1775,7 @@ $(function() {
             $('select[name="departmentName"]').val() || '';
     
         $.ajax({
-            url: API_BASE + '/checkVerificationReady.php',
+            url: API_BASE + '/onboarding/checkVerificationReady.php',
             type: 'GET',
             dataType: 'json',
     
@@ -1839,7 +1839,7 @@ $(function() {
                 $('textarea[name="remark_' + fieldName + '"]').val() || '';
 
         $.ajax({
-            url: API_BASE + '/updateHrVerificationField.php',
+            url: API_BASE + '/onboarding/updateHrVerificationField.php',
             type: 'POST',
             dataType: 'json',
             
@@ -1890,7 +1890,7 @@ $(function() {
             }
 
         $.ajax({
-            url: API_BASE + '/updateHrVerificationField.php',
+            url: API_BASE + '/onboarding/updateHrVerificationField.php',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -1937,7 +1937,7 @@ $(function() {
             }
 
         $.ajax({
-            url: API_BASE + '/updateHrVerificationField.php',
+            url: API_BASE + '/onboarding/updateHrVerificationField.php',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -1980,7 +1980,7 @@ $(function() {
         $btn.prop('disabled', true).text('Processing...');
 
         $.ajax({
-            url: API_BASE + '/finalVerifyCandidate.php',
+            url: API_BASE + '/onboarding/finalVerifyCandidate.php',
             type: 'POST',
             dataType: 'json',
             data: {

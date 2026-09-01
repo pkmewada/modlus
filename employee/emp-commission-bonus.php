@@ -349,7 +349,7 @@ $(function() {
 
     const API = {
 
-        getTransactions: API_BASE + '/emp-getCommissionTransactions.php'
+        getTransactions: API_BASE + '/commission/emp-getCommissionTransactions.php'
     };
 
     // =========================================

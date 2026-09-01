@@ -20,6 +20,26 @@ see `docs/instagram-automation-production-checklist.md`. This file does not
 replace those — it records production-verified state and debugging history
 that the other three don't carry.
 
+> **API directory reorganization (2026-09-01)**: every `/api/*.php` file
+> referenced throughout this project was moved from a flat `/api/` directory
+> into module subfolders (e.g. `/api/instagramOauthCallback.php` →
+> `/api/instagram/instagramOauthCallback.php`; LinkedIn/Pinterest/Google
+> Business Profile similarly moved to `/api/linkedin/`, `/api/pinterest/`,
+> `/api/google-business-profile/`). **Historical entries in this document
+> below (confirmed production URLs, log lines, evidence quoted from a past
+> date) are left exactly as originally recorded and describe the flat path
+> that was actually in effect on that date** — they are not updated to the
+> new path, since doing so would misrepresent what was literally observed
+> at the time. Any *current* architecture statement elsewhere in this repo
+> (code, comments, the smaller instagram-automation-*.md docs) reflects the
+> new subfolder paths. If you are configuring a live OAuth redirect URI,
+> webhook callback URL, or any other externally-facing endpoint today, use
+> the current physical path (module subfolder), not a path quoted in a
+> historical section below — external app dashboards (Meta, LinkedIn,
+> Pinterest, Google Cloud) must have their registered redirect/callback
+> URIs updated to match the new paths for any platform going live after
+> this reorganization.
+
 ---
 
 ## 1. Project Overview

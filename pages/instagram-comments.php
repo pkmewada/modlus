@@ -132,7 +132,7 @@ function escapeHtml(value) {
 
 function loadInstagramCommentsClients() {
     $.ajax({
-        url: API_BASE + '/getClients.php',
+        url: API_BASE + '/client/getClients.php',
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -156,7 +156,7 @@ function loadInstagramAccountsForClientFilter(clientId) {
         return;
     }
 
-    $.getJSON(API_BASE + '/getInstagramSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php', { clientId: clientId })
         .done(function(res) {
             const accounts = (res && res.data && res.data.instagramAccounts) || [];
             let options = '<option value="">All Accounts</option>';
@@ -186,7 +186,7 @@ function loadInstagramComments() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getInstagramComments.php', { clientId: clientId, accountId: accountId })
+    $.getJSON(API_BASE + '/instagram/getInstagramComments.php', { clientId: clientId, accountId: accountId })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load comments.');
@@ -247,7 +247,7 @@ function submitInstagramCommentReply() {
     $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Sending...');
 
     $.ajax({
-        url: API_BASE + '/replyInstagramComment.php',
+        url: API_BASE + '/instagram/replyInstagramComment.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { commentId: commentId, message: message, csrfToken: CSRF_TOKEN },
@@ -274,7 +274,7 @@ function submitInstagramCommentReply() {
 
 function toggleHideInstagramComment(commentId, hide) {
     $.ajax({
-        url: API_BASE + '/hideInstagramComment.php',
+        url: API_BASE + '/instagram/hideInstagramComment.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { commentId: commentId, hide: hide ? 1 : 0, csrfToken: CSRF_TOKEN },

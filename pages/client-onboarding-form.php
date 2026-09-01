@@ -1498,7 +1498,7 @@ $serviceConfigs = [
             submitBtn.disabled = true;
             
             try {
-                var response = await fetch('api/submitClientForm.php', {
+                var response = await fetch('api/client-onboarding/submitClientForm.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1578,7 +1578,7 @@ $serviceConfigs = [
             }
             
             try {
-                var response = await fetch('api/uploadClientFiles.php', {
+                var response = await fetch('api/client-onboarding/uploadClientFiles.php', {
                     method: 'POST',
                     body: fileData
                 });

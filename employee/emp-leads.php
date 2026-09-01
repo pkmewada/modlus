@@ -755,7 +755,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                             required>
                     </div>
 
-                    <a href="<?= BASE_URL; ?>/api/downloadLeadImportTemplate.php"
+                    <a href="<?= BASE_URL; ?>/api/leads/downloadLeadImportTemplate.php"
                         class="btn btn-outline-primary btn-sm">
                         <i class="ri-download-line me-1"></i>
                         Download Sample CSV

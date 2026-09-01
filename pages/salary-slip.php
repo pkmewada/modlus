@@ -628,7 +628,7 @@ function submitSalarySlipForApproval() {
             .html('<span class="spinner-border spinner-border-sm me-2"></span>Submitting...');
 
         $.ajax({
-            url: API_BASE + '/submitSalarySlipApproval.php',
+            url: API_BASE + '/payroll/submitSalarySlipApproval.php',
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',
@@ -678,7 +678,7 @@ function generateSalarySlip() {
         .html('<span class="spinner-border spinner-border-sm me-2"></span>Generating...');
 
     $.ajax({
-        url: API_BASE + '/calculatePayrollPreview.php',
+        url: API_BASE + '/payroll/calculatePayrollPreview.php',
         type: 'GET',
         dataType: 'json',
         data: {
@@ -746,7 +746,7 @@ function loadSalarySlipMonthStatus() {
 
     $('#salarySlipStatusBody').html('<tr><td colspan="7" class="text-center text-muted py-4">Loading salary slip status...</td></tr>');
 
-    $.getJSON(API_BASE + '/getSalarySlipMonthStatus.php', {
+    $.getJSON(API_BASE + '/payroll/getSalarySlipMonthStatus.php', {
         periodStart,
         periodEnd
     }).done(function(res) {

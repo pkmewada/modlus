@@ -821,13 +821,13 @@ $(function() {
     |--------------------------------------------------------------------------
     */
 
-    const addExpenseApiUrl = API_BASE + '/emp-addExpense.php';
+    const addExpenseApiUrl = API_BASE + '/expense/emp-addExpense.php';
 
-    const updateExpenseApiUrl = API_BASE + '/emp-updateExpense.php';
+    const updateExpenseApiUrl = API_BASE + '/expense/emp-updateExpense.php';
 
-    const deleteExpenseApiUrl = API_BASE + '/emp-deleteExpense.php';
+    const deleteExpenseApiUrl = API_BASE + '/expense/emp-deleteExpense.php';
 
-    const getExpenseApiUrl = API_BASE + '/emp-getExpense.php';
+    const getExpenseApiUrl = API_BASE + '/expense/emp-getExpense.php';
 
     const approveExpenseApiUrl = API_BASE + '/emp-approveExpense.php';
 

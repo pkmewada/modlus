@@ -363,7 +363,7 @@ require_once __DIR__ . '/../includes/db.php';
             table = $('#assetTable').DataTable({
                 processing: true,
                 ajax: {
-                    url: API_BASE + '/getAsset.php',
+                    url: API_BASE + '/assets/getAsset.php',
                     dataSrc: function(json) {
                         if (!json) return [];
                         if (Array.isArray(json)) return json;
@@ -519,7 +519,7 @@ require_once __DIR__ . '/../includes/db.php';
                 text.text('Saving...');
 
                 $.ajax({
-                    url: API_BASE + '/addAsset.php',
+                    url: API_BASE + '/assets/addAsset.php',
                     type: 'POST',
                     data: formData,
                     dataType: 'json',
@@ -575,7 +575,7 @@ require_once __DIR__ . '/../includes/db.php';
                 text.text('Assigning...');
 
                 $.ajax({
-                    url: API_BASE + '/assignAsset.php',
+                    url: API_BASE + '/assets/assignAsset.php',
                     type: 'POST',
                     data: formData,
                     dataType: 'json',
@@ -633,7 +633,7 @@ require_once __DIR__ . '/../includes/db.php';
             $('#assignAssetModal').on('show.bs.modal', function() {
 
                 $.ajax({
-                    url: API_BASE + '/getAvailableAssets.php',
+                    url: API_BASE + '/assets/getAvailableAssets.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(res) {
@@ -650,7 +650,7 @@ require_once __DIR__ . '/../includes/db.php';
                 });
 
                 $.ajax({
-                    url: API_BASE + '/getEmployees.php',
+                    url: API_BASE + '/employee/getEmployees.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(res) {
@@ -692,7 +692,7 @@ require_once __DIR__ . '/../includes/db.php';
                 text.text('Processing...');
 
                 $.ajax({
-                    url: API_BASE + '/returnAsset.php',
+                    url: API_BASE + '/assets/returnAsset.php',
                     type: 'POST',
                     data: formData,
                     dataType: 'json',
@@ -740,7 +740,7 @@ require_once __DIR__ . '/../includes/db.php';
                 $('#assetHistoryContent').html('Loading...');
 
                 $.ajax({
-                    url: API_BASE + '/getAssetHistory.php',
+                    url: API_BASE + '/assets/getAssetHistory.php',
                     type: 'GET',
                     data: {
                         assetId: id
@@ -825,7 +825,7 @@ require_once __DIR__ . '/../includes/db.php';
                     if (result.isConfirmed) {
 
                         $.ajax({
-                            url: API_BASE + '/deleteAsset.php',
+                            url: API_BASE + '/assets/deleteAsset.php',
                             type: 'POST',
                             data: {
                                 id: id

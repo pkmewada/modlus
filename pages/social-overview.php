@@ -625,8 +625,9 @@ $(function () {
     const seededClientMonths = {};
 
     /* TODO(api): replace with a bulk GET across clients — e.g.
-       api/get-client-calendar-plan.php called per client, or a new
-       api/get-calendar-overview.php that returns every client's plan
+       api/deliverables/get-client-calendar-plan.php called per client, or a
+       new api/deliverables/get-calendar-overview.php that returns every
+       client's plan
        for the month in one call. */
     function getPlan(clientId, month) {
         const key = clientId + '|' + month;

@@ -7,27 +7,27 @@ const API = {
 
     getSummary:
         API_BASE +
-        '/getAttendanceManagementSummary.php',
+        '/attendance/getAttendanceManagementSummary.php',
 
     getListing:
         API_BASE +
-        '/getAttendanceManagementListing.php',
+        '/attendance/getAttendanceManagementListing.php',
 
     getBreakHistory:
         API_BASE +
-        '/getAttendanceBreakHistoryAdmin.php',
+        '/attendance/getAttendanceBreakHistoryAdmin.php',
 
     getAttendanceDetails:
         API_BASE +
-        '/getAttendanceDetails.php',
+        '/attendance/getAttendanceDetails.php',
 
     updateAttendance:
         API_BASE +
-        '/updateAttendance.php',
+        '/attendance/updateAttendance.php',
         
     getAttendanceAnalytics:
         API_BASE +
-        '/getEmployeeAttendanceAnalytics.php'
+        '/attendance/getEmployeeAttendanceAnalytics.php'
 };
 
 // =========================================

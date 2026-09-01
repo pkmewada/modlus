@@ -476,7 +476,7 @@ $(function() {
     }
 
     function loadSetup() {
-        $.getJSON(API_BASE + '/getLeaveSetup.php').done(function(res) {
+        $.getJSON(API_BASE + '/leave/getLeaveSetup.php').done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast((res && res.message) ||
                     'Failed to load leave setup.');
@@ -631,7 +631,7 @@ $(function() {
         $btn.prop('disabled', true).text('Saving...');
         
         $.ajax({
-            url: API_BASE + '/saveLeaveSetup.php',
+            url: API_BASE + '/leave/saveLeaveSetup.php',
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',

@@ -63,7 +63,7 @@ encrypted before storage and never displayed again.
 ### 2. Connect Client Instagram Account
 
 The admin selects a **client** from a dropdown (the same client
-picker used throughout Modlus — `api/getClients.php`), then clicks Connect
+picker used throughout Modlus — `api/client/getClients.php`), then clicks Connect
 Instagram Account. This kicks off Meta's OAuth flow; when it completes,
 Modlus stores the connected Instagram Business account **against that
 client** — `instagramAccounts.clientId`. A client can connect more than one
@@ -106,7 +106,7 @@ Reply and Hide actions that call Meta's Graph API (not just a local
 
 ### 7. Receive Webhooks
 
-Meta calls `api/instagramWebhook.php` directly whenever a subscribed event
+Meta calls `api/instagram/instagramWebhook.php` directly whenever a subscribed event
 happens (currently: new comments). This endpoint has no login — Meta isn't
 a logged-in Modlus user — so it verifies Meta's cryptographic signature
 instead. Every event is logged to `instagramWebhookEvents` (for debugging,
@@ -140,7 +140,7 @@ pages/
   instagram-comments.php          View/reply/hide comments
   instagram-analytics.php         Metrics + sync status + webhook health
 
-api/
+api/instagram/
   getInstagramSettings.php, saveInstagramSettings.php
   instagramOauthStart.php, instagramOauthCallback.php
   disconnectInstagramAccount.php

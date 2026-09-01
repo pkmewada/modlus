@@ -40,18 +40,18 @@ logic, and it's exactly what caught the pattern Phase 3 had to avoid.
 | `pages/instagram-automation.php` | Settings page: Meta App ID / Secret / Redirect URL, "Connect Instagram Account" button, connected-accounts list. |
 | `pages/instagram-create-post.php` | Create/edit a post: media upload, caption, draft or schedule. |
 | `pages/instagram-scheduled-posts.php` | List of all posts (draft/scheduled/publishing/published/failed) with filter, edit, delete. |
-| `api/getInstagramSettings.php`, `api/saveInstagramSettings.php` | Settings CRUD. |
-| `api/instagramOauthStart.php`, `api/instagramOauthCallback.php` | OAuth connect flow (see §4). |
-| `api/disconnectInstagramAccount.php` | Manually disconnect an account. |
+| `api/instagram/getInstagramSettings.php`, `api/instagram/saveInstagramSettings.php` | Settings CRUD. |
+| `api/instagram/instagramOauthStart.php`, `api/instagram/instagramOauthCallback.php` | OAuth connect flow (see §4). |
+| `api/instagram/disconnectInstagramAccount.php` | Manually disconnect an account. |
 | `api/getInstagramPosts.php`, `api/saveInstagramPost.php`, `api/deleteInstagramPost.php` | Post CRUD. |
 | `cron/instagramScheduler.php` | CLI-only scheduler that actually publishes to Meta (see §7). |
 | `includes/InstagramInsights.php` | Phase 3: analytics domain logic (§12). `require_once`s `InstagramAutomation.php` for shared primitives — does not duplicate them. |
 | `includes/InstagramComments.php` | Phase 3: comments domain logic + real Meta reply/hide calls (§13). Same reuse pattern. |
 | `includes/InstagramWebhooks.php` | Phase 3: webhook event storage + signature verification (§14). Same reuse pattern. |
-| `api/instagramWebhook.php` | Phase 3: the Meta-facing webhook receiver — the one endpoint in this module without `includes/auth.php` (§14). |
-| `api/getInstagramComments.php`, `api/replyInstagramComment.php`, `api/hideInstagramComment.php` | Phase 3: comment admin actions (§13). |
-| `api/getInstagramInsights.php` | Phase 3: analytics read endpoint (§12). |
-| `api/getInstagramWebhookEvents.php` | Phase 3.1: admin-facing read of recent webhook events, incl. failures (§16, Task 5 error visibility). |
+| `api/instagram/instagramWebhook.php` | Phase 3: the Meta-facing webhook receiver — the one endpoint in this module without `includes/auth.php` (§14). |
+| `api/instagram/getInstagramComments.php`, `api/instagram/replyInstagramComment.php`, `api/instagram/hideInstagramComment.php` | Phase 3: comment admin actions (§13). |
+| `api/instagram/getInstagramInsights.php` | Phase 3: analytics read endpoint (§12). |
+| `api/instagram/getInstagramWebhookEvents.php` | Phase 3.1: admin-facing read of recent webhook events, incl. failures (§16, Task 5 error visibility). |
 | `cron/instagramAnalyticsSync.php` | Phase 3: CLI-only, separately-scheduled sync that populates `instagramInsights` (§12); Phase 3.1 added `markInstagramAccountAnalyticsSync()` calls for last-sync status. |
 | `pages/instagram-comments.php`, `pages/instagram-analytics.php` | Phase 3 UI — both use the same client → account cascading-selector pattern as `instagram-create-post.php`. Phase 3.1 added a sync-status banner and a "Recent Webhook Events" card to the analytics page. |
 | `database/migrations/2026-08-22-instagram-automation-tables.sql` | `instagramSettings`, `instagramAccounts` + route registration. |
@@ -159,11 +159,11 @@ use `ON DELETE SET NULL` instead of `CASCADE`.
 
 ```
 User selects a Client from the dropdown (pages/instagram-automation.php,
-  populated via the existing api/getClients.php — same client-selector
+  populated via the existing api/client/getClients.php — same client-selector
   pattern as client-deliverable.js / calendar.php)
   ↓
 User clicks "Connect Instagram Account"
-  → GET api/instagramOauthStart.php?clientId=X
+  → GET api/instagram/instagramOauthStart.php?clientId=X
       - validates clientId via instagramClientExists()
       - loads Meta App ID/Secret from instagramSettings (global, not per-client)
       - generates a random `state`, stores it AND clientId in session
@@ -171,7 +171,7 @@ User clicks "Connect Instagram Account"
       - redirects to https://www.facebook.com/v19.0/dialog/oauth?...
 
 User authorizes on Meta → Meta redirects back to
-  → GET api/instagramOauthCallback.php?code=...&state=...
+  → GET api/instagram/instagramOauthCallback.php?code=...&state=...
       1. validates `state` against session (CSRF protection for the OAuth flow itself)
       2. re-validates the session's clientId is still a real client
       3. exchanges `code` for a short-lived user access token
@@ -325,7 +325,7 @@ as a toast via "View Error".
 ## 8. Token Handling
 
 - The token Meta issues right after OAuth login is short-lived (~1–2 hours).
-  `api/instagramOauthCallback.php` immediately exchanges it for a
+  `api/instagram/instagramOauthCallback.php` immediately exchanges it for a
   **long-lived** user token (`grant_type=fb_exchange_token`) before deriving
   Page access tokens — Page tokens derived from a long-lived user token are
   effectively non-expiring. **This exchange is load-bearing**: without it,
@@ -573,7 +573,7 @@ once per metric.
 ```
 Admin
   ↓
-Select Client              ← same api/getClients.php + dropdown pattern
+Select Client              ← same api/client/getClients.php + dropdown pattern
                               already used by all three existing Instagram
                               Automation pages (§4's OAuth flow, the
                               create-post page, the posts list page)
@@ -746,7 +746,7 @@ check and before touching any input: `saveInstagramSettings.php`,
 (set from the `CSRF_TOKEN` JS constant `includes/header.php` emits on every
 page) — verified this doesn't break any existing page's unrelated AJAX
 calls (Phase 1 testing: `CSRF_TOKEN` is additive, nothing else reads it).
-**`api/instagramWebhook.php` intentionally has no CSRF check** — CSRF
+**`api/instagram/instagramWebhook.php` intentionally has no CSRF check** — CSRF
 protects session-authenticated browser requests; Meta's webhook has no
 session and is protected by signature verification instead (see below).
 
@@ -770,12 +770,12 @@ account resolution, or any processing — it never gets far enough to leak
 whether a given Instagram account id is even known to this Modlus instance.
 
 **Verified directly** (Phase 3 test pass, re-confirmed in Phase 3.1 review by
-re-reading `api/instagramWebhook.php` and `includes/InstagramWebhooks.php`
+re-reading `api/instagram/instagramWebhook.php` and `includes/InstagramWebhooks.php`
 line by line): a forged signature is rejected (`403`, logged, nothing
 stored); a correctly-signed delivery is accepted (`200`) and processed. Also
 confirmed by direct code review for this hardening pass:
 
-- **No session dependency** — `api/instagramWebhook.php` never includes
+- **No session dependency** — `api/instagram/instagramWebhook.php` never includes
   `includes/auth.php`, never touches `$_SESSION`.
 - **No sensitive-value logging** — `instagramWebhookLog()` calls throughout
   the file log event ids, account ids, client labels, `eventType`, and Meta's
@@ -814,7 +814,7 @@ before the page file even loads — see the main Modlus permission system,
 | `/instagram-scheduled-posts` | 0 | Route `canView` only |
 | `/instagram-comments` | 0 | Route `canView` only |
 | `/instagram-analytics` | 0 | Route `canView` only |
-| `api/instagramWebhook.php` | — | **Not session-gated at all** — signature verification is its entire security boundary (see above), by design |
+| `api/instagram/instagramWebhook.php` | — | **Not session-gated at all** — signature verification is its entire security boundary (see above), by design |
 
 **Practical consequence — verify this matches your expectations before
 relying on it**: within a route a user can view, there is no further
@@ -874,7 +874,7 @@ sensitive actions elsewhere in Modlus — not a new mechanism.
   at save time. OAuth flow now requires a client selection before connecting
   (`instagramOauthStart.php?clientId=`), carried through session state to the
   callback. All three UI pages gained a client selector (reusing the existing
-  `api/getClients.php` + `client-deliverable.js` dropdown pattern). Audit log
+  `api/client/getClients.php` + `client-deliverable.js` dropdown pattern). Audit log
   messages and cron log lines now include `"for Client: {label}"` context
   throughout. Verified end-to-end with a real (CLI, temporary, cleaned-up)
   test: account-ownership guard functions, token encrypt/decrypt round-trip,
@@ -920,7 +920,7 @@ sensitive actions elsewhere in Modlus — not a new mechanism.
   with `ON DELETE SET NULL` (not CASCADE, unlike every other Phase 2.5/3
   FK) — approved Decision C, so webhook debugging history survives a
   client/account being deleted later.
-- **`api/instagramWebhook.php`** — the one endpoint in this module without
+- **`api/instagram/instagramWebhook.php`** — the one endpoint in this module without
   `includes/auth.php` (approved Decision D). GET handles Meta's
   `hub_verify_token` handshake; POST verifies `X-Hub-Signature-256` via
   `verifyMetaWebhookSignature()` (HMAC-SHA256, `hash_equals()`) before
@@ -947,7 +947,7 @@ sensitive actions elsewhere in Modlus — not a new mechanism.
   `replyToInstagramComment()` (`POST /{comment-id}/replies`) and
   `hideInstagramComment()` (`POST /{comment-id}?hide=true`), both routed
   through the existing `instagramGraphApiRequest()`. Both
-  `api/replyInstagramComment.php` and `api/hideInstagramComment.php`
+  `api/instagram/replyInstagramComment.php` and `api/instagram/hideInstagramComment.php`
   resolve the account from the comment's own stored `instagramAccountId`
   (never client-submitted), so a reply/hide can never be sent through the
   wrong Instagram identity.
@@ -999,7 +999,7 @@ sensitive actions elsewhere in Modlus — not a new mechanism.
   credentials." No permission architecture changes made — this phase's
   instructions were to verify and document the existing (Modlus-wide)
   model, not build a new one. Findings in §16.
-- **Webhook security review (Task 4)**: re-read `api/instagramWebhook.php`
+- **Webhook security review (Task 4)**: re-read `api/instagram/instagramWebhook.php`
   and `includes/InstagramWebhooks.php` line by line. Confirmed: no session
   dependency; `hash_equals()` (constant-time) signature comparison; no
   sensitive value (token/secret/signature) ever reaches a log line
@@ -1016,7 +1016,7 @@ sensitive actions elsewhere in Modlus — not a new mechanism.
   `instagramAnalyticsSync.php` attempt per account — reuses the existing
   "each row carries its own last-known-state" convention
   (`instagramPosts.status`/`errorMessage`), not a new notification system.
-  Added `getInstagramWebhookEvents()` + `api/getInstagramWebhookEvents.php`
+  Added `getInstagramWebhookEvents()` + `api/instagram/getInstagramWebhookEvents.php`
   (read-only) and a "Recent Webhook Events" card + sync-status banner on
   `pages/instagram-analytics.php`. Publishing already had `errorMessage`
   (Phase 2); comment reply/hide failures already surface immediately via

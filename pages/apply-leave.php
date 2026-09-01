@@ -336,12 +336,12 @@ include __DIR__ . '/../includes/sidebar.php';
 $(function() {
 
     const API = {
-        getSetup: API_BASE + '/getLeaveSetup.php',
-        applyLeave: API_BASE + '/applyLeave.php',
-        getAllLeaves: API_BASE + '/getAllLeaves.php',
-        updateLeaveStatus: API_BASE + '/updateLeaveStatus.php',
-        getEmployees: API_BASE + '/getEmployees.php',
-        getBalance: API_BASE + '/getLeaveBalance.php'
+        getSetup: API_BASE + '/leave/getLeaveSetup.php',
+        applyLeave: API_BASE + '/leave/applyLeave.php',
+        getAllLeaves: API_BASE + '/leave/getAllLeaves.php',
+        updateLeaveStatus: API_BASE + '/leave/updateLeaveStatus.php',
+        getEmployees: API_BASE + '/employee/getEmployees.php',
+        getBalance: API_BASE + '/leave/getLeaveBalance.php'
     };
 
     // =========================

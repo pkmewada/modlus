@@ -72,7 +72,7 @@ $(function () {
     // ============================================================
     const table = $('#clientMasterTable').DataTable({
         ajax: {
-            url: API_BASE + '/getClientMaster.php',
+            url: API_BASE + '/client/getClientMaster.php',
             dataSrc: 'data'
         },
         columns: [
@@ -166,7 +166,7 @@ $(function () {
     $('#statusFilter').html(statusOptions);
 
     $('#statusFilter').on('change', function () {
-        table.ajax.url(API_BASE + '/getClientMaster.php?status=' + this.value).load();
+        table.ajax.url(API_BASE + '/client/getClientMaster.php?status=' + this.value).load();
     });
 
     // ============================================================
@@ -225,7 +225,7 @@ $(function () {
         currentState.clientId = clientId;
         
         $.ajax({
-            url: API_BASE + '/getClientOnboardingDetails.php',
+            url: API_BASE + '/client-onboarding/getClientOnboardingDetails.php',
             method: 'POST',
             data: { clientId: clientId },
             success: function (response) {
@@ -931,7 +931,7 @@ $(function () {
         };
         
         $.ajax({
-            url: API_BASE + '/saveOnboardingForm.php',
+            url: API_BASE + '/onboarding/saveOnboardingForm.php',
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
@@ -987,7 +987,7 @@ $(function () {
             };
             
             $.ajax({
-                url: API_BASE + '/saveOnboardingForm.php',
+                url: API_BASE + '/onboarding/saveOnboardingForm.php',
                 method: 'POST',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
@@ -1127,7 +1127,7 @@ $(function () {
                 showCustomLoading();
                 
                 $.ajax({
-                    url: API_BASE + '/sendOnboardingForm.php',
+                    url: API_BASE + '/onboarding/sendOnboardingForm.php',
                     method: 'POST',
                     data: JSON.stringify({ formId: currentState.formId }),
                     contentType: 'application/json',
@@ -1310,7 +1310,7 @@ $(function () {
         currentState.clientId = clientId;
         
         $.ajax({
-            url: API_BASE + '/getClientOnboardingDetails.php',
+            url: API_BASE + '/client-onboarding/getClientOnboardingDetails.php',
             method: 'POST',
             data: { clientId: clientId },
             success: function (response) {
@@ -1363,7 +1363,7 @@ $(function () {
         serviceModalState.clientId = clientId;
         
         $.ajax({
-            url: API_BASE + '/getClientOnboardingDetails.php',
+            url: API_BASE + '/client-onboarding/getClientOnboardingDetails.php',
             method: 'POST',
             data: { clientId: clientId },
             success: function (response) {
@@ -1473,7 +1473,7 @@ $(function () {
         };
         
         $.ajax({
-            url: API_BASE + '/saveOnboardingForm.php',
+            url: API_BASE + '/onboarding/saveOnboardingForm.php',
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
@@ -1514,7 +1514,7 @@ $(function () {
         };
         
         $.ajax({
-            url: API_BASE + '/saveOnboardingForm.php',
+            url: API_BASE + '/onboarding/saveOnboardingForm.php',
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
