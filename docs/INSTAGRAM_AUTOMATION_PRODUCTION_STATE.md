@@ -1748,31 +1748,59 @@ Live Meta Validation
     │           (App Review / Advanced Access for `comments`,
     │            Business Verification — see §23)
     │
-    └── LinkedIn Integration
+    ├── LinkedIn Integration
+    │       ↓
+    │   Phase 12
+    │   LinkedIn Foundation (see §25)
+    │       ✅ IMPLEMENTED IN CODE
+    │       ⏸ PAUSED — LIVE VALIDATION PAUSED DUE TO LINKEDIN COMPANY PAGE /
+    │         DEVELOPER APP PREREQUISITE (no suitable LinkedIn Company/Page
+    │         presence currently exists for the required Developer App setup)
+    │       ↓
+    │   Future LinkedIn Publishing / Scheduling / Analytics — on hold until
+    │   the Company Page prerequisite is resolved and Phase 12 is live-verified
+    │
+    └── Pinterest Integration
             ↓
-        Phase 12
-        LinkedIn Foundation (see §25)
+        Phase 13
+        Pinterest Foundation (see §26)
+            ↓ CURRENT PRIORITY
+        Future Pinterest Publishing
             ↓
-        Future LinkedIn Publishing
+        Future Pinterest Scheduling
             ↓
-        Future LinkedIn Scheduling
-            ↓
-        Future LinkedIn Analytics
+        Future Pinterest Analytics
             ↓
         Future Cross-platform Inbox/Automation
 ```
 
 Instagram Comments is not abandoned — it resumes once Meta grants the
-pending App Review/Business Verification approvals (§23). LinkedIn work
-proceeded in parallel because it has no dependency on that approval and
-does not touch any Instagram code path.
+pending App Review/Business Verification approvals (§23). LinkedIn and
+Pinterest work proceeded in parallel because neither has a dependency on
+that approval and neither touches any Instagram code path. LinkedIn is
+itself paused on its own external prerequisite (a Company Page for the
+required Developer App — see §25) while Pinterest becomes the active
+platform-integration priority; **LinkedIn's code is untouched and not
+abandoned** — resuming it requires no rewrite, only a Company Page and live
+OAuth verification.
 
 ---
 
 ## 25. Phase 12 — LinkedIn Integration Foundation
 
-**Date**: 2026-08-29. **Status: PHASE 12 FOUNDATION IN PROGRESS — CODE
-IMPLEMENTED, AWAITING LIVE LINKEDIN OAUTH VERIFICATION.**
+**Date**: 2026-08-29. Paused 2026-09-01. **Status: IMPLEMENTED IN CODE —
+LIVE VALIDATION PAUSED DUE TO LINKEDIN COMPANY PAGE / DEVELOPER APP
+PREREQUISITE.**
+
+The user currently has no suitable LinkedIn Company/Page presence for the
+required LinkedIn Developer App setup, so live OAuth verification cannot
+proceed. **This is not a code gap and nothing here was rewritten, removed,
+or reworked** — every file, table, and function listed below is exactly as
+it was when this phase was last touched. LinkedIn resumes as soon as a
+Company Page exists and live OAuth testing can run; see "Remaining
+LinkedIn dependencies" below. Platform priority moved to Pinterest (§26) in
+the meantime, which has no Company-Page-equivalent blocker for its
+foundation phase.
 
 ### Why this started before Instagram Comments was resolved
 
@@ -1970,6 +1998,10 @@ own standing convention (§19/§20).
 
 ### Remaining LinkedIn dependencies
 
+- **A LinkedIn Company Page for the operator to register a Developer App
+  against — currently does not exist. This is the blocking prerequisite as
+  of the 2026-09-01 pause; nothing else in this list can be attempted
+  until it exists.**
 - LinkedIn Developer Portal app must exist with the "Sign In with LinkedIn
   using OpenID Connect" product added, and Community Management API access
   requested/approved for `r_organization_admin` (discovery) and, later,
@@ -1983,3 +2015,289 @@ own standing convention (§19/§20).
 Unchanged from §23: Meta App Review/Advanced Access for the `comments`
 webhook field, and Meta Business Verification for the relevant Business
 Portfolio — both external, pending, and untouched by this phase.
+
+---
+
+## 26. Phase 13 — Pinterest Integration Foundation
+
+**Date**: 2026-09-01. **Status: IMPLEMENTED IN CODE — AWAITING LIVE
+PINTEREST OAUTH VERIFICATION.**
+
+### Why this started before LinkedIn was resolved
+
+LinkedIn's Phase 12 foundation (§25) is fully implemented but paused on an
+external prerequisite the operator does not currently have (a LinkedIn
+Company Page for the required Developer App). That blocker has no
+code-side workaround and no controlled timeline. Pinterest has no
+equivalent per-client blocker for its foundation phase — a Pinterest
+Developer App only requires the *operator's own* Pinterest Business
+account (a one-time setup concern, not a per-client structural
+requirement) — so Pinterest was explicitly moved to the active priority
+rather than sitting idle. LinkedIn's code, tables, and routes are
+completely untouched by this phase.
+
+### Architecture
+
+Pinterest OAuth 2.0 Authorization Code grant (member-authorizes-Modlus),
+matching the existing Instagram/LinkedIn pattern's shape — a user
+authenticates, Modlus discovers what they can manage, the operator selects
+one, and it's stored against a Modlus client. Verified against current
+Pinterest documentation (`developers.pinterest.com`), not old
+tutorials/unofficial libraries/scraping.
+
+```
+Modlus (client selected)
+  → api/pinterestOauthStart.php → https://www.pinterest.com/oauth/
+  → Pinterest user authorizes
+  → api/pinterestOauthCallback.php
+      1. state/CSRF validation (hash_equals, session) — identical pattern
+         to api/instagramOauthCallback.php / api/linkedinOauthCallback.php
+      2. POST https://api.pinterest.com/v5/oauth/token
+         (grant_type=authorization_code, app authenticated via HTTP Basic
+         Auth — base64(client_id:client_secret) — Pinterest's shape, not
+         LinkedIn's POST-body secret or Meta's query-string access_token)
+         → access_token, refresh_token, expires_in, refresh_token_expires_in
+      3. GET https://api.pinterest.com/v5/user_account (Bearer token) →
+         Pinterest user id + username
+      4. savePinterestAccountFromOAuth() — upsert keyed by
+         pinterestUserId (unique key), scoped to the selected clientId
+  → redirects back to the existing /instagram-automation settings page
+    (piStatus/piMessage/clientId query params, same round-trip pattern as
+    Instagram's igStatus/igMessage and LinkedIn's liStatus/liMessage)
+  → operator calls "boards" discovery, selects one, saves it
+```
+
+### Files inspected (audit, before writing anything)
+
+`includes/LinkedInAutomation.php` (the closer architectural template than
+Instagram — both are member/user-authorizes-app OAuth 2.0 flows against a
+non-Meta vendor), `includes/Crypto.php`, `includes/Csrf.php`,
+`includes/InstagramAutomation.php` (`instagramClientExists()`,
+`getInstagramClientLabel()`), `api/linkedinOauthStart.php`,
+`api/linkedinOauthCallback.php`, `api/getLinkedinSettings.php`,
+`api/saveLinkedinSettings.php`, `api/getLinkedinOrganizations.php`,
+`api/saveLinkedinOrganization.php`, `api/disconnectLinkedinAccount.php`,
+`pages/instagram-automation.php`,
+`database/migrations/2026-08-29-linkedin-integration-foundation.sql`.
+Repo-wide grep for `pinterest`/`oauth`/`accessToken`/`clientId`/`Crypto`
+confirmed: no prior Pinterest code existed; `socialPosts` remains
+Instagram+Facebook-only and was correctly left untouched (per the task's
+explicit instruction not to force Pinterest identifiers into it).
+
+Official Pinterest API documentation
+(`developers.pinterest.com/docs/getting-started/set-up-authentication-and-authorization/`,
+`developers.pinterest.com/docs/key-concepts/access-tiers/`) was read
+directly for the OAuth mechanism, token endpoint, scopes, token lifetime,
+and refresh mechanism below — not inferred from memory or third-party
+tutorials.
+
+### Files created
+
+- `includes/PinterestAutomation.php` — settings table, accounts table,
+  OAuth token exchange + refresh, a dedicated `pinterestApiRequest()`
+  transport (Bearer header + JSON body for REST calls) and a separate
+  `pinterestTokenRequest()` (HTTP Basic Auth + form-urlencoded, used only
+  for the token endpoint) — **not** layered onto `linkedinApiRequest()` or
+  `instagramGraphApiRequest()`, matching how each existing platform module
+  only reuses another platform's transport when the host/auth shape
+  actually matches (it doesn't here — see Token security below).
+- `api/pinterestOauthStart.php`, `api/pinterestOauthCallback.php`
+- `api/getPinterestSettings.php`, `api/savePinterestSettings.php`
+- `api/getPinterestBoards.php`, `api/savePinterestBoard.php`
+- `api/disconnectPinterestAccount.php`
+- `database/migrations/2026-09-01-pinterest-integration-foundation.sql`
+
+### Files modified
+
+- `pages/instagram-automation.php` — additive only: a new "Pinterest API
+  Configuration" card and a new "Pinterest" connection-status card, reusing
+  the page's existing client selector, CSRF token, and toast conventions.
+  No existing Instagram/Facebook/LinkedIn markup, form, or JS function was
+  changed.
+
+Nothing else was touched: `includes/InstagramAutomation.php`,
+`FacebookPublisher.php`, `LinkedInAutomation.php`, `SocialPostEngine.php`,
+`InstagramWebhooks.php`, `InstagramComments.php`, `InstagramInsights.php`,
+`cron/instagramScheduler.php`, and every Instagram/Facebook/LinkedIn OAuth
+or publishing file are byte-for-byte unchanged.
+
+### Database
+
+Two new tables, both self-healed at runtime and documented in the
+migration above — no existing table/column changed, no `companyId`:
+
+- **`pinterestSettings`** — one active row, platform-wide Pinterest App
+  Client ID/Secret (encrypted) + redirect URL. Mirrors
+  `linkedinSettings`/`instagramSettings` exactly; kept as a **separate**
+  table for the same reason LinkedIn's is separate from Instagram's — a
+  wholly different vendor/app.
+- **`pinterestAccounts`** — one row per connected Pinterest user, `clientId`
+  FK → `clientMaster` (`ON DELETE CASCADE`), `pinterestUserId` unique key
+  (reconnect upserts in place, exactly like `linkedinAccounts.linkedinMemberId`),
+  `pinterestBoardId`/`boardName` (populated by a separate selection step,
+  deliberately preserved across a reconnect/token refresh — verified, see
+  Testing), `accessToken` **and** `refreshToken` (both encrypted via the
+  existing `includes/Crypto.php`), `tokenExpiry` **and**
+  `refreshTokenExpiry` (both populated — Pinterest access tokens genuinely
+  expire in 30 days and require a real refresh flow, unlike LinkedIn's
+  foundation-phase token, which had no expiry/refresh columns because none
+  were needed at the time), `status` (`connected`/`disconnected`).
+
+### Pinterest OAuth mechanism, scopes, and token lifetime (verified against current Pinterest documentation)
+
+| Item | Value |
+| --- | --- |
+| Authorization URL | `https://www.pinterest.com/oauth/` |
+| Token endpoint | `https://api.pinterest.com/v5/oauth/token` |
+| App authentication on token endpoint | HTTP Basic Auth: `Authorization: Basic base64(client_id:client_secret)` |
+| Access token lifetime | 2,592,000 seconds (30 days) |
+| Refresh mechanism | `grant_type=refresh_token` to the same token endpoint. Apps use **continuous refresh tokens**: the refresh token itself has its own rotating **60-day** validity window and is **not guaranteed to remain the same value after a refresh** — `refreshPinterestAccessToken()`/`updatePinterestAccountTokens()` always persist whatever `access_token`, `refresh_token`, `expires_in`, and `refresh_token_expires_in` Pinterest actually returns, never assuming the prior refresh token is still valid (verified by test — see Testing below) |
+| User identity endpoint | `GET https://api.pinterest.com/v5/user_account` |
+| Board discovery endpoint | `GET https://api.pinterest.com/v5/boards` |
+
+| Scope | Purpose | Availability |
+| --- | --- | --- |
+| `user_accounts:read` | Identify the authenticated Pinterest user. | Available on Trial access (default new-app tier). |
+| `boards:read` | Discover the boards the user owns. | Available on Trial access. |
+| `pins:read` | Read pin data. | **Not requested** — not needed for foundation (least-privilege). |
+| `pins:write` / `boards:write` | Create pins / manage boards — **required for a later publishing phase.** | **Deliberately not requested now** — this phase does not publish anything. Requesting these later requires the app to be upgraded from Trial to **Standard access**, which requires a video demo of a real OAuth + API action and a compliance review — an external Pinterest approval step, not a code gap. |
+
+Per the task's explicit instruction, no permission requiring elevated
+Pinterest access was worked around — this phase only requests
+`user_accounts:read,boards:read`, both available immediately on the
+default Trial access tier, so no approval-pending state blocks Foundation
+functionality the way `r_organization_admin` can block LinkedIn's
+organization discovery. `api/getPinterestBoards.php` and
+`api/savePinterestBoard.php` still catch a Pinterest `403` distinctly
+(`PinterestPermissionException`) in case a future scope/tier restriction
+ever applies, mirroring `LinkedinPermissionException`'s pattern.
+
+### Board discovery flow
+
+```
+Connect Pinterest → user_account identifies the user
+  → api/getPinterestBoards.php (GET, clientId)
+      GET /v5/boards (Bearer token) → board id + name list
+  → operator selects one in the UI
+  → api/savePinterestBoard.php (POST, clientId, boardId)
+      - Server-side re-verification: re-calls the same discovery function
+        and confirms the posted boardId is actually one the user owns
+        BEFORE persisting anything — the board name is never trusted from
+        the browser, only from this re-check.
+      - savePinterestBoardSelection() additionally re-checks the account
+        row belongs to the posted clientId
+        (`pinterestAccountBelongsToClient()`) before any write.
+```
+
+### Token security
+
+- `pinterestAccounts.accessToken`, `pinterestAccounts.refreshToken`, and
+  `pinterestSettings.pinterestClientSecret` use the existing
+  `includes/Crypto.php` (`encryptSecret()`/`decryptSecret()`) — no new
+  encryption mechanism.
+- The client secret is sent only via the `Authorization: Basic` header on
+  the token endpoint (`pinterestTokenRequest()`) — never in a URL, POST
+  body, or log line.
+- Access/refresh tokens are attached only as `Authorization: Bearer`
+  headers inside `pinterestApiRequest()` — never in a URL, never in a log
+  line, never returned by any API endpoint
+  (`getPinterestAccountForDisplay()` explicitly strips **both** tokens
+  before an endpoint can return the row — verified, see Testing).
+- Pinterest Client Secret is never returned to the browser —
+  `getPinterestSettings()` returns only a `hasClientSecret` boolean,
+  mirroring `getLinkedinSettings()`/`getInstagramSettings()`.
+- `pinterestWriteApiDebugLog()` redacts `client_secret`, `code`, and
+  `refresh_token` before writing (token-request errors) and never logs the
+  `Authorization` header (REST call errors) — same sanitization pattern as
+  `linkedinWriteApiDebugLog()`/`instagramSanitizeParamsForLog()`.
+
+### Client isolation
+
+`pinterestAccountBelongsToClient()` mirrors
+`linkedinAccountBelongsToClient()`/`instagramAccountBelongsToClient()`
+exactly and is the actual enforcement mechanism (not the UI dropdown) —
+checked server-side before every board save and disconnect. One Pinterest
+account connection per Modlus client for this foundation phase; no
+"latest"/"first"/"global"/"primary" Pinterest account logic exists
+anywhere. No `companyId` introduced.
+
+### Testing performed
+
+Functional (local dev DB, no live Pinterest credentials available in this
+environment) — full pass/fail output preserved in the implementation
+session, summarized here:
+
+- `pinterestSettings`/`pinterestAccounts` table self-heal creation — PASS.
+- Settings save/round-trip, secret never returned, correct decryption
+  internally — PASS.
+- Account upsert on OAuth connect (insert), and upsert-in-place on
+  reconnect with the same `pinterestUserId` (confirmed exactly one row) —
+  PASS.
+- Board selection persists, and **survives a subsequent reconnect/token
+  refresh** (not silently wiped) — PASS.
+- **Token rotation correctness**: `updatePinterestAccountTokens()` always
+  overwrites both stored tokens with a newly issued pair; verified the old
+  refresh token is genuinely gone from storage after a simulated rotation,
+  and that `pinterestNormalizeTokenResponse()` only falls back to the
+  prior refresh token when Pinterest's response omits one, preferring a
+  newly returned token whenever present — PASS (this directly exercises
+  the correction requested before implementation: never assume the
+  original refresh token remains unchanged after a successful refresh).
+- `getPinterestAccountForDisplay()` never includes either token — PASS.
+- Client-ownership guard (`pinterestAccountBelongsToClient()`) true for
+  the owning client, false for a non-owning client id — PASS; a
+  **cross-client rejection test using two real `clientMaster` rows was
+  attempted but SKIPPED — only one `clientMaster` row exists in this local
+  dev database.** The guard's SQL (`WHERE id = ? AND clientId = ?`) is the
+  identical, already-production-proven pattern
+  `instagramAccountBelongsToClient()`/`linkedinAccountBelongsToClient()`
+  use, but a live two-client negative test was not executed here. No
+  synthetic client row was manufactured to force this test to pass.
+- Disconnect: status flips to `disconnected`, both tokens cleared at rest,
+  account no longer returned as connected — PASS.
+- Grepped `logs/pinterest-api.log` and all new API response paths for
+  every plaintext token/secret value used in testing (including the test
+  client secret and every generated test access/refresh token) — none
+  found. No `pinterest-api.log` file was created during this test run
+  (expected — the transport layer was never exercised against the live
+  Pinterest network from this environment; the log is written only on API
+  error/network failure, same as `instagram-api.log`/`linkedin-api.log`).
+- `php -l` clean on all 9 created/modified PHP files.
+
+**NOT EXECUTED — REQUIRES LIVE PINTEREST CREDENTIALS** (none available in
+this environment): OAuth start redirect against a real Pinterest app,
+invalid-state rejection over real HTTP, cancellation handling, a real
+authorization-code token exchange, a real `user_account` call, real board
+discovery against a Pinterest Developer app, a real board save with
+server-side re-verification against live data, a real
+`refresh_token`-grant call confirming Pinterest's actual rotation
+behavior, and a real disconnect/reconnect cycle end-to-end through the
+browser. **Do not treat Phase 13 as production/live verified until these
+are actually run and confirmed**, per this document's own standing
+convention (§19/§20).
+
+### Remaining Pinterest dependencies
+
+- A Pinterest Developer App must exist under a Pinterest **Business
+  account** (the operator's own account — not a per-client requirement).
+- New apps default to **Trial access** — sufficient for this foundation
+  phase (read-only `user_accounts:read`/`boards:read`), but boards/pins
+  created *through the API* would be sandboxed until the app is upgraded
+  to **Standard access** (video-demo + compliance review) — irrelevant
+  here since this phase creates nothing, but required before any future
+  publishing phase.
+- Live OAuth/board-discovery/token-refresh testing against that real app.
+- Publishing, scheduling, analytics, and any Pinterest-side webhooks are
+  explicitly out of scope for this phase and require separate audits/approval.
+
+### Remaining LinkedIn dependencies (unchanged from §25)
+
+A LinkedIn Company Page for the required Developer App does not currently
+exist — Phase 12 stays paused, code untouched, until that prerequisite is
+available.
+
+### Remaining Instagram dependencies (unchanged from §23)
+
+Meta App Review/Advanced Access for the `comments` webhook field, and Meta
+Business Verification for the relevant Business Portfolio — both external,
+pending, and untouched by this phase.

@@ -228,6 +228,90 @@
                 </div>
             </div>
         </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-xl-7">
+                <form id="pinterestSettingsForm" autocomplete="off">
+                    <?= getCsrfInput() ?>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Pinterest API Configuration</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label" for="pinterestClientId">Pinterest Client ID</label>
+                                    <input type="text" class="form-control" id="pinterestClientId" name="pinterestClientId" maxlength="191" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="pinterestClientSecret">Pinterest Client Secret</label>
+                                    <input type="password" class="form-control" id="pinterestClientSecret" name="pinterestClientSecret" maxlength="255" autocomplete="new-password" placeholder="">
+                                    <div class="form-text">Never displayed once saved. Leave blank to keep the existing secret.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label" for="pinterestRedirectUrl">Redirect URL</label>
+                                    <input type="url" class="form-control" id="pinterestRedirectUrl" name="redirectUrl" maxlength="255">
+                                    <div class="form-text">Add this exact URL to your Pinterest App's Redirect URIs.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary" id="savePinterestSettingsBtn">
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-xl-5">
+                <div class="card custom-card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Pinterest</h5>
+                    </div>
+
+                    <div class="card-body d-flex flex-column gap-3" id="pinterestConnectionCard">
+                        <div id="pinterestNotConnected">
+                            <p class="mb-3 text-muted">Status: <span class="badge bg-secondary-transparent">Not Connected</span></p>
+                            <button type="button" class="btn btn-outline-primary" id="connectPinterestBtn">
+                                <i class="ti ti-brand-pinterest me-1"></i>
+                                Connect Pinterest
+                            </button>
+                            <div class="alert alert-info mb-0 mt-3 d-none" id="pinterestConnectDisabledHint">
+                                Save your Pinterest Client ID and Client Secret, and select a client above, to enable connection.
+                            </div>
+                        </div>
+
+                        <div id="pinterestConnectedNoBoard" class="d-none">
+                            <p class="mb-1">Pinterest Account: <strong id="pinterestUsername"></strong></p>
+                            <p class="mb-3 text-muted">No board selected yet.</p>
+
+                            <label class="form-label" for="pinterestBoardSelect">Boards</label>
+                            <select class="form-select mb-2" id="pinterestBoardSelect">
+                                <option value="">Loading boards...</option>
+                            </select>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-primary btn-sm" id="savePinterestBoardBtn">Save</button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="disconnectPinterestBtnNoBoard">Disconnect</button>
+                            </div>
+                            <div class="alert alert-warning mb-0 mt-3 d-none" id="pinterestBoardDiscoveryError"></div>
+                        </div>
+
+                        <div id="pinterestConnectedWithBoard" class="d-none">
+                            <p class="mb-1">Status: <span class="badge bg-success-transparent">Connected</span></p>
+                            <p class="mb-1">Pinterest Account: <strong id="pinterestUsernameConnected"></strong></p>
+                            <p class="mb-1">Board: <strong id="pinterestBoardName"></strong></p>
+                            <p class="mb-3 text-muted">Board ID: <span id="pinterestBoardId"></span></p>
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="disconnectPinterestBtn">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -240,6 +324,7 @@ $(function() {
     loadInstagramClients();
     loadInstagramSettings();
     loadLinkedinSettings();
+    loadPinterestSettings();
 
     $('#instagramSettingsForm').on('change keyup', 'input', function() {
         hasUnsavedInstagramChanges = true;
@@ -256,11 +341,18 @@ $(function() {
         saveLinkedinSettingsRequest();
     });
 
+    $('#pinterestSettingsForm').on('submit', function(e) {
+        e.preventDefault();
+        savePinterestSettingsRequest();
+    });
+
     $('#clientSelect').on('change', function() {
         loadInstagramAccountsForSelectedClient();
         updateConnectButtonState();
         loadLinkedinAccountForSelectedClient();
         updateLinkedinConnectButtonState();
+        loadPinterestAccountForSelectedClient();
+        updatePinterestConnectButtonState();
     });
 
     $('#connectLinkedinBtn').on('click', function() {
@@ -281,6 +373,26 @@ $(function() {
     $('#disconnectLinkedinBtn, #disconnectLinkedinBtnNoOrg').on('click', function() {
         const accountId = $(this).data('account-id') || linkedinAccountLoaded && linkedinAccountLoaded.id;
         disconnectLinkedinAccountRequest(accountId);
+    });
+
+    $('#connectPinterestBtn').on('click', function() {
+        const clientId = $('#clientSelect').val();
+
+        if (!clientId) {
+            window.showToast && window.showToast('warning', 'Please select a client first.');
+            return;
+        }
+
+        window.location.href = API_BASE + '/pinterestOauthStart.php?clientId=' + encodeURIComponent(clientId);
+    });
+
+    $('#savePinterestBoardBtn').on('click', function() {
+        savePinterestBoardSelection();
+    });
+
+    $('#disconnectPinterestBtn, #disconnectPinterestBtnNoBoard').on('click', function() {
+        const accountId = $(this).data('account-id') || pinterestAccountLoaded && pinterestAccountLoaded.id;
+        disconnectPinterestAccountRequest(accountId);
     });
 
     $('#connectInstagramBtn').on('click', function() {
@@ -310,6 +422,7 @@ $(function() {
 
     handleInstagramOauthRedirectStatus();
     handleLinkedinOauthRedirectStatus();
+    handlePinterestOauthRedirectStatus();
 });
 
 function handleInstagramOauthRedirectStatus() {
@@ -794,6 +907,258 @@ function disconnectInstagramAccount(accountId) {
         },
         error: function() {
             window.showToast && window.showToast('danger', 'Unable to disconnect account.');
+        }
+    });
+}
+
+/*
+|--------------------------------------------------------------------------
+| Pinterest (Phase 13 foundation) — mirrors the LinkedIn functions above:
+| same client selector, same CSRF/toast/AJAX conventions, no new UI
+| framework. See docs/INSTAGRAM_AUTOMATION_PRODUCTION_STATE.md Pinterest
+| Foundation section.
+|--------------------------------------------------------------------------
+*/
+let pinterestSettingsLoaded = null;
+let pinterestAccountLoaded = null;
+
+function handlePinterestOauthRedirectStatus() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('piStatus');
+    const message = params.get('piMessage');
+    const clientId = params.get('clientId');
+
+    if (clientId) {
+        $('#clientSelect').data('pending-select', clientId);
+    }
+
+    if (!status) {
+        return;
+    }
+
+    window.showToast && window.showToast(status === 'success' ? 'success' : 'danger', message || 'Pinterest connection update.');
+
+    params.delete('piStatus');
+    params.delete('piMessage');
+    params.delete('clientId');
+
+    const newQuery = params.toString();
+    const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+    window.history.replaceState({}, document.title, newUrl);
+}
+
+function loadPinterestSettings() {
+    $.getJSON(API_BASE + '/getPinterestSettings.php')
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Pinterest settings.');
+                return;
+            }
+
+            const settings = res.data.pinterestSettings || {};
+            pinterestSettingsLoaded = settings;
+
+            $('#pinterestClientId').val(settings.pinterestClientId || '');
+            $('#pinterestRedirectUrl').val(settings.redirectUrl || res.data.defaultRedirectUrl || '');
+            $('#pinterestClientSecret').val('').attr('placeholder', settings.hasClientSecret ? 'Saved — leave blank to keep current secret' : '');
+
+            updatePinterestConnectButtonState();
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load Pinterest settings.');
+        });
+}
+
+function savePinterestSettingsRequest() {
+    const pinterestClientId = $('#pinterestClientId').val().trim();
+
+    if (!pinterestClientId) {
+        window.showToast && window.showToast('warning', 'Pinterest Client ID is required.');
+        return;
+    }
+
+    const $btn = $('#savePinterestSettingsBtn');
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
+
+    $.ajax({
+        url: API_BASE + '/savePinterestSettings.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: {
+            pinterestClientId: pinterestClientId,
+            pinterestClientSecret: $('#pinterestClientSecret').val(),
+            redirectUrl: $('#pinterestRedirectUrl').val().trim(),
+            csrfToken: CSRF_TOKEN,
+        },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Invalid server response.'
+            );
+
+            if (res && res.success) {
+                const settings = res.data.pinterestSettings || {};
+                pinterestSettingsLoaded = settings;
+                $('#pinterestClientSecret').val('').attr('placeholder', settings.hasClientSecret ? 'Saved — leave blank to keep current secret' : '');
+                updatePinterestConnectButtonState();
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save Pinterest settings.');
+        },
+        complete: function() {
+            $btn.prop('disabled', false).text('Save Settings');
+        }
+    });
+}
+
+function updatePinterestConnectButtonState() {
+    const clientId = $('#clientSelect').val();
+    const settings = pinterestSettingsLoaded || {};
+    const ready = !!(clientId && settings.pinterestClientId && settings.hasClientSecret);
+
+    $('#connectPinterestBtn').prop('disabled', !ready);
+    $('#pinterestConnectDisabledHint').toggleClass('d-none', ready);
+}
+
+function loadPinterestAccountForSelectedClient() {
+    const clientId = $('#clientSelect').val();
+    pinterestAccountLoaded = null;
+
+    if (!clientId) {
+        renderPinterestAccountCard(null);
+        return;
+    }
+
+    $.getJSON(API_BASE + '/getPinterestSettings.php', { clientId: clientId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Pinterest connection.');
+                return;
+            }
+
+            renderPinterestAccountCard(res.data.pinterestAccount || null);
+        })
+        .fail(function() {
+            window.showToast && window.showToast('danger', 'Unable to load Pinterest connection.');
+        });
+}
+
+function renderPinterestAccountCard(account) {
+    pinterestAccountLoaded = account;
+
+    $('#pinterestNotConnected, #pinterestConnectedNoBoard, #pinterestConnectedWithBoard').addClass('d-none');
+
+    if (!account) {
+        $('#pinterestNotConnected').removeClass('d-none');
+        return;
+    }
+
+    if (!account.pinterestBoardId) {
+        $('#pinterestConnectedNoBoard').removeClass('d-none');
+        $('#pinterestUsername').text(account.username || '(name unavailable)');
+        $('#disconnectPinterestBtnNoBoard').data('account-id', account.id);
+        loadPinterestBoardsForSelect();
+        return;
+    }
+
+    $('#pinterestConnectedWithBoard').removeClass('d-none');
+    $('#pinterestUsernameConnected').text(account.username || '(name unavailable)');
+    $('#pinterestBoardName').text(account.boardName || '(unnamed)');
+    $('#pinterestBoardId').text(account.pinterestBoardId);
+    $('#disconnectPinterestBtn').data('account-id', account.id);
+}
+
+function loadPinterestBoardsForSelect() {
+    const clientId = $('#clientSelect').val();
+    const $select = $('#pinterestBoardSelect');
+    const $error = $('#pinterestBoardDiscoveryError');
+
+    $select.html('<option value="">Loading boards...</option>');
+    $error.addClass('d-none').text('');
+
+    $.getJSON(API_BASE + '/getPinterestBoards.php', { clientId: clientId })
+        .done(function(res) {
+            if (!res || !res.success) {
+                $select.html('<option value="">No boards available</option>');
+                $error.removeClass('d-none').text(res && res.message ? res.message : 'Unable to load boards.');
+                return;
+            }
+
+            const boards = res.data.boards || [];
+
+            if (!boards.length) {
+                $select.html('<option value="">No boards found for this Pinterest account</option>');
+                return;
+            }
+
+            let options = '<option value="">Select Board</option>';
+            boards.forEach(function(board) {
+                options += `<option value="${board.id}">${$('<div>').text(board.name).html()}</option>`;
+            });
+            $select.html(options);
+        })
+        .fail(function() {
+            $select.html('<option value="">No boards available</option>');
+            $error.removeClass('d-none').text('Unable to load boards.');
+        });
+}
+
+function savePinterestBoardSelection() {
+    const clientId = $('#clientSelect').val();
+    const boardId = $('#pinterestBoardSelect').val();
+
+    if (!boardId) {
+        window.showToast && window.showToast('warning', 'Please select a board.');
+        return;
+    }
+
+    $.ajax({
+        url: API_BASE + '/savePinterestBoard.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: { clientId: clientId, boardId: boardId, csrfToken: CSRF_TOKEN },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Unable to save board.'
+            );
+
+            if (res && res.success) {
+                renderPinterestAccountCard(res.data.pinterestAccount || null);
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to save board.');
+        }
+    });
+}
+
+function disconnectPinterestAccountRequest(accountId) {
+    if (!accountId) {
+        return;
+    }
+
+    $.ajax({
+        url: API_BASE + '/disconnectPinterestAccount.php',
+        type: 'POST',
+        headers: { 'X-CSRF-Token': CSRF_TOKEN },
+        data: { accountId: accountId, csrfToken: CSRF_TOKEN },
+        dataType: 'json',
+        success: function(res) {
+            window.showToast && window.showToast(
+                res && res.success ? 'success' : 'danger',
+                res && res.message ? res.message : 'Unable to disconnect Pinterest account.'
+            );
+
+            if (res && res.success) {
+                renderPinterestAccountCard(null);
+            }
+        },
+        error: function() {
+            window.showToast && window.showToast('danger', 'Unable to disconnect Pinterest account.');
         }
     });
 }
