@@ -2,8 +2,8 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
 
 $sql = mysqli_query($con, "
     SELECT COUNT(*) AS total

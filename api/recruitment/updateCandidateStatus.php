@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/mailer.php';
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/mailer.php';
+require_once __DIR__ . '/../../includes/config.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -156,7 +156,7 @@ if ($fileSize > 5242880) {
     jsonResponse(false, 'Max file size is 5MB.', 422);
 }
 
-$uploadDir = __DIR__ . '/../uploads/resumes/';
+$uploadDir = __DIR__ . '/../../uploads/resumes/';
 
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);

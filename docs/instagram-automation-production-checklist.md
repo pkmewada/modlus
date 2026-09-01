@@ -13,7 +13,7 @@ the full walkthrough of what each item actually does, and
       Instagram Graph API product added.
 - [ ] **Instagram Business account connected** — at least one client has
       gone through Connect Instagram Account (`pages/instagram-automation.php`
-      → `api/instagramOauthStart.php` → Meta OAuth → `api/instagramOauthCallback.php`)
+      → `api/instagram/instagramOauthStart.php` → Meta OAuth → `api/instagram/instagramOauthCallback.php`)
       and shows `status = 'connected'` in `instagramAccounts`.
 - [ ] **Required permissions approved** by Meta App Review for production
       use (not just Development Mode / test users):
@@ -29,7 +29,7 @@ the full walkthrough of what each item actually does, and
       on the settings page (`pages/instagram-automation.php`), added to the
       Meta App's Valid OAuth Redirect URIs. Must be HTTPS in production.
 - [ ] **Webhook URL configured** — the "Webhook Callback URL" shown on the
-      same settings page (`{BASE_URL}/api/instagramWebhook.php`) and the
+      same settings page (`{BASE_URL}/api/instagram/instagramWebhook.php`) and the
       "Webhook Verify Token" (auto-generated on first settings save),
       entered into the Meta App's Webhooks product configuration.
       Subscribe to the `comments` field on the `instagram` object.
@@ -82,7 +82,7 @@ the full walkthrough of what each item actually does, and
       (`SELECT metaAppSecret FROM instagramSettings` should return an
       opaque base64 blob, not something readable).
 - [ ] **Webhook verification enabled** — confirm a forged/unsigned POST to
-      `{BASE_URL}/api/instagramWebhook.php` returns `403`, not `200`. (See
+      `{BASE_URL}/api/instagram/instagramWebhook.php` returns `403`, not `200`. (See
       Testing → Webhook below for the exact way to check this safely.)
 - [ ] **Permissions reviewed** — read `docs/instagram-automation-flow.md`
       §16 and confirm you're comfortable that every Instagram Automation
@@ -151,7 +151,7 @@ Instagram Business account before enabling for real clients.
 - [ ] **Verification**: re-trigger the Meta App Dashboard's webhook
       verification (or re-save the Webhook URL/Verify Token fields there)
       and confirm it succeeds — proves the GET handshake in
-      `api/instagramWebhook.php` is reachable and matches the stored
+      `api/instagram/instagramWebhook.php` is reachable and matches the stored
       `webhookVerifyToken`.
 - [ ] **Signed event**: after the "Comments → Receive" test above passes,
       confirm a corresponding row exists in `instagramWebhookEvents` with

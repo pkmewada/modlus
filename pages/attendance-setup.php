@@ -1249,7 +1249,7 @@ function saveAttendanceSetup() {
 
         url:
             API_BASE +
-            '/saveAttendanceSetup.php',
+            '/attendance/saveAttendanceSetup.php',
 
         type: 'POST',
 
@@ -1481,7 +1481,7 @@ function bindState(res) {
 function loadSetup() {
 
     $.getJSON(
-        API_BASE + '/getAttendanceSetup.php'
+        API_BASE + '/attendance/getAttendanceSetup.php'
     )
 
     .done(function(res) {

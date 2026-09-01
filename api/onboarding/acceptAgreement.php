@@ -1,8 +1,8 @@
 <?php
 
 header('Content-Type: application/json');
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/leadEngine.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/leadEngine.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -53,7 +53,7 @@ if (!isset($_FILES['businessDocument']) || $_FILES['businessDocument']['error'] 
 }
 
 // Handle file upload
-$uploadDir = __DIR__ . '/../uploads/onboarding/documents/';
+$uploadDir = __DIR__ . '/../../uploads/onboarding/documents/';
 if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
 $businessFile = $_FILES['businessDocument'];
@@ -69,7 +69,7 @@ if (!move_uploaded_file($businessFile['tmp_name'], $businessFilePath)) {
 }
 
 // Handle signature (Base64 -> PNG)
-$signatureDir = __DIR__ . '/../uploads/onboarding/signatures/';
+$signatureDir = __DIR__ . '/../../uploads/onboarding/signatures/';
 if (!is_dir($signatureDir)) mkdir($signatureDir, 0755, true);
 
 $signatureData = preg_replace('/^data:image\/png;base64,/', '', $signatureData);

@@ -910,17 +910,17 @@ $(function() {
 |--------------------------------------------------------------------------
 */
 
-const addExpenseApiUrl = API_BASE + '/addExpense.php';
+const addExpenseApiUrl = API_BASE + '/expense/addExpense.php';
 
-const updateExpenseApiUrl = API_BASE + '/updateExpense.php';
+const updateExpenseApiUrl = API_BASE + '/expense/updateExpense.php';
 
-const deleteExpenseApiUrl = API_BASE + '/deleteExpense.php';
+const deleteExpenseApiUrl = API_BASE + '/expense/deleteExpense.php';
 
-const getExpenseApiUrl = API_BASE + '/getExpense.php';
+const getExpenseApiUrl = API_BASE + '/expense/getExpense.php';
 
-const approveExpenseApiUrl = API_BASE + '/approveExpense.php';
+const approveExpenseApiUrl = API_BASE + '/expense/approveExpense.php';
 
-const rejectExpenseApiUrl = API_BASE + '/rejectExpense.php';
+const rejectExpenseApiUrl = API_BASE + '/expense/rejectExpense.php';
 
 /*
 |--------------------------------------------------------------------------

@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loader.classList.remove('d-none');
         resultBox.innerHTML = '';
 
-        fetch('<?= BASE_URL; ?>/api/getRolePermission.php', {
+        fetch('<?= BASE_URL; ?>/api/permissions/getRolePermission.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -883,7 +883,7 @@ document.addEventListener('DOMContentLoaded', function() {
             moduleName: moduleName || ''
         });
 
-        fetch('<?= BASE_URL; ?>/api/getEmployeePermissions.php?' + params.toString())
+        fetch('<?= BASE_URL; ?>/api/permissions/getEmployeePermissions.php?' + params.toString())
             .then(response => response.json())
             .then(data => {
                 employeeLoader.classList.add('d-none');
@@ -982,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function() {
             button.innerHTML = 'Saving...';
         }
 
-        fetch('<?= BASE_URL; ?>/api/saveEmployeePermissions.php', {
+        fetch('<?= BASE_URL; ?>/api/permissions/saveEmployeePermissions.php', {
                 method: 'POST',
                 body: new FormData(event.target)
             })

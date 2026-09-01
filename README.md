@@ -467,14 +467,14 @@ pending → approved / rejected
 pending → cancelled (by employee)
 🔹 2. API STRUCTURE
 Employee APIs
-getLeaveSetup.php     → Load settings + leave types
-applyLeave.php        → Apply leave with validations
-getMyLeaves.php       → Fetch employee leaves
-cancelLeave.php       → Cancel leave
-getLeaveBalance.php   → Fetch live balance
+api/leave/getLeaveSetup.php     → Load settings + leave types
+api/leave/applyLeave.php        → Apply leave with validations
+api/leave/getMyLeaves.php       → Fetch employee leaves
+api/leave/cancelLeave.php       → Cancel leave
+api/leave/getLeaveBalance.php   → Fetch live balance
 Admin APIs
-getAllLeaves.php        → All employee leaves
-updateLeaveStatus.php   → Approve / Reject leave
+api/leave/getAllLeaves.php        → All employee leaves
+api/leave/updateLeaveStatus.php   → Approve / Reject leave
 🔹 3. DATABASE STRUCTURE
 Main Tables
 🟦 leaveApplications

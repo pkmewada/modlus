@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/GoogleBusinessProfileAutomation.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/GoogleBusinessProfileAutomation.php';
 
 $clientId = (int)($_GET['clientId'] ?? 0);
 
@@ -25,7 +25,7 @@ if (!$settings) {
 
 $redirectUri = $settings['redirectUrl'] !== ''
     ? $settings['redirectUrl']
-    : BASE_URL . '/api/googleBusinessProfileOauthCallback.php';
+    : BASE_URL . '/api/google-business-profile/googleBusinessProfileOauthCallback.php';
 
 $state = bin2hex(random_bytes(16));
 $_SESSION['googleBusinessProfileOauthState'] = $state;

@@ -50,11 +50,11 @@ var agreementEditor = null;
 var companySignaturePad = null;
 
 // API URLs - Make sure API_BASE is defined globally
-var saveAgreementDraftApiUrl = API_BASE + '/saveAgreementDraft.php';
-var getAgreementByLeadIdApiUrl = API_BASE + '/getAgreementByLeadId.php';
-var sendAgreementApiUrl = API_BASE + '/sendAgreement.php';
-var getAgreementSubmissionApiUrl = API_BASE + '/getAgreementSubmission.php';
-var saveAgreementReviewApiUrl = API_BASE + '/saveAgreementReview.php';
+var saveAgreementDraftApiUrl = API_BASE + '/onboarding/saveAgreementDraft.php';
+var getAgreementByLeadIdApiUrl = API_BASE + '/onboarding/getAgreementByLeadId.php';
+var sendAgreementApiUrl = API_BASE + '/onboarding/sendAgreement.php';
+var getAgreementSubmissionApiUrl = API_BASE + '/onboarding/getAgreementSubmission.php';
+var saveAgreementReviewApiUrl = API_BASE + '/onboarding/saveAgreementReview.php';
 
 // ======================================================
 // 3. INITIALIZATION (FIXED - Better error handling)

@@ -3,8 +3,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
-include __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
+include __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 

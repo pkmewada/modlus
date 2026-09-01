@@ -1,7 +1,7 @@
 <?php
 
-include __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
+include __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
 
 header('Content-Type: application/json');
 

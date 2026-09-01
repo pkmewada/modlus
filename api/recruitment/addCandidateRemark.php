@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/db.php';
+require_once '../../includes/db.php';
 
 $candidateId = (int) $_POST['candidateId'];
 $remark = trim($_POST['remark']);

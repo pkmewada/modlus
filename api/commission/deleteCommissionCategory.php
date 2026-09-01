@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json');
 
-include __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/auth.php';
-include __DIR__ . '/../includes/commissionBonusEngine.php';
+include __DIR__ . '/../../includes/db.php';
+include __DIR__ . '/../../includes/auth.php';
+include __DIR__ . '/../../includes/commissionBonusEngine.php';
 
 try {
 

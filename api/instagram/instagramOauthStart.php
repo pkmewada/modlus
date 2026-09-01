@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/InstagramAutomation.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/InstagramAutomation.php';
 
 $clientId = (int)($_GET['clientId'] ?? 0);
 
@@ -22,7 +22,7 @@ if (!$settings) {
 
 $redirectUri = $settings['redirectUrl'] !== ''
     ? $settings['redirectUrl']
-    : BASE_URL . '/api/instagramOauthCallback.php';
+    : BASE_URL . '/api/instagram/instagramOauthCallback.php';
 
 $state = bin2hex(random_bytes(16));
 $_SESSION['instagramOauthState'] = $state;

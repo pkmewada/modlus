@@ -23,7 +23,7 @@ function ensureInstagramSettingsTable(mysqli $con): void
     );
 
     instagramSettingsEnsureColumn($con, 'webhookVerifyToken', "VARCHAR(191) NOT NULL DEFAULT ''");
-    // Facebook Login for Business config_id — needed by instagramOauthStart.php
+    // Facebook Login for Business config_id — needed by api/instagram/instagramOauthStart.php
     // to build the authorize URL. Nullable-by-default (empty string) so
     // existing installs keep working with the legacy scope-based OAuth flow
     // until an operator enters a Configuration ID in the settings UI.

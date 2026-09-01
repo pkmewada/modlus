@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
-require_once __DIR__ . '/../includes/Csrf.php';
-require_once __DIR__ . '/../includes/GoogleBusinessProfileAutomation.php';
-require_once __DIR__ . '/../includes/leadActivityLogger.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/Csrf.php';
+require_once __DIR__ . '/../../includes/GoogleBusinessProfileAutomation.php';
+require_once __DIR__ . '/../../includes/leadActivityLogger.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 

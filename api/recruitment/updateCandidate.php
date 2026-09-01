@@ -2,8 +2,8 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/config.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -99,7 +99,7 @@ if (isset($_FILES['resumeFile']) && $_FILES['resumeFile']['error'] === UPLOAD_ER
         exit();
     }
 
-    $uploadFileDir = __DIR__ . '/../uploads/resumes/';
+    $uploadFileDir = __DIR__ . '/../../uploads/resumes/';
     if (!is_dir($uploadFileDir)) {
         mkdir($uploadFileDir, 0755, true);
     }

@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
-require_once __DIR__ . '/../includes/PinterestAutomation.php';
-require_once __DIR__ . '/../includes/leadActivityLogger.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/PinterestAutomation.php';
+require_once __DIR__ . '/../../includes/leadActivityLogger.php';
 
 function redirectWithPinterestStatus(string $status, string $message, int $clientId = 0): void
 {
@@ -45,7 +45,7 @@ if (!$settings) {
 
 $redirectUri = $settings['redirectUrl'] !== ''
     ? $settings['redirectUrl']
-    : BASE_URL . '/api/pinterestOauthCallback.php';
+    : BASE_URL . '/api/pinterest/pinterestOauthCallback.php';
 
 try {
     $tokens = exchangePinterestAuthorizationCode(

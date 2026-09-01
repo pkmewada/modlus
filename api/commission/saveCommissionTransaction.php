@@ -3,10 +3,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/commissionBonusEngine.php';
-require_once __DIR__ . '/../includes/mailer.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/commissionBonusEngine.php';
+require_once __DIR__ . '/../../includes/mailer.php';
 
 header('Content-Type: application/json');
 

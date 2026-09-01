@@ -2,8 +2,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/mailer.php';
+include __DIR__ . '/../../includes/db.php';
+include __DIR__ . '/../../includes/mailer.php';
 
 header('Content-Type: application/json');
 

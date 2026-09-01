@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/LinkedInAutomation.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/LinkedInAutomation.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -23,7 +23,7 @@ try {
     respond(true, 'LinkedIn settings loaded successfully.', [
         'linkedinSettings' => getLinkedinSettings($con),
         'linkedinAccount' => $clientId ? getLinkedinAccountForDisplay($con, $clientId) : null,
-        'defaultRedirectUrl' => BASE_URL . '/api/linkedinOauthCallback.php',
+        'defaultRedirectUrl' => BASE_URL . '/api/linkedin/linkedinOauthCallback.php',
     ]);
 } catch (Throwable $e) {
     respond(false, $e->getMessage());

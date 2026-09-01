@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../../includes/db.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 $id = (int)($_POST['id'] ?? 0);

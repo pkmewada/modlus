@@ -820,7 +820,7 @@ include __DIR__ . '/../includes/sidebar.php';
                                             name="apiEndpoint"
                                             class="form-control"
                                             value="<?= htmlspecialchars((string)($formPermissionAction['apiEndpoint'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                            placeholder="Example: /api/emp-addOvertime.php"
+                                            placeholder="Example: /api/overtime/emp-addOvertime.php"
                                         >
                                         <div class="form-text">When configured, the central gateway protects this endpoint automatically.</div>
                                     </div>

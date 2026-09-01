@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/CompanySettings.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/CompanySettings.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -55,7 +55,7 @@ function saveCompanyLogoUpload(array $file): string
         respond(false, 'Logo must be PNG, JPG, WEBP, or GIF.');
     }
 
-    $uploadDir = dirname(__DIR__) . '/uploads/company/';
+    $uploadDir = dirname(__DIR__, 2) . '/uploads/company/';
 
     if (
         !is_dir($uploadDir) &&

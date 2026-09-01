@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../includes/emp-auth.php';
+require_once __DIR__ . '/../../includes/emp-auth.php';
 
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../../includes/db.php';
 
-require_once __DIR__ . '/../includes/employeePointEngine.php';
+require_once __DIR__ . '/../../includes/employeePointEngine.php';
 
 header('Content-Type: application/json');
 

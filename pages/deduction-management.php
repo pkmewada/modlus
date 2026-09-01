@@ -876,13 +876,13 @@ $(function() {
 |--------------------------------------------------------------------------
 */
 
-const addDeductionApiUrl = API_BASE + '/addDeduction.php';
+const addDeductionApiUrl = API_BASE + '/payroll/addDeduction.php';
 
-const updateDeductionApiUrl = API_BASE + '/updateDeduction.php';
+const updateDeductionApiUrl = API_BASE + '/payroll/updateDeduction.php';
 
-const deleteDeductionApiUrl = API_BASE + '/deleteDeduction.php';
+const deleteDeductionApiUrl = API_BASE + '/payroll/deleteDeduction.php';
 
-const getDeductionApiUrl = API_BASE + '/getDeduction.php';
+const getDeductionApiUrl = API_BASE + '/payroll/getDeduction.php';
 
 /*
 |--------------------------------------------------------------------------

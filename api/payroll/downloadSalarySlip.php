@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/PayrollApprovalEngine.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/PayrollApprovalEngine.php';
 
 function salarySlipDownloadError(string $message, int $statusCode = 400): void
 {
@@ -36,7 +36,7 @@ try {
         salarySlipDownloadError('Salary slip PDF is available only after Super Admin approval.', 403);
     }
 
-    $filePath = dirname(__DIR__) . '/' . ltrim((string)$slip['pdfPath'], '/');
+    $filePath = dirname(__DIR__, 2) . '/' . ltrim((string)$slip['pdfPath'], '/');
 
     if (!is_file($filePath)) {
         salarySlipDownloadError('Approved salary slip PDF file was not found.', 404);

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/PinterestAutomation.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/PinterestAutomation.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -23,7 +23,7 @@ try {
     respond(true, 'Pinterest settings loaded successfully.', [
         'pinterestSettings' => getPinterestSettings($con),
         'pinterestAccount' => $clientId ? getPinterestAccountForDisplay($con, $clientId) : null,
-        'defaultRedirectUrl' => BASE_URL . '/api/pinterestOauthCallback.php',
+        'defaultRedirectUrl' => BASE_URL . '/api/pinterest/pinterestOauthCallback.php',
     ]);
 } catch (Throwable $e) {
     respond(false, $e->getMessage());

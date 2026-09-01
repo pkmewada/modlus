@@ -828,7 +828,7 @@ $(function() {
         var nextStatus = $select.val();
 
         $.ajax({
-            url: API_BASE + '/updateEmployeeEmploymentStatus.php',
+            url: API_BASE + '/employee/updateEmployeeEmploymentStatus.php',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -874,7 +874,7 @@ $(function() {
         modal.show();
 
         $.ajax({
-            url: API_BASE + '/getEmployeeDetails.php',
+            url: API_BASE + '/onboarding/getEmployeeDetails.php',
             type: 'GET',
             dataType: 'json',
             data: {
@@ -1125,7 +1125,7 @@ $(function() {
         modal.show();
 
         $.ajax({
-            url: API_BASE + '/getEmployeeDetails.php',
+            url: API_BASE + '/onboarding/getEmployeeDetails.php',
             type: 'GET',
             dataType: 'json',
             data: {
@@ -1188,7 +1188,7 @@ $(function() {
         $btn.prop('disabled', true).text('Saving...');
 
         $.ajax({
-            url: API_BASE + '/updateEmployeeDetailsByHr.php',
+            url: API_BASE + '/onboarding/updateEmployeeDetailsByHr.php',
             type: 'POST',
             dataType: 'json',
             data: formData,

@@ -12,16 +12,16 @@ $(function () {
 
     var statusColumnIndex = 5;
     var sourceColumnIndex = 4;
-    var addLeadApiUrl = API_BASE + "/addLead.php";
-    var updateLeadApiUrl = API_BASE + "/updateLead.php";
-    var updateLeadStatusApiUrl = API_BASE + "/updateLeadStatus.php";
-    var deleteLeadApiUrl = API_BASE + "/deleteLead.php";
-    var saveLeadRemarkApiUrl = API_BASE + "/saveLeadRemark.php";
-    var getLeadRemarksApiUrl = API_BASE + "/getLeadRemarks.php";
-    var getScheduledCallsApiUrl = API_BASE + "/getScheduledCalls.php";
-    var uploadLeadDocumentApiUrl = API_BASE + "/uploadLeadDocument.php";
-    var getLeadDocumentsApiUrl = API_BASE + "/getLeadDocuments.php";
-    var importLeadsApiUrl = API_BASE + "/importLeads.php";
+    var addLeadApiUrl = API_BASE + "/leads/addLead.php";
+    var updateLeadApiUrl = API_BASE + "/leads/updateLead.php";
+    var updateLeadStatusApiUrl = API_BASE + "/leads/updateLeadStatus.php";
+    var deleteLeadApiUrl = API_BASE + "/leads/deleteLead.php";
+    var saveLeadRemarkApiUrl = API_BASE + "/leads/saveLeadRemark.php";
+    var getLeadRemarksApiUrl = API_BASE + "/leads/getLeadRemarks.php";
+    var getScheduledCallsApiUrl = API_BASE + "/leads/getScheduledCalls.php";
+    var uploadLeadDocumentApiUrl = API_BASE + "/leads/uploadLeadDocument.php";
+    var getLeadDocumentsApiUrl = API_BASE + "/leads/getLeadDocuments.php";
+    var importLeadsApiUrl = API_BASE + "/leads/importLeads.php";
 
     var table = $("#leads-datatable").DataTable(
         window.ModlusUI.withDataTableDefaults({
@@ -447,7 +447,7 @@ $(function () {
 
     // Master data
     function loadLeadMasterData() {
-        $.getJSON(API_BASE + "/getLeadMasterData.php", function (response) {
+        $.getJSON(API_BASE + "/leads/getLeadMasterData.php", function (response) {
             if (!response.success) return;
             leadCategories = response.data.categories || [];
             leadPlans = response.data.plans || [];
@@ -617,7 +617,7 @@ $(function () {
             return;
         }
         $.ajax({
-            url: API_BASE + "/closeFollowup.php",
+            url: API_BASE + "/leads/closeFollowup.php",
             type: "POST",
             dataType: "json",
             data: { leadId: leadId, remark: remark },
@@ -665,7 +665,7 @@ $(function () {
 
     function saveNotInterestedLead(leadId, status, remark) {
         $.ajax({
-            url: API_BASE + "/saveLeadStatusRemark.php",
+            url: API_BASE + "/leads/saveLeadStatusRemark.php",
             type: "POST",
             dataType: "json",
             contentType: "application/json",
@@ -698,7 +698,7 @@ $(function () {
             formData.append("quotationDocument", $("#quotationDocument")[0].files[0]);
         }
         $.ajax({
-            url: API_BASE + "/saveLeadConversion.php",
+            url: API_BASE + "/leads/saveLeadConversion.php",
             type: "POST",
             data: formData,
             processData: false,

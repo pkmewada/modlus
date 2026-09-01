@@ -298,7 +298,7 @@ foreach ($duePosts as $post) {
             case 'text':
                 // Phase 10: Facebook text posts. Text is Facebook-only by
                 // architecture (enforced at save time in
-                // api/saveSocialPost.php) — always dispatched through the
+                // api/social-media/saveSocialPost.php) — always dispatched through the
                 // Phase 6 Unified Social Post Engine, same as the
                 // Facebook/dual-platform image branch below. No new
                 // publishing logic — publishFacebookTextPost() (unchanged)

@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
-require_once __DIR__ . '/../includes/PayrollApprovalEngine.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/PayrollApprovalEngine.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -81,7 +81,7 @@ try {
 
             if (empty($paymentResult['success'])) {
                 if (!empty($result['pdfPath'])) {
-                    $pdfFullPath = dirname(__DIR__) . '/' . ltrim((string)$result['pdfPath'], '/');
+                    $pdfFullPath = dirname(__DIR__, 2) . '/' . ltrim((string)$result['pdfPath'], '/');
 
                     if (is_file($pdfFullPath)) {
                         @unlink($pdfFullPath);

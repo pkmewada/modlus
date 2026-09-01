@@ -238,7 +238,7 @@ $profilePhotoUrl = ASSET_URL . '/assets/images/faces/team/7.png'; } ?>
 $(function () {
 
     const API = {
-        updateProfile: API_BASE + "/updateEmployeeProfile.php"
+        updateProfile: API_BASE + "/employee/updateEmployeeProfile.php"
     };
 
     $("#saveEmployeeProfileBtn").on("click", function () {

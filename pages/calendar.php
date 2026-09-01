@@ -871,7 +871,7 @@ $(document).ready(function() {
             </div>
         `);
         $.ajax({
-            url: 'api/get-clients-calendar.php',
+            url: 'api/deliverables/get-clients-calendar.php',
             type: 'GET',
             data: { client: clientFilter, platform: platformFilter, month: monthIndex },
             dataType: 'json',
@@ -990,7 +990,7 @@ $(document).ready(function() {
             </div>
         `);
         $.ajax({
-            url: 'api/get-client-calendar-plan.php',
+            url: 'api/deliverables/get-client-calendar-plan.php',
             type: 'GET',
             data: { clientId: clientId, month: month },
             dataType: 'json',
@@ -1117,7 +1117,7 @@ $(document).ready(function() {
             showToast('Saving calendar plan...', 'info');
 
             $.ajax({
-                url: 'api/save-calendar-plan.php',
+                url: 'api/deliverables/save-calendar-plan.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ client_id: pendingClientId, plans: pendingPlans }),
@@ -1185,7 +1185,7 @@ $(document).ready(function() {
         `);
     
         $.ajax({
-            url: 'api/getCalendarLogs.php',
+            url: 'api/deliverables/getCalendarLogs.php',
             type: 'GET',
             data: { clientId: clientId, month: month },
             dataType: 'json',

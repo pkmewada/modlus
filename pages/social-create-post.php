@@ -205,7 +205,7 @@ $(function() {
 
 function loadInstagramClients() {
     $.ajax({
-        url: API_BASE + '/getClients.php',
+        url: API_BASE + '/client/getClients.php',
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -239,7 +239,7 @@ function loadInstagramAccountsForClient(clientId, preselectAccountId) {
 
     $accountSelect.html('<option value="">Loading accounts...</option>').prop('disabled', true);
 
-    $.getJSON(API_BASE + '/getInstagramSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php', { clientId: clientId })
         .done(function(res) {
             const allAccounts = (res && res.data && res.data.instagramAccounts) || [];
             const connected = allAccounts.filter(a => a.status === 'connected');
@@ -408,7 +408,7 @@ function submitPublishNow() {
     $('#publishNowResults').addClass('d-none').empty();
 
     $.ajax({
-        url: API_BASE + '/publishSocialPostNow.php',
+        url: API_BASE + '/social-media/publishSocialPostNow.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: formData,
@@ -484,7 +484,7 @@ function previewSelectedMedia(files) {
 }
 
 function loadInstagramPostForEdit(postId) {
-    $.getJSON(API_BASE + '/getSocialPosts.php')
+    $.getJSON(API_BASE + '/social-media/getSocialPosts.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', 'Unable to load the post.');
@@ -638,7 +638,7 @@ function submitInstagramPost(action) {
     $('#saveDraftBtn, #schedulePostBtn').prop('disabled', true);
 
     $.ajax({
-        url: API_BASE + '/saveSocialPost.php',
+        url: API_BASE + '/social-media/saveSocialPost.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: formData,

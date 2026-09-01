@@ -317,15 +317,15 @@ $(function() {
 
     const API = {
 
-        getSetup: API_BASE + '/emp-getLeaveSetup.php',
+        getSetup: API_BASE + '/leave/emp-getLeaveSetup.php',
 
-        applyLeave: API_BASE + '/emp-applyLeave.php',
+        applyLeave: API_BASE + '/leave/emp-applyLeave.php',
 
-        getLeaves: API_BASE + '/emp-getMyLeaves.php',
+        getLeaves: API_BASE + '/leave/emp-getMyLeaves.php',
 
-        cancelLeave: API_BASE + '/emp-cancelLeave.php',
+        cancelLeave: API_BASE + '/leave/emp-cancelLeave.php',
 
-        getBalance: API_BASE + '/emp-getLeaveBalance.php'
+        getBalance: API_BASE + '/leave/emp-getLeaveBalance.php'
     };
 
     // =========================

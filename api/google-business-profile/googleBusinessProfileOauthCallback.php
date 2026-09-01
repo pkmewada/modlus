@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
-require_once __DIR__ . '/../includes/GoogleBusinessProfileAutomation.php';
-require_once __DIR__ . '/../includes/leadActivityLogger.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/GoogleBusinessProfileAutomation.php';
+require_once __DIR__ . '/../../includes/leadActivityLogger.php';
 
 function redirectWithGoogleBusinessProfileStatus(string $status, string $message, int $clientId = 0): void
 {
@@ -45,7 +45,7 @@ if (!$settings) {
 
 $redirectUri = $settings['redirectUrl'] !== ''
     ? $settings['redirectUrl']
-    : BASE_URL . '/api/googleBusinessProfileOauthCallback.php';
+    : BASE_URL . '/api/google-business-profile/googleBusinessProfileOauthCallback.php';
 
 try {
     $tokens = exchangeGoogleBusinessProfileAuthorizationCode(

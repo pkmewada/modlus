@@ -421,7 +421,7 @@ $(function() {
     const API = {
 
         getTransactions:
-            API_BASE + '/emp-getPointTransactions.php'
+            API_BASE + '/points/emp-getPointTransactions.php'
     };
 
     // =========================================

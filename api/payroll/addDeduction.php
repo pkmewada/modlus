@@ -2,9 +2,9 @@
 
 date_default_timezone_set('Asia/Kolkata');
 
-require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../../includes/auth.php';
 
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../../includes/db.php';
 
 /*
 |--------------------------------------------------------------------------

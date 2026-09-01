@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . '/../includes/db.php';
+include __DIR__ . '/../../includes/db.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

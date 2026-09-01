@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json');
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/calendarEngine.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/calendarEngine.php';
 
 if (!isset($_SESSION['userId'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);

@@ -112,7 +112,7 @@ $(function() {
 
 function loadInstagramClients(onDone) {
     $.ajax({
-        url: API_BASE + '/getClients.php',
+        url: API_BASE + '/client/getClients.php',
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -146,7 +146,7 @@ function loadInstagramClients(onDone) {
 // in includes/InstagramAutomation.php's getInstagramAccounts() column
 // list), so this is safe to call without any new backend endpoint.
 function loadAllInstagramAccounts(onDone) {
-    $.getJSON(API_BASE + '/getInstagramSettings.php')
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php')
         .done(function(res) {
             const accounts = (res && res.data && res.data.instagramAccounts) || [];
             instagramAccountUsernames = {};
@@ -179,7 +179,7 @@ function accountLabel(post) {
 function checkInstagramAccountConnected() {
     const clientId = $('#clientFilter').val();
 
-    $.getJSON(API_BASE + '/getInstagramSettings.php', clientId ? { clientId: clientId } : {})
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php', clientId ? { clientId: clientId } : {})
         .done(function(res) {
             const accounts = (res && res.data && res.data.instagramAccounts) || [];
             const hasConnected = accounts.some(a => a.status === 'connected');
@@ -284,7 +284,7 @@ function loadInstagramPosts() {
     const status = $('#statusFilter').val();
     const clientId = $('#clientFilter').val();
 
-    $.getJSON(API_BASE + '/getSocialPosts.php', { status: status, clientId: clientId })
+    $.getJSON(API_BASE + '/social-media/getSocialPosts.php', { status: status, clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load social posts.');
@@ -355,7 +355,7 @@ function deleteInstagramPost(postId) {
     }
 
     $.ajax({
-        url: API_BASE + '/deleteSocialPost.php',
+        url: API_BASE + '/social-media/deleteSocialPost.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { postId: postId, csrfToken: CSRF_TOKEN },

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/emp-auth.php';
-require_once __DIR__ . '/../includes/AttendanceEngine.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/emp-auth.php';
+require_once __DIR__ . '/../../includes/AttendanceEngine.php';
 
 header('Content-Type: application/json');
 

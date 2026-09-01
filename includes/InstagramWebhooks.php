@@ -138,7 +138,7 @@ function getInstagramWebhookEvents(mysqli $con, ?int $clientId = null, ?int $acc
  * Account id Meta's webhook payload identifies ("entry[].id"). Intentionally
  * NOT filtered by status='connected' — a webhook for a disconnected account
  * should still resolve its clientId for debugging visibility, even though
- * such an event won't be further processed (see instagramWebhook.php).
+ * such an event won't be further processed (see api/instagram/instagramWebhook.php).
  */
 function resolveInstagramAccountFromWebhookEntry(mysqli $con, string $instagramUserId): ?array
 {

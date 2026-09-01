@@ -1,8 +1,8 @@
 <?php
 
-include __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/mailer.php';
-require_once __DIR__ . '/../includes/basic-config.php';
+include __DIR__ . '/../../includes/db.php';
+include __DIR__ . '/../../includes/mailer.php';
+require_once __DIR__ . '/../../includes/basic-config.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 

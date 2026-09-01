@@ -329,7 +329,7 @@ function linkedinAccountBelongsToClient(mysqli $con, int $accountId, int $client
 }
 
 /**
- * Saves the organization a client chose. Caller (api/saveLinkedinOrganization.php)
+ * Saves the organization a client chose. Caller (api/linkedin/saveLinkedinOrganization.php)
  * is responsible for re-verifying the organizationId is actually one Meta —
  * sorry, LinkedIn — reports the member administers (server-side, not just
  * trusting what the browser posted) before calling this.

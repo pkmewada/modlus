@@ -657,31 +657,31 @@ $(function() {
     const API = {
 
         getEmployees:
-            API_BASE + '/getCommissionEmployees.php',
+            API_BASE + '/commission/getCommissionEmployees.php',
 
         getCategories:
-            API_BASE + '/getCommissionCategories.php',
+            API_BASE + '/commission/getCommissionCategories.php',
 
         getTransactions:
-            API_BASE + '/getCommissionTransactions.php',
+            API_BASE + '/commission/getCommissionTransactions.php',
 
         saveTransaction:
-            API_BASE + '/saveCommissionTransaction.php',
+            API_BASE + '/commission/saveCommissionTransaction.php',
 
         updateTransaction:
-            API_BASE + '/updateCommissionTransaction.php',
+            API_BASE + '/commission/updateCommissionTransaction.php',
 
         deleteTransaction:
-            API_BASE + '/deleteCommissionTransaction.php',
+            API_BASE + '/commission/deleteCommissionTransaction.php',
             
         approveTransaction:
-            API_BASE + '/approveCommissionTransaction.php',
+            API_BASE + '/commission/approveCommissionTransaction.php',
         
         rejectTransaction:
-            API_BASE + '/rejectCommissionTransaction.php',
+            API_BASE + '/commission/rejectCommissionTransaction.php',
             
         syncPayroll:
-            API_BASE + '/syncCommissionPayroll.php',
+            API_BASE + '/commission/syncCommissionPayroll.php',
     };
 
     // =========================================

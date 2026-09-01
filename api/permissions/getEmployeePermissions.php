@@ -2,8 +2,8 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
 
 requireRoutePermission('/permission-setup', 'canView');
 

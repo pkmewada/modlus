@@ -2,8 +2,8 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/config.php';
 
 $leadId =
     (int)($_GET['leadId'] ?? 0);

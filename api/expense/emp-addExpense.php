@@ -2,11 +2,11 @@
 
 date_default_timezone_set('Asia/Kolkata');
 
-require_once __DIR__ . '/../includes/emp-auth.php';
+require_once __DIR__ . '/../../includes/emp-auth.php';
 
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../../includes/db.php';
 
-require_once __DIR__ . '/../includes/mailer.php';
+require_once __DIR__ . '/../../includes/mailer.php';
 
 mysqli_query(
     $con,

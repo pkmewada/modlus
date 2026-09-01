@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/leadEngine.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/leadEngine.php';
 
 // Check if it's a file upload or JSON request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES) && count($_FILES) > 0) {

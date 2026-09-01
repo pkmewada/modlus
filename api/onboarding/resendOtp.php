@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../includes/auth-functions.php';
-require_once __DIR__ . '/../includes/sendOtp.php';
-require_once __DIR__ . '/../app/models/UserModel.php';
+require_once __DIR__ . '/../../includes/auth-functions.php';
+require_once __DIR__ . '/../../includes/sendOtp.php';
+require_once __DIR__ . '/../../app/models/UserModel.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

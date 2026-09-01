@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
-require_once __DIR__ . '/../includes/InstagramAutomation.php';
-require_once __DIR__ . '/../includes/leadActivityLogger.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/InstagramAutomation.php';
+require_once __DIR__ . '/../../includes/leadActivityLogger.php';
 
 function redirectWithStatus(string $status, string $message, int $clientId = 0): void
 {
@@ -45,7 +45,7 @@ if (!$settings) {
 
 $redirectUri = $settings['redirectUrl'] !== ''
     ? $settings['redirectUrl']
-    : BASE_URL . '/api/instagramOauthCallback.php';
+    : BASE_URL . '/api/instagram/instagramOauthCallback.php';
 
 try {
     $tokenResponse = instagramGraphApiRequest('https://graph.facebook.com/v19.0/oauth/access_token', [

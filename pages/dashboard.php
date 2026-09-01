@@ -858,7 +858,7 @@
         <!-- End::app-content -->
 
 <script>
-fetch(API_BASE + '/getInstagramDashboardSummary.php')
+fetch(API_BASE + '/instagram/getInstagramDashboardSummary.php')
     .then(function(res) { return res.json(); })
     .then(function(res) {
         if (!res || !res.success || !res.data || !res.data.summary) {

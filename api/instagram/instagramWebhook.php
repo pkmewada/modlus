@@ -11,15 +11,15 @@
 | See docs/instagram-automation-flow.md §14.
 */
 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/InstagramAutomation.php';
-require_once __DIR__ . '/../includes/InstagramComments.php';
-require_once __DIR__ . '/../includes/InstagramWebhooks.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/InstagramAutomation.php';
+require_once __DIR__ . '/../../includes/InstagramComments.php';
+require_once __DIR__ . '/../../includes/InstagramWebhooks.php';
 
 function instagramWebhookLog(string $message): void
 {
     $line = '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
-    file_put_contents(__DIR__ . '/../cron/instagramWebhook.log', $line, FILE_APPEND);
+    file_put_contents(__DIR__ . '/../../cron/instagramWebhook.log', $line, FILE_APPEND);
 }
 
 /*

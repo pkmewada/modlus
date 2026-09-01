@@ -280,7 +280,7 @@ function validateCompanySetup() {
 }
 
 function loadCompanySetup() {
-    $.getJSON(API_BASE + '/getCompanySetup.php')
+    $.getJSON(API_BASE + '/company/getCompanySetup.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load company setup.');
@@ -312,7 +312,7 @@ function saveCompanySetup() {
         .html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
 
     $.ajax({
-        url: API_BASE + '/saveCompanySetup.php',
+        url: API_BASE + '/company/saveCompanySetup.php',
         type: 'POST',
         data: formData,
         dataType: 'json',

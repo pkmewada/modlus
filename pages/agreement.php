@@ -353,7 +353,7 @@ $leadEngine->markAgreementViewed(
                 $.ajax({
         
                     url:
-                        'api/acceptAgreement.php',
+                        'api/onboarding/acceptAgreement.php',
         
                     method:
                         'POST',

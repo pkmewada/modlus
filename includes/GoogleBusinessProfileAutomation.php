@@ -477,7 +477,7 @@ function googleBusinessProfileAccountBelongsToClient(mysqli $con, int $accountId
 /**
  * Saves the Business Profile account + location the operator chose, in
  * one step (the source document lists no separate "save account"
- * endpoint — see api/saveGoogleBusinessProfileLocation.php). Caller is
+ * endpoint — see api/google-business-profile/saveGoogleBusinessProfileLocation.php). Caller is
  * responsible for re-verifying, server-side against Google, that this
  * Google identity actually has access to $googleAccountId AND that
  * $googleLocationId actually belongs to that account, before calling

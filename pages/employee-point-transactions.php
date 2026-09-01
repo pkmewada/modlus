@@ -438,17 +438,17 @@ $(function() {
 
     const API = {
 
-        getEmployees: API_BASE + '/getPointEmployees.php',
+        getEmployees: API_BASE + '/points/getPointEmployees.php',
 
-        getCategories: API_BASE + '/getPointCategories.php',
+        getCategories: API_BASE + '/points/getPointCategories.php',
 
-        getTransactions: API_BASE + '/getPointTransactions.php',
+        getTransactions: API_BASE + '/points/getPointTransactions.php',
 
-        saveTransaction: API_BASE + '/savePointTransaction.php',
+        saveTransaction: API_BASE + '/points/savePointTransaction.php',
 
-        updateTransaction: API_BASE + '/updatePointTransaction.php',
+        updateTransaction: API_BASE + '/points/updatePointTransaction.php',
 
-        deleteTransaction: API_BASE + '/deletePointTransaction.php'
+        deleteTransaction: API_BASE + '/points/deletePointTransaction.php'
     };
 
     // =========================================

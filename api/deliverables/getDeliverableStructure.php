@@ -3,9 +3,9 @@
  * API: Get Deliverable Structure
  */
 header('Content-Type: application/json');
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/deliverableEngine.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/deliverableEngine.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();

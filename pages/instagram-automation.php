@@ -462,7 +462,7 @@ $(function() {
             return;
         }
 
-        window.location.href = API_BASE + '/linkedinOauthStart.php?clientId=' + encodeURIComponent(clientId);
+        window.location.href = API_BASE + '/linkedin/linkedinOauthStart.php?clientId=' + encodeURIComponent(clientId);
     });
 
     $('#saveLinkedinOrganizationBtn').on('click', function() {
@@ -482,7 +482,7 @@ $(function() {
             return;
         }
 
-        window.location.href = API_BASE + '/pinterestOauthStart.php?clientId=' + encodeURIComponent(clientId);
+        window.location.href = API_BASE + '/pinterest/pinterestOauthStart.php?clientId=' + encodeURIComponent(clientId);
     });
 
     $('#savePinterestBoardBtn').on('click', function() {
@@ -502,7 +502,7 @@ $(function() {
             return;
         }
 
-        window.location.href = API_BASE + '/googleBusinessProfileOauthStart.php?clientId=' + encodeURIComponent(clientId);
+        window.location.href = API_BASE + '/google-business-profile/googleBusinessProfileOauthStart.php?clientId=' + encodeURIComponent(clientId);
     });
 
     $('#gbpAccountSelect').on('change', function() {
@@ -526,7 +526,7 @@ $(function() {
             return;
         }
 
-        window.location.href = API_BASE + '/instagramOauthStart.php?clientId=' + encodeURIComponent(clientId);
+        window.location.href = API_BASE + '/instagram/instagramOauthStart.php?clientId=' + encodeURIComponent(clientId);
     });
 
     $('#instagramAccountsBody').on('click', '.disconnect-instagram-account', function() {
@@ -577,7 +577,7 @@ function handleInstagramOauthRedirectStatus() {
 
 function loadInstagramClients() {
     $.ajax({
-        url: API_BASE + '/getClients.php',
+        url: API_BASE + '/client/getClients.php',
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -619,7 +619,7 @@ function loadInstagramAccountsForSelectedClient() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getInstagramSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load connected accounts.');
@@ -640,7 +640,7 @@ function bindInstagramSettings(settings) {
     $('#metaConfigId').val(settings.metaConfigId || '');
     $('#redirectUrl').val(settings.redirectUrl || settings.defaultRedirectUrl || '');
     $('#metaAppSecret').val('').attr('placeholder', settings.hasAppSecret ? 'Saved — leave blank to keep current secret' : '');
-    $('#webhookCallbackUrl').val(BASE_URL + '/api/instagramWebhook.php');
+    $('#webhookCallbackUrl').val(BASE_URL + '/api/instagram/instagramWebhook.php');
     $('#webhookVerifyToken').val(settings.webhookVerifyToken || '(will be generated when you save)');
 
     updateConnectButtonState();
@@ -694,7 +694,7 @@ function validateInstagramSettings() {
 }
 
 function loadInstagramSettings() {
-    $.getJSON(API_BASE + '/getInstagramSettings.php')
+    $.getJSON(API_BASE + '/instagram/getInstagramSettings.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Instagram settings.');
@@ -725,7 +725,7 @@ function saveInstagramSettings() {
     $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
 
     $.ajax({
-        url: API_BASE + '/saveInstagramSettings.php',
+        url: API_BASE + '/instagram/saveInstagramSettings.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: {
@@ -793,7 +793,7 @@ function handleLinkedinOauthRedirectStatus() {
 }
 
 function loadLinkedinSettings() {
-    $.getJSON(API_BASE + '/getLinkedinSettings.php')
+    $.getJSON(API_BASE + '/linkedin/getLinkedinSettings.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load LinkedIn settings.');
@@ -826,7 +826,7 @@ function saveLinkedinSettingsRequest() {
     $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
 
     $.ajax({
-        url: API_BASE + '/saveLinkedinSettings.php',
+        url: API_BASE + '/linkedin/saveLinkedinSettings.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: {
@@ -876,7 +876,7 @@ function loadLinkedinAccountForSelectedClient() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getLinkedinSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/linkedin/getLinkedinSettings.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load LinkedIn connection.');
@@ -923,7 +923,7 @@ function loadLinkedinOrganizationsForSelect() {
     $select.html('<option value="">Loading organizations...</option>');
     $error.addClass('d-none').text('');
 
-    $.getJSON(API_BASE + '/getLinkedinOrganizations.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/linkedin/getLinkedinOrganizations.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 $select.html('<option value="">No organizations available</option>');
@@ -960,7 +960,7 @@ function saveLinkedinOrganizationSelection() {
     }
 
     $.ajax({
-        url: API_BASE + '/saveLinkedinOrganization.php',
+        url: API_BASE + '/linkedin/saveLinkedinOrganization.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { clientId: clientId, organizationId: organizationId, csrfToken: CSRF_TOKEN },
@@ -987,7 +987,7 @@ function disconnectLinkedinAccountRequest(accountId) {
     }
 
     $.ajax({
-        url: API_BASE + '/disconnectLinkedinAccount.php',
+        url: API_BASE + '/linkedin/disconnectLinkedinAccount.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { accountId: accountId, csrfToken: CSRF_TOKEN },
@@ -1014,7 +1014,7 @@ function disconnectInstagramAccount(accountId) {
     }
 
     $.ajax({
-        url: API_BASE + '/disconnectInstagramAccount.php',
+        url: API_BASE + '/instagram/disconnectInstagramAccount.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { accountId: accountId, csrfToken: CSRF_TOKEN },
@@ -1072,7 +1072,7 @@ function handlePinterestOauthRedirectStatus() {
 }
 
 function loadPinterestSettings() {
-    $.getJSON(API_BASE + '/getPinterestSettings.php')
+    $.getJSON(API_BASE + '/pinterest/getPinterestSettings.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Pinterest settings.');
@@ -1105,7 +1105,7 @@ function savePinterestSettingsRequest() {
     $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
 
     $.ajax({
-        url: API_BASE + '/savePinterestSettings.php',
+        url: API_BASE + '/pinterest/savePinterestSettings.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: {
@@ -1155,7 +1155,7 @@ function loadPinterestAccountForSelectedClient() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getPinterestSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/pinterest/getPinterestSettings.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Pinterest connection.');
@@ -1202,7 +1202,7 @@ function loadPinterestBoardsForSelect() {
     $select.html('<option value="">Loading boards...</option>');
     $error.addClass('d-none').text('');
 
-    $.getJSON(API_BASE + '/getPinterestBoards.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/pinterest/getPinterestBoards.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 $select.html('<option value="">No boards available</option>');
@@ -1239,7 +1239,7 @@ function savePinterestBoardSelection() {
     }
 
     $.ajax({
-        url: API_BASE + '/savePinterestBoard.php',
+        url: API_BASE + '/pinterest/savePinterestBoard.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { clientId: clientId, boardId: boardId, csrfToken: CSRF_TOKEN },
@@ -1266,7 +1266,7 @@ function disconnectPinterestAccountRequest(accountId) {
     }
 
     $.ajax({
-        url: API_BASE + '/disconnectPinterestAccount.php',
+        url: API_BASE + '/pinterest/disconnectPinterestAccount.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { accountId: accountId, csrfToken: CSRF_TOKEN },
@@ -1326,7 +1326,7 @@ function handleGbpOauthRedirectStatus() {
 }
 
 function loadGbpSettings() {
-    $.getJSON(API_BASE + '/getGoogleBusinessProfileSettings.php')
+    $.getJSON(API_BASE + '/google-business-profile/getGoogleBusinessProfileSettings.php')
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Google Business Profile settings.');
@@ -1359,7 +1359,7 @@ function saveGbpSettingsRequest() {
     $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
 
     $.ajax({
-        url: API_BASE + '/saveGoogleBusinessProfileSettings.php',
+        url: API_BASE + '/google-business-profile/saveGoogleBusinessProfileSettings.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: {
@@ -1409,7 +1409,7 @@ function loadGbpAccountForSelectedClient() {
         return;
     }
 
-    $.getJSON(API_BASE + '/getGoogleBusinessProfileSettings.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/google-business-profile/getGoogleBusinessProfileSettings.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 window.showToast && window.showToast('danger', res && res.message ? res.message : 'Unable to load Google Business Profile connection.');
@@ -1458,7 +1458,7 @@ function loadGbpAccountsForSelect() {
     $select.html('<option value="">Loading accounts...</option>');
     $error.addClass('d-none').text('');
 
-    $.getJSON(API_BASE + '/getGoogleBusinessProfileAccounts.php', { clientId: clientId })
+    $.getJSON(API_BASE + '/google-business-profile/getGoogleBusinessProfileAccounts.php', { clientId: clientId })
         .done(function(res) {
             if (!res || !res.success) {
                 $select.html('<option value="">No accounts available</option>');
@@ -1499,7 +1499,7 @@ function loadGbpLocationsForSelect() {
     $select.prop('disabled', false).html('<option value="">Loading locations...</option>');
     $error.addClass('d-none').text('');
 
-    $.getJSON(API_BASE + '/getGoogleBusinessProfileLocations.php', { clientId: clientId, googleAccountId: googleAccountId })
+    $.getJSON(API_BASE + '/google-business-profile/getGoogleBusinessProfileLocations.php', { clientId: clientId, googleAccountId: googleAccountId })
         .done(function(res) {
             if (!res || !res.success) {
                 $select.html('<option value="">No locations available</option>');
@@ -1542,7 +1542,7 @@ function saveGbpLocationSelection() {
     }
 
     $.ajax({
-        url: API_BASE + '/saveGoogleBusinessProfileLocation.php',
+        url: API_BASE + '/google-business-profile/saveGoogleBusinessProfileLocation.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { clientId: clientId, googleAccountId: googleAccountId, googleLocationId: googleLocationId, csrfToken: CSRF_TOKEN },
@@ -1569,7 +1569,7 @@ function disconnectGbpAccountRequest(accountId) {
     }
 
     $.ajax({
-        url: API_BASE + '/disconnectGoogleBusinessProfileAccount.php',
+        url: API_BASE + '/google-business-profile/disconnectGoogleBusinessProfileAccount.php',
         type: 'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN },
         data: { accountId: accountId, csrfToken: CSRF_TOKEN },

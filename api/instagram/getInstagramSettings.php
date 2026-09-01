@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/InstagramAutomation.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/InstagramAutomation.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -23,7 +23,7 @@ try {
     respond(true, 'Instagram settings loaded successfully.', [
         'instagramSettings' => getInstagramSettings($con),
         'instagramAccounts' => getInstagramAccounts($con, $clientId),
-        'defaultRedirectUrl' => BASE_URL . '/api/instagramOauthCallback.php',
+        'defaultRedirectUrl' => BASE_URL . '/api/instagram/instagramOauthCallback.php',
     ]);
 } catch (Throwable $e) {
     respond(false, $e->getMessage());

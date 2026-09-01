@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/mailer.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/mailer.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 error_reporting(E_ALL);

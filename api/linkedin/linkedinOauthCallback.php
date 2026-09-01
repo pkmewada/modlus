@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/permission-helper.php';
-require_once __DIR__ . '/../includes/LinkedInAutomation.php';
-require_once __DIR__ . '/../includes/leadActivityLogger.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/permission-helper.php';
+require_once __DIR__ . '/../../includes/LinkedInAutomation.php';
+require_once __DIR__ . '/../../includes/leadActivityLogger.php';
 
 function redirectWithLinkedinStatus(string $status, string $message, int $clientId = 0): void
 {
@@ -45,7 +45,7 @@ if (!$settings) {
 
 $redirectUri = $settings['redirectUrl'] !== ''
     ? $settings['redirectUrl']
-    : BASE_URL . '/api/linkedinOauthCallback.php';
+    : BASE_URL . '/api/linkedin/linkedinOauthCallback.php';
 
 try {
     $tokenResponse = linkedinTokenRequest('https://www.linkedin.com/oauth/v2/accessToken', [

@@ -402,7 +402,7 @@ function pinterestAccountBelongsToClient(mysqli $con, int $accountId, int $clien
 }
 
 /**
- * Saves the board a client chose. Caller (api/savePinterestBoard.php) is
+ * Saves the board a client chose. Caller (api/pinterest/savePinterestBoard.php) is
  * responsible for re-verifying the boardId is actually one the
  * authenticated Pinterest user owns (server-side, not just trusting what
  * the browser posted) before calling this.
