@@ -486,7 +486,7 @@ function buildLeaveDeductionRows(leave, deductions) {
     // reducing pay.
     const categories = [
         {days: leave.paidLeaveCoveredDays, amount: deductions.paidLeaveCoveredAmount, label: 'Paid Leave (Within Entitlement)'},
-        {days: leave.approvedPaidLeaveExcessDays, amount: deductions.excessPaidLeaveAmount, label: 'Excess Paid Leave (Beyond Entitlement)'},
+        {days: leave.approvedPaidLeaveExcessDays, amount: deductions.excessPaidLeaveAmount, label: 'Excess Un-Paid Leave (Beyond Entitlement)'},
         {days: leave.approvedUnpaidLeaveDays, amount: deductions.unpaidLeaveAmount, label: 'Unpaid Leave'},
         {days: leave.probationLeaveDays, amount: deductions.probationLeaveAmount, label: 'Probation Period Leave'},
         {days: leave.noticeLeaveDays, amount: deductions.noticeLeaveAmount, label: 'Notice Period Leave'},
@@ -614,7 +614,7 @@ function bindSalarySlip(data) {
         {label: 'Birthday Paid Leave', value: numberValue(leave.birthdayPaidLeaveDays)},
         {label: 'Quota Paid Leave', value: numberValue(leave.quotaPaidLeaveDays)},
         {label: 'Paid Leave Covered', value: numberValue(leave.paidLeaveCoveredDays)},
-        {label: 'Excess Paid Leave', value: numberValue(leave.approvedPaidLeaveExcessDays)},
+        {label: 'Excess Un-Paid Leave', value: numberValue(leave.approvedPaidLeaveExcessDays)},
         {label: 'Paid Leave Remaining', value: numberValue(leave.paidLeaveRemainingDays)},
         {label: 'Approved Unpaid Leave', value: numberValue(leave.approvedUnpaidLeaveDays)},
         {label: 'Probation Leave', value: numberValue(leave.probationLeaveDays)},
