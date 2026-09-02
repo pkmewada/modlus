@@ -1579,6 +1579,20 @@ function markMailFailed(int $logId, string $errorMessage): void
 | Universal Send + Log Wrapper
 |--------------------------------------------------------------------------
 */
+
+// Local-dev safeguard: blocks every real mail send (all functions above
+// route through sendLoggedMail()) whenever the app is running on
+// localhost/127.0.0.1, so no salary/payroll (or any other) data is ever
+// emailed to real recipients while testing locally. No-op in production,
+// since HTTP_HOST there is never localhost.
+function isLocalhostRequest(): bool
+{
+    $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+    $host = explode(':', $host)[0];
+
+    return in_array($host, ['localhost', '127.0.0.1', '::1'], true);
+}
+
 function sendLoggedMail(
     string $moduleName,
     int $referenceId,
@@ -1597,6 +1611,12 @@ function sendLoggedMail(
         $recipientName,
         $subjectLine
     );
+
+    if (isLocalhostRequest()) {
+        writeMailLog("BLOCKED (localhost testing) - {$moduleName}/{$mailType} to {$recipientEmail}: {$subjectLine}");
+        markMailSent($logId);
+        return true;
+    }
 
     try {
 
