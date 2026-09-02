@@ -124,3 +124,8 @@
 [2026-08-04 12:42:14] ======================================
 2026-08-07 15:34:04 - LEAVE APPLY: Sending mail to sahilvisual23@gmail.com
 2026-08-07 15:34:06 - LEAVE APPLY SUCCESS: Mail sent to sahilvisual23@gmail.com
+2026-09-02 11:51:35 - BLOCKED (localhost testing) - test/verificationCheck to verify@example.com: Guard verification - should not send
+2026-09-02 11:55:18 - BLOCKED (localhost testing) - payroll/salarySlipApproved to pkmewada@gmail.com: Salary Slip - August 2026
+2026-09-02 12:17:31 - BLOCKED (localhost testing) - payroll/salarySlipApproved to pkmewada@gmail.com: Salary Slip - August 2026
+2026-09-02 12:21:58 - BLOCKED (localhost testing) - payroll/salarySlipApproved to pkmewada@gmail.com: Salary Slip - August 2026
+2026-09-02 12:24:58 - BLOCKED (localhost testing) - payroll/salarySlipApproved to akanksharma2003@gmail.com: Salary Slip - August 2026
