@@ -104,7 +104,7 @@ All transitions are validated server-side in `includes/SocialContentProductionEn
 
 ## Assignment flow
 
-The manager assigns a task to an active `employeeusers` row with `designationName = 'Video Editor'`. Reassignment is allowed from `ASSIGNED`, `IN_PROGRESS`, or `CORRECTION` — the old assignee isn't deleted from history, just superseded (`assigned`/`reassigned` history rows track it).
+The manager assigns a task to an active `employeeusers` row with `designationName = 'Video Editor' OR `designationName` = 'Video Editor'. Reassignment is allowed from `ASSIGNED`, `IN_PROGRESS`, or `CORRECTION` — the old assignee isn't deleted from history, just superseded (`assigned`/`reassigned` history rows track it).
 
 ## Correction flow
 
