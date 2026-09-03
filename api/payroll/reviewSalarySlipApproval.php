@@ -68,6 +68,14 @@ try {
             respond(false, 'Salary slip not found.');
         }
 
+        // A leave application (or other attendance data) may have been
+        // approved/changed after this slip was submitted but before a
+        // reviewer acts on it -- refresh it here so approval is never
+        // based on a stale submission-time snapshot. No-op once the slip
+        // is no longer 'pending'.
+        $engine->refreshPendingCalculation($salarySlipId);
+        $slip = $engine->getSlip($salarySlipId);
+
         if ((float)$paymentPayload['paymentAmount'] > (float)$slip['netPay']) {
             respond(false, 'Payment amount cannot be greater than net payable amount.');
         }

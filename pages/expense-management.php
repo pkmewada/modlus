@@ -47,7 +47,8 @@ $selectQuery = "
         ee.rejectedBy,
         ee.rejectedAt,
         ee.createdBy,
-        ee.createdAt
+        ee.createdAt,
+        ee.paymentStatus
 
     FROM employeeExpenses ee
     LEFT JOIN employeeusers eu 
@@ -405,6 +406,7 @@ if ($employeeStmt) {
                                         <th>Expense Date</th>
                                         <th>Remark</th>
                                         <th>Status</th>
+                                        <th>Payment Status</th>
                                         <th>Added By</th>
                                         <th>Created At</th>
                                         <th>Actions</th>
@@ -479,6 +481,31 @@ if ($employeeStmt) {
                                         
                                                 <span class="btn btn-outline-warning btn-sm">
                                                     Pending
+                                                </span>
+                                        
+                                            <?php endif; ?>
+                                        
+                                        </td>
+                                        
+                                        <!-- PAYMENT STATUS -->
+                                        <td>
+                                        
+                                            <?php if ($row['paymentStatus'] === 'paid'): ?>
+                                        
+                                                <span class="btn btn-outline-success btn-sm">
+                                                    Paid
+                                                </span>
+                                        
+                                            <?php elseif ($row['paymentStatus'] === 'unpaid'): ?>
+                                        
+                                                <span class="btn btn-outline-warning btn-sm">
+                                                    Unpaid
+                                                </span>
+                                        
+                                            <?php else: ?>
+                                        
+                                                <span class="btn btn-outline-secondary btn-sm">
+                                                    -
                                                 </span>
                                         
                                             <?php endif; ?>
@@ -584,6 +611,7 @@ if ($employeeStmt) {
                                                 </div>
                                         
                                             <?php endif; ?>
+                                        
                                         
                                         </td>
                                     </tr>

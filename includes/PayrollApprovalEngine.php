@@ -289,6 +289,74 @@ private function getEmployeeDetails(int $employeeId): ?array
         return $row ?: null;
     }
 
+    /**
+     * Recalculates a still-pending slip from current live leave/attendance
+     * data and updates its stored snapshot in place. A leave application
+     * can legitimately be approved (or rejected/edited) after a slip was
+     * submitted but before a reviewer acts on it -- without this, approval
+     * would silently lock in whatever was true at submission time, even
+     * though calculateSalarySlip() itself has always correctly reflected
+     * the current data. No-op for a slip that is no longer 'pending':
+     * approved/rejected slips are a historical record and are never
+     * recalculated. Does not touch calculateSalarySlip()/PayrollEngine.php
+     * or any payroll formula -- it only re-runs the existing calculation
+     * at a later point in time and re-persists the result.
+     */
+    public function refreshPendingCalculation(int $salarySlipId): array
+    {
+        $this->ensureTables();
+        $slip = $this->getSlip($salarySlipId);
+
+        if (!$slip || (string)$slip['status'] !== 'pending') {
+            return ['success' => false, 'message' => 'Salary slip not found or no longer pending.'];
+        }
+
+        $calculation = $this->payrollEngine->calculateSalarySlip(
+            (int)$slip['employeeId'],
+            (string)$slip['periodStart'],
+            (string)$slip['periodEnd']
+        );
+
+        if (empty($calculation['success'])) {
+            return [
+                'success' => false,
+                'message' => (string)($calculation['message'] ?? 'Unable to recalculate salary slip.'),
+            ];
+        }
+
+        $data = (array)$calculation['data'];
+        $calculationJson = json_encode($data, JSON_UNESCAPED_SLASHES);
+
+        if ($calculationJson === false) {
+            return ['success' => false, 'message' => 'Unable to prepare salary slip snapshot.'];
+        }
+
+        $gross = (float)($data['earnings']['grossEarnings'] ?? 0);
+        $deductions = (float)($data['deductions']['totalDeductions'] ?? 0);
+        $reimbursements = (float)($data['reimbursements']['totalReimbursements'] ?? 0);
+        $netPay = (float)($data['netPay'] ?? 0);
+
+        $stmt = mysqli_prepare(
+            $this->con,
+            "UPDATE payrollSalarySlips
+             SET calculationJson = ?,
+                 grossEarnings = ?,
+                 totalDeductions = ?,
+                 totalReimbursements = ?,
+                 netPay = ?
+             WHERE id = ?
+             AND status = 'pending'"
+        );
+        mysqli_stmt_bind_param($stmt, 'sddddi', $calculationJson, $gross, $deductions, $reimbursements, $netPay, $salarySlipId);
+        $saved = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        return [
+            'success' => (bool)$saved,
+            'message' => $saved ? 'Salary slip recalculated.' : 'Unable to refresh salary slip.',
+        ];
+    }
+
     public function listSlips(string $status = '', string $month = ''): array
     {
         $this->ensureTables();

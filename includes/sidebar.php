@@ -110,6 +110,10 @@ $menuGroups = [
         'items' => [
             ['route' => 'calendar', 'label' => 'Calendar'],
             ['route' => 'social-data-entry', 'label' => 'Social Media Data'],
+            ['route' => 'social-content-production', 'label' => 'Social Content Production'],
+            ['route' => 'social-content-approval', 'label' => 'Social Content Approval'],
+            ['route' => 'social-content-publishing', 'label' => 'Social Content Publishing'],
+            ['route' => 'social-content-analytics', 'label' => 'Social Content Analytics'],
         ],
     ],
     [

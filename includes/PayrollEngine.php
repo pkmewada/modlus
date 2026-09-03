@@ -419,30 +419,13 @@ class PayrollEngine
             ? (float)($employee['deductionAmount'] ?? 0)
             : 0.0;
 
-        $halfDayPercent = (float)$settings['halfDayDeductionPercent'];
-            if($this->isEmployeeInProbation( $employee, $settings, $periodStart) ){
-                $halfDayPercent =
-                (float)$settings['probationLeaveDeductionPercent'];
-            }
-            
-        $halfDayDeduction = 0;
-        
-        
-        
-
-
-if(
-    (float)$leave['probationLeaveDays'] <= 0
-){
-
-    $halfDayDeduction =
-        $dailyRate
-        *
-        (float)$attendance['deductibleHalfDays']
-        *
-        ((float)$settings['halfDayDeductionPercent'] / 100);
-
-}
+        // employeeAttendance-based half-day deduction is currently disabled
+        // by business decision -- attendance data (halfDays/deductibleHalfDays)
+        // is still computed above and returned for display on the salary
+        // slip, it just no longer feeds into any deduction or payable-days
+        // calculation. Leave-based deductions (paid/excess/unpaid/
+        // probation/notice/informed/uninformed) are entirely unaffected.
+        $halfDayDeduction = 0.0;
 
         // Broken into named, per-category amounts (rather than only a single
         // summed $leaveDeduction) so the salary slip can show HR exactly how
@@ -497,7 +480,7 @@ if(
             - (float)$leave['noticeLeaveDays']
             - (float)$leave['informedLeaveDays']
             - (float)$leave['uninformedLeaveDays']
-            - ((float)$attendance['deductibleHalfDays'] * ((float)$settings['halfDayDeductionPercent'] / 100))
+            // employeeAttendance half-day deduction disabled -- see $halfDayDeduction above
         );
 
         $grossEarnings = $baseGrossEarnings;

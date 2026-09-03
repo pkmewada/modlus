@@ -1,11 +1,13 @@
 <?php
 /*
 |--------------------------------------------------------------------------
-| Social Media — Client Health Overview (DUMMY / FRONTEND ONLY)
+| Social Media — Client Health Overview
 |--------------------------------------------------------------------------
 |
-| UI prototype only. All data below is fabricated in DUMMY_DB in the
-| script — there are no AJAX calls and no DB writes.
+| Backed by the same api/social-content/*.php endpoints and
+| includes/socialContentEngine.php as pages/social-data-entry.php — this
+| page just aggregates every client's plan/entries for a month instead of
+| one client at a time.
 |
 | Problem this solves: pages/social-data-entry.php is a per-client editor.
 | At 50+ clients x 5 platforms x 2+ features, nobody should have to open
@@ -495,33 +497,41 @@ include __DIR__ . '/../includes/sidebar.php';
                 <div class="sov-scope-strip" id="sovModalScope"></div>
 
                 <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label" for="sovFormTitle">Content Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="sovFormTitle" maxlength="120"
-                               placeholder="e.g. Independence Day creative">
+                    <div class="col-md-6">
+                        <label class="form-label" for="sovFormHandle">Social Media Handle <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="sovFormHandle" maxlength="150" placeholder="Instagram">
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label" for="sovFormStatus">Status</label>
-                        <select class="form-select" id="sovFormStatus">
-                            <option value="draft">Draft</option>
-                            <option value="ready">Ready</option>
-                            <option value="scheduled">Scheduled</option>
-                            <option value="posted">Posted</option>
+                    <div class="col-md-6">
+                        <label class="form-label" for="sovFormPostType">Post Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="sovFormPostType">
+                            <option value="">Select post type</option>
+                            <option value="Post">Post</option>
+                            <option value="Reel">Reel</option>
+                            <option value="Story">Story</option>
+                            <option value="Carousel">Carousel</option>
+                            <option value="Video">Video</option>
                         </select>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="sovFormRawContent">Raw Content <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="sovFormRawContent" placeholder="Enter Raw Content*">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="sovFormSong">Song (URL)</label>
+                        <input type="url" class="form-control" id="sovFormSong" placeholder="https://example.com/song">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="sovFormReference">Reference <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="sovFormReference" placeholder="Where Did This Idea Come From?">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="sovFormTitle">Title</label>
+                        <input type="text" class="form-control" id="sovFormTitle" maxlength="120" placeholder="Enter Content Notes">
+                    </div>
                     <div class="col-12">
-                        <label class="form-label" for="sovFormCaption">Caption / Description</label>
-                        <textarea class="form-control" id="sovFormCaption" rows="3"
-                                  placeholder="Caption, hashtags, copy notes..."></textarea>
-                    </div>
-                    <div class="col-md-7">
-                        <label class="form-label" for="sovFormLink">Creative / Reference Link</label>
-                        <input type="url" class="form-control" id="sovFormLink" placeholder="https://drive.google.com/...">
-                    </div>
-                    <div class="col-md-5">
-                        <label class="form-label" for="sovFormRemarks">Remarks</label>
-                        <input type="text" class="form-control" id="sovFormRemarks" maxlength="120"
-                               placeholder="Internal note (optional)">
+                        <label class="form-label" for="sovFormDescription">Content Description</label>
+                        <textarea class="form-control" id="sovFormDescription" rows="3"
+                                  placeholder="Enter content details here..."></textarea>
                     </div>
                 </div>
             </div>
@@ -541,149 +551,68 @@ include __DIR__ . '/../includes/sidebar.php';
 
 <script>
 /* ==========================================================================
-   FRONTEND-ONLY PROTOTYPE — DUMMY_DB is fabricated in the browser.
-   Nothing here is persisted. Four TODO(api) markers show where real
-   endpoints slot in later.
+   Real CRUD, backed by api/social-content/*.php (SocialContentEngine) —
+   same backend as pages/social-data-entry.php, aggregated across every
+   client at once instead of one client at a time.
    ========================================================================== */
 $(function () {
 
     // ----------------------------------------------------------------------
-    // 1. DUMMY DATA
+    // 1. CATALOG (clients / platforms / features) — loaded once from the DB
     // ----------------------------------------------------------------------
-    const PLATFORMS = [
-        { id: 1, name: 'Instagram', icon: 'ri-instagram-line' },
-        { id: 2, name: 'Facebook',  icon: 'ri-facebook-circle-line' },
-        { id: 3, name: 'LinkedIn',  icon: 'ri-linkedin-box-line' },
-        { id: 4, name: 'Pinterest', icon: 'ri-pinterest-line' },
-        { id: 5, name: 'YouTube',   icon: 'ri-youtube-line' }
-    ];
-
-    const FEATURES = {
-        1: [ { id: 101, name: 'Static Post' }, { id: 102, name: 'Reel' },  { id: 103, name: 'Story' } ],
-        2: [ { id: 201, name: 'Static Post' }, { id: 202, name: 'Video Post' } ],
-        3: [ { id: 301, name: 'Article' },     { id: 302, name: 'Carousel' } ],
-        4: [ { id: 401, name: 'Pin' },          { id: 402, name: 'Idea Pin' } ],
-        5: [ { id: 501, name: 'Video' },        { id: 502, name: 'Shorts' } ]
-    };
-
-    function seeded(seed) {
-        let s = seed % 2147483647;
-        if (s <= 0) s += 2147483646;
-        return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
-    }
-
-    // Deterministic 50-client roster, no manual typing of 50 names.
-    const NAME_PREFIX = ['Acme','Blue Ocean','Nova','Silver Leaf','Prime','Sunrise','Urban','Crestline','Bright','Northgate',
-                          'Golden','Riverside','Vertex','Skyline','Meadow','Copper','Pinehill','Coastal','Everline','Bright Peak'];
-    const NAME_TYPE = ['Retail','Foods','Fitness Studio','Apparel','Realty','Clinic','Academy','Tech','Beauty Bar','Travels',
-                        'Interiors','Motors','Bakery','Consulting','Media House'];
-    const NAME_SUFFIX = ['Pvt Ltd','& Co','Group','Enterprises','LLP'];
-
-    const CLIENTS = [];
-    for (let i = 1; i <= 52; i++) {
-        const name = NAME_PREFIX[i % NAME_PREFIX.length] + ' ' +
-                     NAME_TYPE[(i * 3) % NAME_TYPE.length] + ' ' +
-                     NAME_SUFFIX[(i * 7) % NAME_SUFFIX.length];
-        CLIENTS.push({ id: i, name: name, code: 'CL' + String(i).padStart(3, '0') });
-    }
-
-    // Each client only runs a subset of the 5 platforms (mirrors real
-    // per-client "allowed platforms" from the onboarding form).
-    const clientPlatformCache = {};
-    function allowedPlatforms(clientId) {
-        if (clientPlatformCache[clientId]) return clientPlatformCache[clientId];
-        const rand = seeded(clientId * 13);
-        const count = 2 + Math.floor(rand() * 3); // 2..4 platforms
-        const pool = PLATFORMS.slice();
-        const picked = [];
-        while (picked.length < count && pool.length) {
-            const idx = Math.floor(rand() * pool.length);
-            picked.push(pool.splice(idx, 1)[0]);
-        }
-        picked.sort((a, b) => a.id - b.id);
-        clientPlatformCache[clientId] = picked;
-        return picked;
-    }
+    const CATALOG = { clients: [], platforms: [], features: {} };
 
     const STATUS_LABEL = { draft: 'Draft', ready: 'Ready', scheduled: 'Scheduled', posted: 'Posted' };
 
-    const SAMPLE_TITLES = [
-        'Festive offer creative', 'Behind the scenes reel', 'Customer testimonial',
-        'New arrival teaser', 'Weekend flash sale', 'Product spotlight',
-        'Founder story carousel', 'Monthly recap post'
-    ];
-    const SAMPLE_CAPTIONS = [
-        'Final copy approved by the client. Hashtag set A.',
-        'Awaiting creative from the design team.',
-        'Reshared from the brand handle with a localised caption.',
-        'Copy locked, creative link attached below.'
-    ];
+    function loadCatalog() {
+        return $.when(
+            $.ajax({ url: 'api/client/getClients.php', dataType: 'json' }),
+            $.ajax({ url: 'api/deliverables/get-platforms.php', dataType: 'json' }),
+            $.ajax({ url: 'api/deliverables/get-features.php', dataType: 'json' })
+        ).then(function (clientsResp, platformsResp, featuresResp) {
+            const clientsRes = clientsResp[0], platformsRes = platformsResp[0], featuresRes = featuresResp[0];
 
-    const planCache = {};   // 'clientId|month' -> { 'YYYY-MM-DD': [{platformId, featureId}] }
-    let entries = [];       // fake "clientSocialContent" table, shared across all clients
-    let entrySeq = 1;
-    const seededClientMonths = {};
+            CATALOG.clients = (clientsRes.success ? clientsRes.data : [])
+                .map(c => ({ id: Number(c.id), name: c.fullName, code: c.clientCode }));
+            CATALOG.platforms = (platformsRes.success ? platformsRes.data : [])
+                .map(p => ({ id: Number(p.id), name: p.platformName, icon: p.icon || 'ri-apps-line' }));
 
-    /* TODO(api): replace with a bulk GET across clients — e.g.
-       api/deliverables/get-client-calendar-plan.php called per client, or a
-       new api/deliverables/get-calendar-overview.php that returns every
-       client's plan
-       for the month in one call. */
-    function getPlan(clientId, month) {
-        const key = clientId + '|' + month;
-        if (planCache[key]) return planCache[key];
-
-        const rand = seeded(clientId * 7919 + parseInt(month.replace('-', ''), 10));
-        const [y, m] = month.split('-').map(Number);
-        const daysInMonth = new Date(y, m, 0).getDate();
-        const plan = {};
-        const platforms = allowedPlatforms(clientId);
-
-        for (let d = 1; d <= daysInMonth; d++) {
-            if (rand() > 0.42) continue;
-            const dateStr = month + '-' + String(d).padStart(2, '0');
-            const slots = [];
-            platforms.forEach(p => {
-                if (rand() > 0.55) return;
-                const feats = FEATURES[p.id];
-                const f = feats[Math.floor(rand() * feats.length)];
-                slots.push({ platformId: p.id, featureId: f.id });
+            CATALOG.features = {};
+            (featuresRes.success ? featuresRes.data : []).forEach(f => {
+                const pid = Number(f.platformId);
+                (CATALOG.features[pid] = CATALOG.features[pid] || []).push({ id: Number(f.id), name: f.featureName });
             });
-            if (slots.length) plan[dateStr] = slots;
-        }
 
-        planCache[key] = plan;
-        return plan;
+            if (!clientsRes.success) notify('danger', clientsRes.message || 'Failed to load clients.');
+            if (!platformsRes.success) notify('danger', platformsRes.message || 'Failed to load platforms.');
+            if (!featuresRes.success) notify('danger', featuresRes.message || 'Failed to load features.');
+        }, function () {
+            notify('danger', 'Network error while loading clients/platforms/features.');
+        });
     }
 
-    /* TODO(api): replace with GET api/getSocialContent.php (bulk, all clients for the month) */
-    function seedEntries(clientId, month) {
-        const seedKey = clientId + '|' + month;
-        if (seededClientMonths[seedKey]) return;
-        seededClientMonths[seedKey] = true;
+    // ----------------------------------------------------------------------
+    // 1b. SCOPE DATA — every client's planned slots + filled entries for the month
+    // ----------------------------------------------------------------------
+    let currentPlan = {};   // { 'YYYY-MM-DD': [{clientId, platformId, featureId}] }, all clients
+    let entries = [];       // clientSocialContent rows, all clients, for the current month
 
-        const plan = getPlan(clientId, month);
-        const rand = seeded(clientId * 104729 + parseInt(month.replace('-', ''), 10));
-        const statuses = ['draft', 'ready', 'scheduled', 'posted'];
+    function loadOverviewData(month) {
+        return $.when(
+            $.ajax({ url: 'api/social-content/get-plan.php', data: { clientId: 0, month: month }, dataType: 'json' }),
+            $.ajax({ url: 'api/social-content/get-entries.php', data: { clientId: 0, month: month }, dataType: 'json' })
+        ).then(function (planResp, entriesResp) {
+            const planRes = planResp[0], entriesRes = entriesResp[0];
 
-        Object.keys(plan).forEach(date => {
-            plan[date].forEach(slot => {
-                if (rand() > 0.6) return; // ~60% of planned slots already filled
-                entries.push({
-                    id: entrySeq++,
-                    clientId: clientId,
-                    date: date,
-                    platformId: slot.platformId,
-                    featureId: slot.featureId,
-                    title: SAMPLE_TITLES[Math.floor(rand() * SAMPLE_TITLES.length)],
-                    caption: SAMPLE_CAPTIONS[Math.floor(rand() * SAMPLE_CAPTIONS.length)],
-                    link: '',
-                    status: statuses[Math.floor(rand() * statuses.length)],
-                    remarks: '',
-                    updatedBy: 'Priya K.',
-                    updatedAt: date + ' 11:20'
-                });
-            });
+            currentPlan = (planRes && planRes.success) ? (planRes.data || {}) : {};
+            if (planRes && !planRes.success) notify('danger', planRes.message || 'Failed to load calendar plan.');
+
+            entries = (entriesRes && entriesRes.success) ? (entriesRes.data || []) : [];
+            if (entriesRes && !entriesRes.success) notify('danger', entriesRes.message || 'Failed to load entries.');
+        }, function () {
+            notify('danger', 'Network error while loading data.');
+            currentPlan = {};
+            entries = [];
         });
     }
 
@@ -692,16 +621,16 @@ $(function () {
     // ----------------------------------------------------------------------
     function esc(str) { return $('<div>').text(str == null ? '' : String(str)).html(); }
 
-    function clientById(id) { return CLIENTS.find(c => c.id === Number(id)); }
-    function platformById(id) { return PLATFORMS.find(p => p.id === Number(id)) || { name: 'Unknown', icon: 'ri-apps-line' }; }
+    function clientById(id) { return CATALOG.clients.find(c => c.id === Number(id)); }
+    function platformById(id) { return CATALOG.platforms.find(p => p.id === Number(id)) || { name: 'Unknown', icon: 'ri-apps-line' }; }
     function featureById(platformId, featureId) {
-        const list = FEATURES[Number(platformId)] || [];
+        const list = CATALOG.features[Number(platformId)] || [];
         return list.find(f => f.id === Number(featureId)) || { name: 'Unknown' };
     }
 
     function findEntry(clientId, date, platformId, featureId) {
         return entries.find(e =>
-            e.clientId === Number(clientId) && e.date === date &&
+            e.clientId === Number(clientId) && e.contentDate === date &&
             e.platformId === Number(platformId) && e.featureId === Number(featureId)
         );
     }
@@ -753,6 +682,7 @@ $(function () {
     let entryModal = null;
     let formDirty = false;
     let activeModalContext = null; // { clientId, date, platformId, featureId, entryId }
+    let sovClientChoices = null;
 
     // ----------------------------------------------------------------------
     // 4. BOOTSTRAP FILTER OPTIONS
@@ -769,24 +699,6 @@ $(function () {
         return html;
     }
 
-    $('#sovMonth').html(buildMonthOptions());
-    $('#sovPlatform').append(PLATFORMS.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join(''));
-    $('#sovQueueClient').append(CLIENTS.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
-    $('#sovClientSearch').append(CLIENTS.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
-    state.month = $('#sovMonth').val();
-
-    // searchable client dropdown — type to filter, pick one, reuses the
-    // Choices.js library already loaded site-wide (includes/header.php)
-    let sovClientChoices = null;
-    if (window.Choices) {
-        sovClientChoices = new Choices('#sovClientSearch', {
-            searchEnabled: true,
-            searchPlaceholderValue: 'Search by client name...',
-            itemSelectText: '',
-            shouldSort: false
-        });
-    }
-
     // ----------------------------------------------------------------------
     // 5. COMPUTE CLIENT HEALTH (matrix rows + pending pool), for the month
     // ----------------------------------------------------------------------
@@ -794,19 +706,18 @@ $(function () {
         const rows = [];
         const pending = [];
 
-        CLIENTS.forEach(client => {
-            seedEntries(client.id, state.month);
-            const plan = getPlan(client.id, state.month);
-            const platforms = allowedPlatforms(client.id);
-
+        CATALOG.clients.forEach(client => {
             const perPlatform = {};
-            platforms.forEach(p => { perPlatform[p.id] = { planned: 0, filled: 0 }; });
+            CATALOG.platforms.forEach(p => { perPlatform[p.id] = { planned: 0, filled: 0 }; });
 
             let totalPlanned = 0, totalFilled = 0;
 
-            Object.keys(plan).forEach(date => {
-                plan[date].forEach(slot => {
+            Object.keys(currentPlan).forEach(date => {
+                currentPlan[date].forEach(slot => {
+                    if (slot.clientId !== client.id) return;
+
                     const entry = findEntry(client.id, date, slot.platformId, slot.featureId);
+                    if (!perPlatform[slot.platformId]) perPlatform[slot.platformId] = { planned: 0, filled: 0 };
                     perPlatform[slot.platformId].planned++;
                     totalPlanned++;
                     if (entry) { perPlatform[slot.platformId].filled++; totalFilled++; }
@@ -824,7 +735,6 @@ $(function () {
 
             rows.push({
                 client: client,
-                platforms: platforms,
                 perPlatform: perPlatform,
                 totalPlanned: totalPlanned,
                 totalFilled: totalFilled,
@@ -859,7 +769,7 @@ $(function () {
     // 7. RENDER — MATRIX
     // ----------------------------------------------------------------------
     function visiblePlatformColumns() {
-        return state.platform ? PLATFORMS.filter(p => String(p.id) === state.platform) : PLATFORMS;
+        return state.platform ? CATALOG.platforms.filter(p => String(p.id) === state.platform) : CATALOG.platforms;
     }
 
     function renderMatrixHead() {
@@ -1075,6 +985,21 @@ $(function () {
         renderQueue(currentHealth.pending);
     }
 
+    // fetches the plan + entries for the current month (all clients), then renders
+    function reloadAndRender() {
+        $('#sovMatrixBody').html(`
+            <tr><td colspan="3">
+                <div class="sov-empty">
+                    <div class="spinner-border text-primary spinner-border-sm mb-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="fs-12">Loading...</div>
+                </div>
+            </td></tr>
+        `);
+        return loadOverviewData(state.month).then(renderAll);
+    }
+
     // ----------------------------------------------------------------------
     // 11. ENTRY FORM (reused for both "Fill Now" and "Edit")
     // ----------------------------------------------------------------------
@@ -1090,6 +1015,8 @@ $(function () {
             ? '<i class="ri-edit-box-line me-2 text-primary"></i> Update Entry'
             : '<i class="ri-add-box-line me-2 text-primary"></i> Add Entry');
 
+        const ctxDate = ctx.date || ctx.contentDate || '';
+
         $('#sovModalScope').html(`
             <span>Client: <b>${esc(client ? client.name : 'Unknown')}</b></span>
             <span class="text-muted">·</span>
@@ -1097,15 +1024,17 @@ $(function () {
             <span class="text-muted">·</span>
             <span>Feature: <b>${esc(feature.name)}</b></span>
             <span class="text-muted">·</span>
-            <span>Date: <b>${esc(fmtLongDate(ctx.date))}</b></span>
+            <span>Date: <b>${esc(fmtLongDate(ctxDate))}</b></span>
         `);
 
+        $('#sovFormHandle').val(ctx.socialMediaHandle || '');
+        $('#sovFormPostType').val(ctx.postType || '');
+        $('#sovFormRawContent').val(ctx.rawContent || '');
+        $('#sovFormSong').val(ctx.songUrl || '');
+        $('#sovFormReference').val(ctx.ideaReference || '');
         $('#sovFormTitle').val(ctx.title || '');
-        $('#sovFormStatus').val(ctx.status || 'draft');
-        $('#sovFormCaption').val(ctx.caption || '');
-        $('#sovFormLink').val(ctx.link || '');
-        $('#sovFormRemarks').val(ctx.remarks || '');
-        $('.sov-form-field.is-invalid, #sovFormTitle, #sovFormLink').removeClass('is-invalid');
+        $('#sovFormDescription').val(ctx.contentDescription || '');
+        $('#sovFormHandle, #sovFormPostType, #sovFormRawContent, #sovFormReference').removeClass('is-invalid');
 
         if (!entryModal) entryModal = new bootstrap.Modal(document.getElementById('sovEntryModal'));
         entryModal.show();
@@ -1113,54 +1042,63 @@ $(function () {
 
     function validateForm() {
         const errors = [];
-        $('#sovFormTitle, #sovFormLink').removeClass('is-invalid');
+        $('#sovFormHandle, #sovFormPostType, #sovFormRawContent, #sovFormReference').removeClass('is-invalid');
 
-        const title = $('#sovFormTitle').val().trim();
-        if (!title) { $('#sovFormTitle').addClass('is-invalid'); errors.push('Content title is required.'); }
-        if (title && title.length < 3) { $('#sovFormTitle').addClass('is-invalid'); errors.push('Content title is too short.'); }
+        const handle = $('#sovFormHandle').val().trim();
+        if (!handle) { $('#sovFormHandle').addClass('is-invalid'); errors.push('Social media handle is required.'); }
 
-        const link = $('#sovFormLink').val().trim();
-        if (link && !/^https?:\/\//i.test(link)) {
-            $('#sovFormLink').addClass('is-invalid');
-            errors.push('Reference link must start with http:// or https://');
-        }
+        const postType = $('#sovFormPostType').val();
+        if (!postType) { $('#sovFormPostType').addClass('is-invalid'); errors.push('Post type is required.'); }
+
+        const rawContent = $('#sovFormRawContent').val().trim();
+        if (!rawContent) { $('#sovFormRawContent').addClass('is-invalid'); errors.push('Raw content is required.'); }
+
+        const reference = $('#sovFormReference').val().trim();
+        if (!reference) { $('#sovFormReference').addClass('is-invalid'); errors.push('Reference is required.'); }
+
         return errors;
     }
 
-    /* TODO(api): replace with POST api/saveSocialContent.php */
     function saveEntry() {
         const errors = validateForm();
         if (errors.length) { notify('danger', errors[0]); return; }
 
         const ctx = activeModalContext;
+        const date = ctx.date || ctx.contentDate;
         const record = {
             clientId: ctx.clientId,
-            date: ctx.date,
+            contentDate: date,
             platformId: ctx.platformId,
             featureId: ctx.featureId,
+            socialMediaHandle: $('#sovFormHandle').val().trim(),
+            postType: $('#sovFormPostType').val(),
+            rawContent: $('#sovFormRawContent').val().trim(),
+            songUrl: $('#sovFormSong').val().trim(),
+            ideaReference: $('#sovFormReference').val().trim(),
             title: $('#sovFormTitle').val().trim(),
-            caption: $('#sovFormCaption').val().trim(),
-            link: $('#sovFormLink').val().trim(),
-            status: $('#sovFormStatus').val(),
-            remarks: $('#sovFormRemarks').val().trim(),
-            updatedBy: 'You',
-            updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
+            contentDescription: $('#sovFormDescription').val().trim()
         };
+        const payload = Object.assign({}, record, ctx.entryId ? { id: ctx.entryId } : {});
 
-        if (ctx.entryId) {
-            const idx = entries.findIndex(e => e.id === ctx.entryId);
-            if (idx > -1) entries[idx] = { ...entries[idx], ...record };
-            notify('success', 'Entry updated successfully.');
-        } else {
-            entries.push({ id: entrySeq++, ...record });
-            notify('success', 'Entry added — matrix and queue updated.');
-        }
-
-        entryModal.hide();
-        renderAll();
+        $.ajax({
+            url: 'api/social-content/save-entry.php',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            dataType: 'json'
+        }).then(function (res) {
+            if (!res || !res.success) {
+                notify('danger', (res && res.message) || 'Failed to save entry.');
+                return;
+            }
+            notify('success', ctx.entryId ? 'Entry updated successfully.' : 'Entry added — matrix and queue updated.');
+            entryModal.hide();
+            reloadAndRender();
+        }, function () {
+            notify('danger', 'Network error while saving entry.');
+        });
     }
 
-    /* TODO(api): replace with POST api/deleteSocialContent.php */
     function deleteEntry(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) { notify('danger', 'Entry not found. Refresh and try again.'); return; }
@@ -1168,24 +1106,38 @@ $(function () {
         const client = clientById(entry.clientId);
         confirmDialog({
             title: 'Delete this entry?',
-            html: `<b>${esc(entry.title)}</b><br><span class="text-muted">` +
+            html: `<b>${esc(entry.title || entry.rawContent || 'Untitled')}</b><br><span class="text-muted">` +
                   `${esc(client ? client.name : '')} · ${esc(platformById(entry.platformId).name)} · ` +
-                  `${esc(featureById(entry.platformId, entry.featureId).name)} · ${esc(fmtLongDate(entry.date))}</span>` +
+                  `${esc(featureById(entry.platformId, entry.featureId).name)} · ${esc(fmtLongDate(entry.contentDate))}</span>` +
                   `<br><br>This cannot be undone.`,
             icon: 'warning',
             confirmText: 'Delete'
         }).then(res => {
             if (!res.isConfirmed) return;
-            entries = entries.filter(e => e.id !== id);
-            notify('success', 'Entry deleted. The slot is back in the pending queue.');
-            renderAll();
+
+            $.ajax({
+                url: 'api/social-content/delete-entry.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id }),
+                dataType: 'json'
+            }).then(function (response) {
+                if (!response || !response.success) {
+                    notify('danger', (response && response.message) || 'Failed to delete entry.');
+                    return;
+                }
+                notify('success', 'Entry deleted. The slot is back in the pending queue.');
+                reloadAndRender();
+            }, function () {
+                notify('danger', 'Network error while deleting entry.');
+            });
         });
     }
 
     // ----------------------------------------------------------------------
     // 12. EVENTS — filter bar
     // ----------------------------------------------------------------------
-    $('#sovMonth').on('change', function () { state.month = $(this).val(); state.queuePage = 1; renderAll(); });
+    $('#sovMonth').on('change', function () { state.month = $(this).val(); state.queuePage = 1; reloadAndRender(); });
     $('#sovPlatform').on('change', function () { state.platform = $(this).val(); state.queuePage = 1; renderAll(); });
     $('#sovAttentionOnly').on('change', function () { state.attentionOnly = $(this).is(':checked'); renderMatrixBody(currentHealth.rows); });
 
@@ -1343,7 +1295,26 @@ $(function () {
     // ----------------------------------------------------------------------
     // 18. INITIAL RENDER
     // ----------------------------------------------------------------------
-    renderAll();
+    loadCatalog().then(function () {
+        $('#sovMonth').html(buildMonthOptions());
+        $('#sovPlatform').append(CATALOG.platforms.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join(''));
+        $('#sovQueueClient').append(CATALOG.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
+        $('#sovClientSearch').append(CATALOG.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
+        state.month = $('#sovMonth').val();
+
+        // searchable client dropdown — type to filter, pick one, reuses the
+        // Choices.js library already loaded site-wide (includes/header.php)
+        if (window.Choices) {
+            sovClientChoices = new Choices('#sovClientSearch', {
+                searchEnabled: true,
+                searchPlaceholderValue: 'Search by client name...',
+                itemSelectText: '',
+                shouldSort: false
+            });
+        }
+
+        reloadAndRender();
+    });
 });
 </script>
 

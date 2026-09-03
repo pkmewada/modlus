@@ -49,6 +49,7 @@ $menuGroups = [
         'icon' => 'ti ti-user-circle',
         'items' => [
             ['route' => 'emp-dashboard', 'label' => 'Dashboard'],
+            ['route' => 'emp-content-production', 'label' => 'Content Production'],
         ],
     ],
     [
