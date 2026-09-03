@@ -321,8 +321,29 @@ $(function () {
         if (task.status === 'APPROVED') {
             btns.push(`<button class="btn btn-sm btn-success scp-mark-ready" data-id="${task.id}"><i class="ri-checkbox-circle-line"></i> Mark Ready</button>`);
         }
+        if (task.status === 'PRODUCTION_READY') {
+            btns.push(automationCell(task));
+        }
         btns.push(`<button class="btn btn-sm btn-outline-primary scp-view" data-id="${task.id}" title="View history"><i class="ri-eye-line"></i></button>`);
         return btns.join(' ');
+    }
+
+    // Phase 4.5 — Send to Automation. Only ever shown for PRODUCTION_READY
+    // tasks. Once a handoff row exists (pending/sent/failed) the engine
+    // itself will never allow another one for this task (UNIQUE(productionId)),
+    // so the button is replaced by a passive status badge in every case —
+    // there is no retry action in this phase.
+    function automationCell(task) {
+        if (task.automationStatus === 'sent') {
+            return `<span class="badge bg-success-transparent" title="Automation post #${task.automationSocialPostId || ''}"><i class="ri-send-plane-fill"></i> Sent to Automation</span>`;
+        }
+        if (task.automationStatus === 'failed') {
+            return `<span class="badge bg-danger-transparent" title="${esc(task.automationErrorMessage || 'Automation handoff failed.')}"><i class="ri-error-warning-line"></i> Automation Failed</span>`;
+        }
+        if (task.automationStatus === 'pending') {
+            return `<span class="badge bg-warning-transparent"><i class="ri-time-line"></i> Automation Pending</span>`;
+        }
+        return `<button class="btn btn-sm btn-dark scp-send-automation" data-id="${task.id}"><i class="ri-send-plane-line"></i> Send to Automation</button>`;
     }
 
     function renderRows() {
@@ -419,6 +440,47 @@ $(function () {
         }).then(res => {
             if (!res.isConfirmed) return;
             manageTask({ id: id, action: 'mark_ready' });
+        });
+    });
+
+    // ------------------------------------------------------------------
+    // SEND TO AUTOMATION (Phase 4.5)
+    // ------------------------------------------------------------------
+    $(document).on('click', '.scp-send-automation', function () {
+        const $btn = $(this);
+        if ($btn.prop('disabled')) return; // prevent double-click while a request is already in flight
+        const id = $btn.data('id');
+
+        confirmDialog({
+            title: 'Send this task to Automation?',
+            html: 'This will create a scheduled social post from the approved production output. Only Instagram/Facebook image posts are currently supported.',
+            icon: 'question',
+            confirmText: 'Send to Automation',
+            color: '#212529'
+        }).then(res => {
+            if (!res.isConfirmed) return;
+
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Sending…');
+
+            $.ajax({
+                url: 'api/social-content-production/send-to-automation.php',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { 'X-CSRF-Token': CSRF_TOKEN },
+                data: JSON.stringify({ productionId: id }),
+                dataType: 'json'
+            }).done(function (res) {
+                if (!res || !res.success) {
+                    notify('danger', (res && res.message) || 'Unable to send this task to Automation.');
+                    $btn.prop('disabled', false).html('<i class="ri-send-plane-line"></i> Send to Automation');
+                    return;
+                }
+                notify('success', res.message || 'Sent to Automation.');
+                loadTasks(); // re-fetches automationStatus so the row updates to the "Sent" badge
+            }).fail(function () {
+                notify('danger', 'Network error while sending to Automation.');
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line"></i> Send to Automation');
+            });
         });
     });
 
