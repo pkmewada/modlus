@@ -1,16 +1,17 @@
 <?php
 /*
 |--------------------------------------------------------------------------
-| Social Media — Data Entry (DUMMY / FRONTEND ONLY)
+| Social Media — Data Entry
 |--------------------------------------------------------------------------
 |
-| UI prototype only. Every list on this page is served from the DUMMY_DB
-| object in the script below — there are no AJAX calls and no DB writes.
-|
-| Intended real-world flow (mirrors pages/calendar.php):
+| Real-world flow (mirrors pages/calendar.php):
 |   calendar.php    -> decides WHICH dates a client/platform/feature runs on
-|                      (clientCalendarPlans.selectedDates)
+|                      (clientCalendarPlans.selectedDates, read here via
+|                      api/social-content/get-plan.php)
 |   this page       -> fills in WHAT goes out on each of those dates
+|                      (clientSocialContent, read/written here via
+|                      api/social-content/get-entries.php, save-entry.php,
+|                      delete-entry.php)
 |
 | Dimensions handled here: date x client x platform x feature.
 |
@@ -19,6 +20,7 @@ include __DIR__ . "/../includes/auth.php";
 include __DIR__ . "/../includes/db.php";
 include __DIR__ . '/../includes/header.php';
 include __DIR__ . '/../includes/sidebar.php';
+$sdeCurrentUserId = (int)($_SESSION['userId'] ?? 0);
 ?>
 
 <style>
@@ -526,7 +528,7 @@ include __DIR__ . '/../includes/sidebar.php';
                         <label class="form-label" for="sdeFormStatus">Status</label>
                         <select class="form-select" id="sdeFormStatus">
                             <option value="draft">Draft</option>
-                            <option value="ready">Ready</option>
+                            <option value="ready" disabled title="Set automatically by Complete Entry">Ready</option>
                             <option value="scheduled">Scheduled</option>
                             <option value="posted">Posted</option>
                         </select>
@@ -565,144 +567,94 @@ include __DIR__ . '/../includes/sidebar.php';
 
 <script>
 /* ==========================================================================
-   FRONTEND-ONLY PROTOTYPE
-   All data below is fabricated in the browser. Nothing is persisted.
-   Replace DUMMY_DB + the four TODO markers with real endpoints later.
+   Real CRUD, backed by api/social-content/*.php (SocialContentEngine).
+   Planned slots come from clientCalendarPlans (get-plan.php); filled-in
+   content lives in clientSocialContent (get-entries/save-entry/delete-entry).
    ========================================================================== */
 $(function () {
 
+    const CURRENT_USER_ID = <?php echo (int)$sdeCurrentUserId; ?>;
+
     // ----------------------------------------------------------------------
-    // 1. DUMMY DATA
+    // 1. CATALOG (clients / platforms / features) — loaded once from the DB
     // ----------------------------------------------------------------------
-    const DUMMY_DB = {
-        clients: [
-            { id: 1, name: 'Acme Retail Pvt Ltd' },
-            { id: 2, name: 'Blue Ocean Foods' },
-            { id: 3, name: 'Nova Fitness Studio' }
-        ],
-        platforms: [
-            { id: 1, name: 'Instagram', icon: 'ri-instagram-line' },
-            { id: 2, name: 'Facebook',  icon: 'ri-facebook-circle-line' },
-            { id: 3, name: 'LinkedIn',  icon: 'ri-linkedin-box-line' }
-        ],
-        features: {
-            1: [ { id: 101, name: 'Static Post' }, { id: 102, name: 'Reel' },      { id: 103, name: 'Story' } ],
-            2: [ { id: 201, name: 'Static Post' }, { id: 202, name: 'Video Post' }, { id: 203, name: 'Story' } ],
-            3: [ { id: 301, name: 'Article' },     { id: 302, name: 'Carousel' } ]
-        }
-    };
+    const CATALOG = { clients: [], platforms: [], features: {} };
 
     const STATUS_LABEL = {
         pending: 'Not Filled', draft: 'Draft', ready: 'Ready',
         scheduled: 'Scheduled', posted: 'Posted'
     };
 
-    const SAMPLE_TITLES = [
-        'Festive offer creative', 'Behind the scenes reel', 'Customer testimonial',
-        'New arrival teaser', 'Weekend flash sale', 'Product spotlight',
-        'Founder story carousel', 'Monthly recap post'
-    ];
+    function loadCatalog() {
+        return $.when(
+            $.ajax({ url: 'api/client/getClients.php', dataType: 'json' }),
+            $.ajax({ url: 'api/deliverables/get-platforms.php', dataType: 'json' }),
+            $.ajax({ url: 'api/deliverables/get-features.php', dataType: 'json' })
+        ).then(function (clientsResp, platformsResp, featuresResp) {
+            const clientsRes = clientsResp[0], platformsRes = platformsResp[0], featuresRes = featuresResp[0];
 
-    const SAMPLE_CAPTIONS = [
-        'Final copy approved by the client. Hashtag set A.',
-        'Awaiting creative from the design team.',
-        'Reshared from the brand handle with a localised caption.',
-        'Copy locked, creative link attached below.'
-    ];
+            CATALOG.clients = (clientsRes.success ? clientsRes.data : [])
+                .map(c => ({ id: Number(c.id), name: c.fullName }));
+            CATALOG.platforms = (platformsRes.success ? platformsRes.data : [])
+                .map(p => ({ id: Number(p.id), name: p.platformName, icon: p.icon || 'ri-apps-line' }));
 
-    // deterministic pseudo-random so the dummy board looks the same on reload
-    function seeded(seed) {
-        let s = seed % 2147483647;
-        if (s <= 0) s += 2147483646;
-        return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
-    }
-
-    const planCache = {};   // clientId|month -> { 'YYYY-MM-DD': [{platformId, featureId}] }
-    let entries = [];       // the fake "clientSocialContent" table
-    let entrySeq = 1;
-
-    /* TODO(api): replace with GET api/deliverables/get-client-calendar-plan.php (selectedDates) */
-    function getClientPlan(clientId, month) {
-        const key = clientId + '|' + month;
-        if (planCache[key]) return planCache[key];
-
-        const rand = seeded(clientId * 7919 + parseInt(month.replace('-', ''), 10));
-        const [y, m] = month.split('-').map(Number);
-        const daysInMonth = new Date(y, m, 0).getDate();
-        const plan = {};
-
-        for (let d = 1; d <= daysInMonth; d++) {
-            if (rand() > 0.42) continue;                       // ~40% of days are planned
-            const dateStr = month + '-' + String(d).padStart(2, '0');
-            const slots = [];
-            DUMMY_DB.platforms.forEach(p => {
-                if (rand() > 0.55) return;
-                const feats = DUMMY_DB.features[p.id];
-                const f = feats[Math.floor(rand() * feats.length)];
-                slots.push({ platformId: p.id, featureId: f.id });
+            CATALOG.features = {};
+            (featuresRes.success ? featuresRes.data : []).forEach(f => {
+                const pid = Number(f.platformId);
+                (CATALOG.features[pid] = CATALOG.features[pid] || []).push({ id: Number(f.id), name: f.featureName });
             });
-            if (slots.length) plan[dateStr] = slots;
-        }
 
-        planCache[key] = plan;
-        return plan;
-    }
-
-    // clientId === '' (All Clients) merges every client's plan for the month,
-    // tagging each slot with its clientId so the board can tell them apart.
-    function getPlan(clientId, month) {
-        if (clientId) {
-            const plan = getClientPlan(clientId, month);
-            const out = {};
-            Object.keys(plan).forEach(date => {
-                out[date] = plan[date].map(s => ({ ...s, clientId: clientId }));
-            });
-            return out;
-        }
-
-        const merged = {};
-        DUMMY_DB.clients.forEach(c => {
-            const plan = getClientPlan(c.id, month);
-            Object.keys(plan).forEach(date => {
-                const slots = plan[date].map(s => ({ ...s, clientId: c.id }));
-                merged[date] = (merged[date] || []).concat(slots);
-            });
-        });
-        return merged;
-    }
-
-    /* TODO(api): replace with GET api/getSocialContent.php */
-    function seedEntriesForClient(clientId, month) {
-        if (entries.some(e => e.clientId === clientId && e.date.startsWith(month))) return;
-
-        const plan = getClientPlan(clientId, month);
-        const rand = seeded(clientId * 104729 + parseInt(month.replace('-', ''), 10));
-        const statuses = ['draft', 'ready', 'scheduled', 'posted'];
-
-        Object.keys(plan).forEach(date => {
-            plan[date].forEach(slot => {
-                if (rand() > 0.6) return;                      // ~60% of slots already filled
-                entries.push({
-                    id: entrySeq++,
-                    clientId: clientId,
-                    date: date,
-                    platformId: slot.platformId,
-                    featureId: slot.featureId,
-                    title: SAMPLE_TITLES[Math.floor(rand() * SAMPLE_TITLES.length)],
-                    caption: SAMPLE_CAPTIONS[Math.floor(rand() * SAMPLE_CAPTIONS.length)],
-                    link: '',
-                    status: statuses[Math.floor(rand() * statuses.length)],
-                    remarks: '',
-                    updatedBy: 'Priya K.',
-                    updatedAt: date + ' 11:20'
-                });
-            });
+            if (!clientsRes.success) notify('danger', clientsRes.message || 'Failed to load clients.');
+            if (!platformsRes.success) notify('danger', platformsRes.message || 'Failed to load platforms.');
+            if (!featuresRes.success) notify('danger', featuresRes.message || 'Failed to load features.');
+        }, function () {
+            notify('danger', 'Network error while loading clients/platforms/features.');
         });
     }
 
-    function seedEntries(clientId, month) {
-        if (clientId) { seedEntriesForClient(clientId, month); return; }
-        DUMMY_DB.clients.forEach(c => seedEntriesForClient(c.id, month));
+    // ----------------------------------------------------------------------
+    // 1b. SCOPE DATA (planned slots + filled entries) for the current client/month
+    // ----------------------------------------------------------------------
+    const planCache = {};      // 'clientId|month' -> { 'YYYY-MM-DD': [{clientId, platformId, featureId}] }
+    let currentPlan = {};      // planCache entry for state.clientId/state.month
+    let entries = [];          // clientSocialContent rows for state.clientId/state.month
+
+    function fetchPlan(clientId, month) {
+        const key = (clientId || 0) + '|' + month;
+        if (planCache[key]) return $.Deferred().resolve(planCache[key]).promise();
+
+        return $.ajax({ url: 'api/social-content/get-plan.php', data: { clientId: clientId || 0, month: month }, dataType: 'json' })
+            .then(function (res) {
+                if (!res || !res.success) notify('danger', (res && res.message) || 'Failed to load calendar plan.');
+                const data = (res && res.success) ? (res.data || {}) : {};
+                planCache[key] = data;
+                return data;
+            }, function () {
+                notify('danger', 'Network error while loading calendar plan.');
+                return $.Deferred().reject().promise();
+            });
+    }
+
+    function loadScope() {
+        const clientId = state.clientId || 0;
+        const month = state.month;
+
+        return $.when(
+            fetchPlan(clientId, month),
+            $.ajax({ url: 'api/social-content/get-entries.php', data: { clientId: clientId, month: month }, dataType: 'json' })
+        ).then(function (planData, entriesResp) {
+            currentPlan = planData || {};
+            const entriesRes = entriesResp && entriesResp[0];
+            if (entriesRes && entriesRes.success) {
+                entries = entriesRes.data || [];
+            } else {
+                entries = [];
+                if (entriesRes) notify('danger', entriesRes.message || 'Failed to load entries.');
+            }
+        }, function () {
+            currentPlan = {};
+            entries = [];
+        });
     }
 
     // ----------------------------------------------------------------------
@@ -713,26 +665,22 @@ $(function () {
     }
 
     function clientById(id) {
-        return DUMMY_DB.clients.find(c => c.id === Number(id)) || { name: 'Unknown' };
+        return CATALOG.clients.find(c => c.id === Number(id)) || { name: 'Unknown' };
     }
 
     function platformById(id) {
-        return DUMMY_DB.platforms.find(p => p.id === Number(id)) || { name: 'Unknown', icon: 'ri-apps-line' };
+        return CATALOG.platforms.find(p => p.id === Number(id)) || { name: 'Unknown', icon: 'ri-apps-line' };
     }
 
     function featureById(platformId, featureId) {
-        const list = DUMMY_DB.features[Number(platformId)] || [];
+        const list = CATALOG.features[Number(platformId)] || [];
         return list.find(f => f.id === Number(featureId)) || { name: 'Unknown' };
-    }
-
-    function slotKey(date, platformId, featureId) {
-        return date + '|' + platformId + '|' + featureId;
     }
 
     function findEntry(clientId, date, platformId, featureId) {
         return entries.find(e =>
             e.clientId === Number(clientId) &&
-            e.date === date &&
+            e.contentDate === date &&
             e.platformId === Number(platformId) &&
             e.featureId === Number(featureId)
         );
@@ -741,6 +689,14 @@ $(function () {
     function fmtLongDate(dateStr) {
         const d = new Date(dateStr + 'T00:00:00');
         return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function fmtDateTime(dt) {
+        if (!dt) return '—';
+        const d = new Date(String(dt).replace(' ', 'T'));
+        if (isNaN(d.getTime())) return dt;
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ', ' +
+               d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
     function notify(type, message) {
@@ -792,22 +748,11 @@ $(function () {
         return html;
     }
 
-    $('#sdeClient').html(
-        '<option value="">All Clients</option>' +
-        DUMMY_DB.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')
-    );
-    $('#sdeMonth').html(buildMonthOptions());
-    $('#sdePlatform').append(DUMMY_DB.platforms.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join(''));
-
-    state.clientId = $('#sdeClient').val() ? Number($('#sdeClient').val()) : '';
-    state.month = $('#sdeMonth').val();
-
     // ----------------------------------------------------------------------
     // 5. RENDER — DATE RAIL
     // ----------------------------------------------------------------------
     function visibleSlots(date) {
-        const plan = getPlan(state.clientId, state.month);
-        let slots = (plan[date] || []).slice();
+        let slots = (currentPlan[date] || []).slice();
 
         if (state.platform) {
             slots = slots.filter(s => String(s.platformId) === state.platform);
@@ -832,8 +777,7 @@ $(function () {
     }
 
     function renderRail() {
-        const plan = getPlan(state.clientId, state.month);
-        const dates = Object.keys(plan).sort();
+        const dates = Object.keys(currentPlan).sort();
         const rail = $('#sdeRail');
 
         const monthLabel = $('#sdeMonth option:selected').text();
@@ -933,11 +877,17 @@ $(function () {
                     : `<div class="sde-caption fst-italic">No data captured for this planned slot yet.</div>`;
 
                 const meta = e
-                    ? `<div class="sde-meta">${esc(e.updatedBy)}<br>${esc(e.updatedAt)}</div>`
+                    ? `<div class="sde-meta">${esc(Number(e.updatedBy) === CURRENT_USER_ID ? 'You' : 'Team member')}<br>${esc(fmtDateTime(e.updatedAt))}</div>`
                     : `<div class="sde-meta">—</div>`;
 
+                const isProductionReady = e && ['ready', 'scheduled', 'posted'].includes(e.status);
+                const completionControl = !e ? '' : isProductionReady
+                    ? `<span class="badge bg-success-transparent" title="Sent to production"><i class="ri-checkbox-circle-line"></i> Production Created</span>`
+                    : `<button class="sde-icon-btn sde-complete-entry" data-id="${e.id}" title="Complete Entry"><i class="ri-send-plane-line"></i></button>`;
+
                 const actions = e
-                    ? `<button class="sde-icon-btn sde-edit" data-id="${e.id}" title="Edit"><i class="ri-pencil-line"></i></button>
+                    ? `${completionControl}
+                       <button class="sde-icon-btn sde-edit" data-id="${e.id}" title="Edit"><i class="ri-pencil-line"></i></button>
                        <button class="sde-icon-btn danger sde-delete" data-id="${e.id}" title="Delete"><i class="ri-delete-bin-line"></i></button>`
                     : `<button class="sde-icon-btn sde-fill" data-platform="${s.platformId}" data-feature="${s.featureId}" title="Add data"><i class="ri-add-line"></i></button>`;
 
@@ -1000,8 +950,7 @@ $(function () {
     // "All Clients" is selected, across every client too)
     function renderAllDatesBoard() {
         const board = $('#sdeBoard');
-        const plan = getPlan(state.clientId, state.month);
-        const dates = Object.keys(plan).sort();
+        const dates = Object.keys(currentPlan).sort();
 
         const dateSlots = dates
             .map(date => ({ date: date, slots: visibleSlots(date) }))
@@ -1044,11 +993,9 @@ $(function () {
         board.html(html);
     }
 
-    function renderAll() {
-        seedEntries(state.clientId, state.month);
-
-        const plan = getPlan(state.clientId, state.month);
-        const dates = Object.keys(plan).sort();
+    // synchronous re-render against whatever is already cached in currentPlan/entries
+    function refreshBoard() {
+        const dates = Object.keys(currentPlan).sort();
 
         // drop the active date if it no longer exists under the current filters;
         // otherwise leave it as-is (including null, which means "All Dates")
@@ -1060,11 +1007,24 @@ $(function () {
         renderBoard();
     }
 
+    // fetches the plan + entries for the current client/month, then renders
+    function reloadAndRender() {
+        $('#sdeBoard').html(`
+            <div class="sde-empty">
+                <div class="spinner-border text-primary spinner-border-sm mb-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="fs-12">Loading...</div>
+            </div>
+        `);
+        return loadScope().then(refreshBoard);
+    }
+
     // ----------------------------------------------------------------------
     // 7. ENTRY FORM
     // ----------------------------------------------------------------------
     function fillFeatureOptions(platformId, selectedFeatureId) {
-        const feats = DUMMY_DB.features[Number(platformId)] || [];
+        const feats = CATALOG.features[Number(platformId)] || [];
         $('#sdeFormFeature').html(
             feats.map(f => `<option value="${f.id}" ${Number(selectedFeatureId) === f.id ? 'selected' : ''}>${esc(f.name)}</option>`).join('')
         );
@@ -1092,11 +1052,11 @@ $(function () {
         `);
 
         $('#sdeFormPlatform').html(
-            DUMMY_DB.platforms.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')
+            CATALOG.platforms.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')
         );
 
-        const date = payload.date || state.activeDate || '';
-        const platformId = payload.platformId || DUMMY_DB.platforms[0].id;
+        const date = payload.contentDate || payload.date || state.activeDate || '';
+        const platformId = payload.platformId || (CATALOG.platforms[0] && CATALOG.platforms[0].id);
 
         $('#sdeFormDate').val(date);
         $('#sdeFormPlatform').val(platformId);
@@ -1105,7 +1065,7 @@ $(function () {
         $('#sdeFormTitle').val(payload.title || '');
         $('#sdeFormStatus').val(payload.status || 'draft');
         $('#sdeFormCaption').val(payload.caption || '');
-        $('#sdeFormLink').val(payload.link || '');
+        $('#sdeFormLink').val(payload.referenceLink || payload.link || '');
         $('#sdeFormRemarks').val(payload.remarks || '');
 
         $('.sde-form .is-invalid').removeClass('is-invalid');
@@ -1141,22 +1101,33 @@ $(function () {
         return errors;
     }
 
-    /* TODO(api): replace with POST api/saveSocialContent.php */
+    // saves via api/social-content/save-entry.php; resolves only on success
+    // (so callers can chain "and then show this extra toast" safely)
     function persistEntry(record) {
-        if (state.editingId) {
-            const idx = entries.findIndex(e => e.id === state.editingId);
-            if (idx > -1) entries[idx] = { ...entries[idx], ...record };
-            notify('success', 'Entry updated successfully.');
-        } else {
-            entries.push({ id: entrySeq++, ...record });
-            notify('success', 'Entry added successfully.');
-        }
+        const payload = Object.assign({}, record, state.editingId ? { id: state.editingId } : {});
 
-        entryModal.hide();
-        state.activeDate = record.date;
-        state.month = record.date.slice(0, 7);
-        if ($('#sdeMonth').val() !== state.month) $('#sdeMonth').val(state.month);
-        renderAll();
+        return $.ajax({
+            url: 'api/social-content/save-entry.php',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            dataType: 'json'
+        }).then(function (res) {
+            if (!res || !res.success) {
+                notify('danger', (res && res.message) || 'Failed to save entry.');
+                return $.Deferred().reject().promise();
+            }
+
+            notify('success', state.editingId ? 'Entry updated successfully.' : 'Entry added successfully.');
+            entryModal.hide();
+            state.activeDate = record.contentDate;
+            state.month = record.contentDate.slice(0, 7);
+            if ($('#sdeMonth').val() !== state.month) $('#sdeMonth').val(state.month);
+            return reloadAndRender();
+        }, function () {
+            notify('danger', 'Network error while saving entry.');
+            return $.Deferred().reject().promise();
+        });
     }
 
     function saveEntry() {
@@ -1171,6 +1142,7 @@ $(function () {
         const featureId = Number($('#sdeFormFeature').val());
 
         // duplicate guard — one entry per date / platform / feature / client
+        // (the server enforces this too, via a DB unique key, as the source of truth)
         const clash = findEntry(state.clientId, date, platformId, featureId);
         if (clash && clash.id !== state.editingId) {
             notify('danger', 'An entry already exists for this date, platform and feature. Edit that entry instead.');
@@ -1179,45 +1151,44 @@ $(function () {
 
         const record = {
             clientId: state.clientId,
-            date: date,
+            contentDate: date,
             platformId: platformId,
             featureId: featureId,
             title: $('#sdeFormTitle').val().trim(),
             caption: $('#sdeFormCaption').val().trim(),
-            link: $('#sdeFormLink').val().trim(),
+            referenceLink: $('#sdeFormLink').val().trim(),
             status: $('#sdeFormStatus').val(),
-            remarks: $('#sdeFormRemarks').val().trim(),
-            updatedBy: 'You',
-            updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
+            remarks: $('#sdeFormRemarks').val().trim()
         };
 
         // off-plan guard — warn, but let the user proceed
-        const plan = getPlan(state.clientId, date.slice(0, 7));
-        const planned = (plan[date] || []).some(s => s.platformId === platformId && s.featureId === featureId);
+        fetchPlan(state.clientId, date.slice(0, 7)).then(function (plan) {
+            const planned = (plan[date] || []).some(s => s.platformId === platformId && s.featureId === featureId);
 
-        if (!planned) {
-            confirmDialog({
-                title: 'Slot is not in the calendar plan',
-                html: `<b>${esc(featureById(platformId, featureId).name)}</b> on <b>${esc(fmtLongDate(date))}</b> ` +
-                      `is not planned for this client. Save it anyway as an extra deliverable?`,
-                icon: 'warning',
-                confirmText: 'Save anyway',
-                color: '#f7b731'
-            }).then(res => {
-                if (!res.isConfirmed) {
-                    notify('info', 'Save cancelled. Nothing was changed.');
-                    return;
-                }
-                persistEntry(record);
-                notify('warning', 'Saved as an off-plan entry — update the Calendar Planner to keep both in sync.');
-            });
-            return;
-        }
+            if (!planned) {
+                confirmDialog({
+                    title: 'Slot is not in the calendar plan',
+                    html: `<b>${esc(featureById(platformId, featureId).name)}</b> on <b>${esc(fmtLongDate(date))}</b> ` +
+                          `is not planned for this client. Save it anyway as an extra deliverable?`,
+                    icon: 'warning',
+                    confirmText: 'Save anyway',
+                    color: '#f7b731'
+                }).then(res => {
+                    if (!res.isConfirmed) {
+                        notify('info', 'Save cancelled. Nothing was changed.');
+                        return;
+                    }
+                    persistEntry(record).then(function () {
+                        notify('warning', 'Saved as an off-plan entry — update the Calendar Planner to keep both in sync.');
+                    });
+                });
+                return;
+            }
 
-        persistEntry(record);
+            persistEntry(record);
+        });
     }
 
-    /* TODO(api): replace with POST api/deleteSocialContent.php */
     function deleteEntry(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) {
@@ -1229,14 +1200,28 @@ $(function () {
             title: 'Delete this entry?',
             html: `<b>${esc(entry.title)}</b><br><span class="text-muted">` +
                   `${esc(platformById(entry.platformId).name)} · ${esc(featureById(entry.platformId, entry.featureId).name)} · ` +
-                  `${esc(fmtLongDate(entry.date))}</span><br><br>This cannot be undone.`,
+                  `${esc(fmtLongDate(entry.contentDate))}</span><br><br>This cannot be undone.`,
             icon: 'warning',
             confirmText: 'Delete'
         }).then(res => {
             if (!res.isConfirmed) return;
-            entries = entries.filter(e => e.id !== id);
-            notify('success', 'Entry deleted. The planned slot is now open again.');
-            renderAll();
+
+            $.ajax({
+                url: 'api/social-content/delete-entry.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id }),
+                dataType: 'json'
+            }).then(function (response) {
+                if (!response || !response.success) {
+                    notify('danger', (response && response.message) || 'Failed to delete entry.');
+                    return;
+                }
+                notify('success', 'Entry deleted. The planned slot is now open again.');
+                reloadAndRender();
+            }, function () {
+                notify('danger', 'Network error while deleting entry.');
+            });
         });
     }
 
@@ -1247,24 +1232,24 @@ $(function () {
         const val = $(this).val();
         state.clientId = val ? Number(val) : '';
         state.activeDate = null;
-        renderAll();
+        reloadAndRender();
         notify('info', 'Switched to ' + $('#sdeClient option:selected').text() + '.');
     });
 
     $('#sdeMonth').on('change', function () {
         state.month = $(this).val();
         state.activeDate = null;
-        renderAll();
+        reloadAndRender();
     });
 
-    $('#sdePlatform').on('change', function () { state.platform = $(this).val(); renderAll(); });
-    $('#sdeStatus').on('change', function () { state.status = $(this).val(); renderAll(); });
+    $('#sdePlatform').on('change', function () { state.platform = $(this).val(); refreshBoard(); });
+    $('#sdeStatus').on('change', function () { state.status = $(this).val(); refreshBoard(); });
 
     let searchTimer = null;
     $('#sdeSearch').on('input', function () {
         const val = $(this).val().trim();
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(function () { state.search = val; renderAll(); }, 250);
+        searchTimer = setTimeout(function () { state.search = val; refreshBoard(); }, 250);
     });
 
     $('#sdeResetBtn').on('click', function () {
@@ -1272,7 +1257,7 @@ $(function () {
         $('#sdeStatus').val('');
         $('#sdeSearch').val('');
         state.platform = state.status = state.search = '';
-        renderAll();
+        refreshBoard();
         notify('info', 'Filters reset.');
     });
 
@@ -1324,6 +1309,36 @@ $(function () {
         deleteEntry($(this).data('id'));
     });
 
+    $('#sdeBoard').on('click', '.sde-complete-entry', function () {
+        const id = $(this).data('id');
+        confirmDialog({
+            title: 'Complete this entry?',
+            html: 'This marks the content as ready and automatically creates a production task for it. You won\'t be able to undo this from here.',
+            icon: 'question',
+            confirmText: 'Complete Entry',
+            color: '#198754'
+        }).then(res => {
+            if (!res.isConfirmed) return;
+            $.ajax({
+                url: 'api/social-content/complete-entry.php',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { 'X-CSRF-Token': CSRF_TOKEN },
+                data: JSON.stringify({ id: id }),
+                dataType: 'json'
+            }).then(function (response) {
+                if (!response || !response.success) {
+                    notify('danger', (response && response.message) || 'Failed to complete entry.');
+                    return;
+                }
+                notify('success', 'Entry completed — production task created.');
+                reloadAndRender();
+            }, function () {
+                notify('danger', 'Network error while completing entry.');
+            });
+        });
+    });
+
     $('#sdeFormPlatform').on('change', function () { fillFeatureOptions($(this).val()); });
     $('#sdeSaveBtn').on('click', saveEntry);
 
@@ -1351,7 +1366,19 @@ $(function () {
     // ----------------------------------------------------------------------
     // 9. INITIAL RENDER
     // ----------------------------------------------------------------------
-    renderAll();
+    loadCatalog().then(function () {
+        $('#sdeClient').html(
+            '<option value="">All Clients</option>' +
+            CATALOG.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')
+        );
+        $('#sdeMonth').html(buildMonthOptions());
+        $('#sdePlatform').append(CATALOG.platforms.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join(''));
+
+        state.clientId = $('#sdeClient').val() ? Number($('#sdeClient').val()) : '';
+        state.month = $('#sdeMonth').val();
+
+        reloadAndRender();
+    });
 });
 </script>
 
