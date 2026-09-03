@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/SocialContentProductionEngine.php';
 require_once __DIR__ . '/InstagramAutomation.php'; // read-only reuse of instagramAccountBelongsToClient() — not modified
+require_once __DIR__ . '/leadActivityLogger.php'; // reuse of the existing saveActivityLog() — no new logging system
 
 /*
 |--------------------------------------------------------------------------
@@ -260,6 +261,23 @@ class SocialAutomationHandoffEngine
                 : 'Failed to create the automation post.';
             $this->markHandoffFailed($handoffId, $message);
 
+            // Phase 4.7: this action was previously completely invisible to
+            // the existing activity log -- reuses saveActivityLog() as-is,
+            // no new logging system. Never logs a token/secret.
+            saveActivityLog($this->con, 'SocialAutomationHandoff', $productionId, 'handoff_failed', 'Send to Automation failed for production task #' . $productionId . ' (handoff #' . $handoffId . '): ' . $message);
+
+            // Phase 6: also visible in the task's OWN history timeline (the
+            // manager's detail modal), not just the site-wide activity log.
+            // One-way call into SocialContentProductionEngine's own public
+            // method -- that engine still never reaches back into this one.
+            (new SocialContentProductionEngine($this->con))->recordExternalEvent(
+                $productionId,
+                'automation_handoff_failed',
+                $message,
+                $createdBy,
+                'admin'
+            );
+
             return [
                 'success' => false,
                 'state' => 'FAILED',
@@ -270,6 +288,18 @@ class SocialAutomationHandoffEngine
         }
 
         $this->markHandoffSent($handoffId, $socialPostId);
+
+        saveActivityLog($this->con, 'SocialAutomationHandoff', $productionId, 'handoff_sent', 'Production task #' . $productionId . ' sent to Automation (handoff #' . $handoffId . ', socialPosts #' . $socialPostId . ', platform: ' . $platform . ').');
+
+        // Phase 6: complete the task's own history lifecycle -- see the
+        // matching comment on the failure path above.
+        (new SocialContentProductionEngine($this->con))->recordExternalEvent(
+            $productionId,
+            'automation_handoff_sent',
+            'Sent to Automation (' . $platform . '), socialPosts #' . $socialPostId . '.',
+            $createdBy,
+            'admin'
+        );
 
         return [
             'success' => true,

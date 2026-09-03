@@ -2743,3 +2743,108 @@ Foundation functionality itself is not blocked.
 Meta App Review/Advanced Access for the `comments` webhook field, and Meta
 Business Verification for the relevant Business Portfolio — both external,
 pending, and untouched by this phase.
+
+---
+
+## 28. Phase 4.7 — Production Hardening & Operational Reliability Audit
+
+**Date**: 2026-09-03. Audit of the now-complete Production Ready → Automation
+pipeline (Phases 4.1–4.6: `includes/SocialAutomationHandoffEngine.php`,
+`socialContentAutomationHandoff`, real Facebook and Instagram publishes
+independently verified in the Phase 4.6 session). This phase is audit-first:
+nothing in `SocialPostEngine.php`, `InstagramAutomation.php`,
+`FacebookPublisher.php`, or `cron/instagramScheduler.php` was found to need
+changing, and none of them were touched.
+
+### Duplicate-publish protection — already sufficient, unchanged
+
+- **Cross-run**: a `flock()`-based single-instance lock
+  (`cron/.instagramScheduler.lock`, `LOCK_EX | LOCK_NB`) prevents two
+  overlapping scheduler invocations on the same host from processing the
+  same due set concurrently. This assumes the standard single-cron,
+  single-host deployment already documented (§11) — a hypothetical
+  multi-host cron setup would need its own coordination, but no evidence of
+  one exists.
+- **Within a run**: `getDueSocialPosts()` only selects `status='scheduled'`;
+  `markSocialPostPublishing()` flips status to `'publishing'` *before* the
+  Meta call, so a crash or a later run never re-selects it via the same
+  query. Recovery (`getStuckSocialPosts()`, `mediaType IN ('image',
+  'carousel')`, Phase A2) instead checks the actually-persisted
+  `instagramMediaId`/`facebookPostId` per platform
+  (`socialScheduledRecoveryPlan()`) — a platform whose success is already
+  recorded is never re-attempted, regardless of why the row was revisited.
+  Verified: a future-`scheduledAt` row and an already-`'published'` row are
+  both correctly excluded from `getDueSocialPosts()`.
+- **Failure isolation**: each due/stuck post is processed inside its own
+  `try/catch` in the scheduler's `foreach` loop — one post's exception does
+  not stop the batch. Verified by code reading (unchanged from Phase 7).
+
+### Ambiguous Meta-success — a real, narrow, documented limitation (not fixed)
+
+**Scenario**: Meta's API call succeeds (a real post is created), but the
+subsequent local `UPDATE` that records `instagramMediaId`/`facebookPostId`
+(and, on the legacy single-platform path, `status='published'` in the same
+statement) fails to persist — e.g. a database connection drop in the
+instant between the Meta response and that write.
+
+**Consequence**: the row is left at `status='publishing'` with the relevant
+media-id column still empty. On the *next* run, `getStuckSocialPosts()`
+picks it up, and `socialScheduledRecoveryPlan()` — which decides "already
+done" purely from that same now-missing media-id column — will conclude
+the platform still needs publishing and **re-attempt it, creating a real
+duplicate post on Meta.**
+
+This was traced precisely (`markSocialPostPublished()`,
+`recordInstagramPlatformResult()`, `markFacebookScheduledPublished()` each
+combine "record the fact of success" and, on the legacy path, the status
+transition into one `UPDATE`) and is a genuine, reproducible-in-principle
+window — but it is **not fixed** in this phase, per explicit instruction:
+a database write failing at that exact instant is not solved by wrapping
+it in a transaction (the `COMMIT` would fail for the same underlying
+reason), and closing it fully would require an idempotency-key/
+reconciliation-against-Meta system, which is out of scope for a hardening
+pass on working architecture. This class of risk is inherent to any
+"call an external API, then write the local result" integration and is
+accepted, not silently ignored.
+
+**Manual reconciliation procedure** (the currently-correct recovery path):
+if the same content is observed published twice on Instagram/Facebook for
+what should be one `socialPosts` row, check `logs/instagram-api.log` and
+`cron/instagramScheduler.log` around the time the row first entered
+`'publishing'` for a real Meta success response that has no matching
+`instagramMediaId`/`facebookPostId` in the database. If found, manually
+`UPDATE` the row with the real id and the correct terminal `status` so
+`getStuckSocialPosts()` stops re-selecting it, then manually delete the
+unwanted duplicate directly on Instagram/Facebook. There is no automated
+recovery for this specific case, and none should be added without a
+broader, explicitly-approved design.
+
+### Activity logging gap found and fixed
+
+`includes/SocialAutomationHandoffEngine.php`'s `resolveAndRegisterHandoff()`
+was the one production-facing action in this entire pipeline that left no
+trace in the existing `leadsActivityLogs` table (`saveActivityLog()`,
+already used throughout this module for every other publish/save action).
+**Fixed minimally**: one `saveActivityLog()` call on success
+(`module='SocialAutomationHandoff'`, `action='handoff_sent'`) and one on
+the `saveSocialPost()` failure path (`action='handoff_failed'`) — the
+existing function, unmodified, no new logging system, no token ever
+logged. Verified: a real regression run produced a real, correctly-worded
+log row.
+
+### Everything else audited — found already correct, unchanged
+
+Account resolution (0/1/2+ active accounts), wrong-client account
+rejection, platform gating (`instagram`/`facebook` only, case-insensitive),
+media validation (missing file / PNG / disguised file / Drive →
+`MANUAL_PUBLISH_REQUIRED`), duplicate-handoff protection
+(`UNIQUE(productionId)`), `SENT`-handoff-implies-real-`socialPostId`
+consistency, and all existing security checks (admin auth, CSRF,
+`canApprove`, client/account ownership, no token exposure, no `companyId`)
+were re-verified this phase and found correct — no code change made to any
+of them.
+
+### Files changed this phase
+
+`includes/SocialAutomationHandoffEngine.php` (activity logging only, ~6
+lines, additive). No schema change. No other file touched.

@@ -353,6 +353,158 @@ class SocialContentProductionEngine
         return $history;
     }
 
+    /**
+     * Phase 6: server-side operational summary for the manager queue —
+     * status breakdown, an overdue count, and per-active-Video-Editor
+     * workload. Never trust client-side counts of an already-filtered
+     * table; this always re-queries the database directly. Accepts the
+     * same clientId/platformId/month filters listTasks() does (not
+     * status/editorId/overdue -- those are the dimensions being counted).
+     *
+     * @param array $filters clientId, platformId, month ('YYYY-MM')
+     */
+    public function getProductionSummary($filters = [])
+    {
+        $where = ['1=1'];
+        $types = '';
+        $params = [];
+
+        if (!empty($filters['clientId'])) {
+            $where[] = 'c.clientId = ?';
+            $types .= 'i';
+            $params[] = (int)$filters['clientId'];
+        }
+        if (!empty($filters['platformId'])) {
+            $where[] = 'c.platformId = ?';
+            $types .= 'i';
+            $params[] = (int)$filters['platformId'];
+        }
+        if (!empty($filters['month']) && preg_match('/^\d{4}-\d{2}$/', $filters['month'])) {
+            $where[] = "DATE_FORMAT(c.contentDate, '%Y-%m') = ?";
+            $types .= 's';
+            $params[] = $filters['month'];
+        }
+        $whereSql = implode(' AND ', $where);
+
+        $statusCounts = [
+            'NEW' => 0, 'ASSIGNED' => 0, 'IN_PROGRESS' => 0, 'SUBMITTED' => 0,
+            'CORRECTION' => 0, 'APPROVED' => 0, 'PRODUCTION_READY' => 0,
+        ];
+
+        $sql = "SELECT p.status, COUNT(*) AS total
+                FROM socialContentProduction p
+                INNER JOIN clientSocialContent c ON c.id = p.clientSocialContentId
+                WHERE $whereSql
+                GROUP BY p.status";
+        $stmt = mysqli_prepare($this->con, $sql);
+        $this->bindIfAny($stmt, $types, $params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        while ($row = mysqli_fetch_assoc($result)) {
+            if (array_key_exists($row['status'], $statusCounts)) {
+                $statusCounts[$row['status']] = (int)$row['total'];
+            }
+        }
+        mysqli_stmt_close($stmt);
+
+        $overdueSql = "SELECT COUNT(*) AS total
+                FROM socialContentProduction p
+                INNER JOIN clientSocialContent c ON c.id = p.clientSocialContentId
+                WHERE $whereSql
+                AND p.dueAt IS NOT NULL AND p.dueAt < NOW()
+                AND p.status NOT IN ('APPROVED','PRODUCTION_READY')";
+        $stmt = mysqli_prepare($this->con, $overdueSql);
+        $this->bindIfAny($stmt, $types, $params);
+        mysqli_stmt_execute($stmt);
+        $overdueCount = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))['total'] ?? 0);
+        mysqli_stmt_close($stmt);
+
+        // Editor workload: every active Video Editor, including those with
+        // zero assigned tasks right now (LEFT JOIN) -- inactive/non-editor
+        // employeeusers rows are excluded entirely, never just hidden.
+        // Filtering happens INSIDE the subquery so a non-matching production
+        // simply doesn't exist for this purpose -- the outer LEFT JOIN from
+        // employeeusers then naturally gives every active Video Editor a
+        // row (zero counts if none of their work matches the filter),
+        // rather than dropping an editor who has real but non-matching work.
+        $workloadSql = "SELECT
+                    e.id AS editorId, e.fullName AS editorName,
+                    SUM(CASE WHEN p.status = 'ASSIGNED' THEN 1 ELSE 0 END) AS assignedCount,
+                    SUM(CASE WHEN p.status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS inProgressCount,
+                    SUM(CASE WHEN p.status = 'SUBMITTED' THEN 1 ELSE 0 END) AS submittedCount,
+                    SUM(CASE WHEN p.status = 'CORRECTION' THEN 1 ELSE 0 END) AS correctionCount,
+                    SUM(CASE WHEN p.dueAt IS NOT NULL AND p.dueAt < NOW() AND p.status NOT IN ('APPROVED','PRODUCTION_READY') THEN 1 ELSE 0 END) AS overdueCount
+                FROM employeeusers e
+                LEFT JOIN (
+                    SELECT p.id, p.assignedEditorId, p.status, p.dueAt
+                    FROM socialContentProduction p
+                    INNER JOIN clientSocialContent c ON c.id = p.clientSocialContentId
+                    WHERE $whereSql
+                ) p ON p.assignedEditorId = e.id
+                WHERE e.employmentStatus = 'Active' AND e.designationName = 'Video Editor'
+                GROUP BY e.id, e.fullName
+                ORDER BY e.fullName";
+        $stmt = mysqli_prepare($this->con, $workloadSql);
+        $this->bindIfAny($stmt, $types, $params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $editorWorkload = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $editorWorkload[] = [
+                'editorId' => (int)$row['editorId'],
+                'editorName' => $row['editorName'],
+                'assignedCount' => (int)$row['assignedCount'],
+                'inProgressCount' => (int)$row['inProgressCount'],
+                'submittedCount' => (int)$row['submittedCount'],
+                'correctionCount' => (int)$row['correctionCount'],
+                'overdueCount' => (int)$row['overdueCount'],
+            ];
+        }
+        mysqli_stmt_close($stmt);
+
+        return [
+            'statusCounts' => $statusCounts,
+            'overdueCount' => $overdueCount,
+            'unassignedCount' => $statusCounts['NEW'],
+            'editorWorkload' => $editorWorkload,
+        ];
+    }
+
+    /**
+     * Phase 6: lets a caller OUTSIDE this engine (specifically
+     * SocialAutomationHandoffEngine, which owns the PRODUCTION_READY ->
+     * Automation boundary) append one append-only history row for an event
+     * that happened to a production task without going through this
+     * engine's own status-transition machinery -- the automation handoff
+     * doesn't change socialContentProduction.status, so transition()'s
+     * validation doesn't apply. This is the one, narrow, intentional
+     * exception to "only this engine writes its own history": the
+     * dependency direction stays one-way (the caller pushes an event in;
+     * this engine never reaches out to or knows about the caller), so the
+     * existing isolation between Production and Automation is preserved.
+     */
+    public function recordExternalEvent($productionId, $action, $remark, $performedBy, $performedByType)
+    {
+        $productionId = (int)$productionId;
+        if ($productionId <= 0) {
+            return;
+        }
+
+        $this->logHistory($productionId, $action, null, null, $remark, $performedBy, $performedByType);
+    }
+
+    private function bindIfAny($stmt, $types, $params)
+    {
+        if ($types === '') {
+            return;
+        }
+        $bindParams = [$stmt, $types];
+        foreach ($params as $key => $val) {
+            $bindParams[] = &$params[$key];
+        }
+        call_user_func_array('mysqli_stmt_bind_param', $bindParams);
+    }
+
     // --- internal helpers ---------------------------------------------
 
     private function listTasks($filters, $forceEditorId)
@@ -380,6 +532,11 @@ class SocialContentProductionEngine
             $where[] = 'c.clientId = ?';
             $types .= 'i';
             $params[] = (int)$filters['clientId'];
+        }
+        if (!empty($filters['platformId'])) {
+            $where[] = 'c.platformId = ?';
+            $types .= 'i';
+            $params[] = (int)$filters['platformId'];
         }
         if (!empty($filters['month']) && preg_match('/^\d{4}-\d{2}$/', $filters['month'])) {
             $where[] = "DATE_FORMAT(c.contentDate, '%Y-%m') = ?";

@@ -290,10 +290,9 @@ Manager actions:
 - Approve
 - Request Correction
 - Mark Production Ready
+- Send to Automation (Phase 4.5, only visible/usable once `PRODUCTION_READY`)
 
-Production Ready does **not** publish content.
-
-No `socialPosts` integration yet.
+`Mark Production Ready` itself still does **not** publish content — it is a separate, explicit `Send to Automation` action (see §5, §18) that creates the `socialPosts` row via `includes/SocialAutomationHandoffEngine.php`.
 
 ---
 
@@ -485,9 +484,8 @@ Do not create redundant docs for trivial changes.
 ## 16. Deferred Work — DO NOT IMPLEMENT SILENTLY
 
 Currently deferred:
-- Production → `socialPosts` handoff
-- publishing automation
-- unified scheduler
+- publishing automation for LinkedIn/Pinterest/GBP (foundations only)
+- unified cross-platform scheduler (a single scheduler already handles Instagram+Facebook; extending it to the deferred platforms above is not started)
 - platform-specific publishing mapping
 - media library
 - transcoding
@@ -553,13 +551,15 @@ Run focused tests and report:
 
 ## 18. Current State / Next Work
 
-Current completed workflow:
+Current completed workflow (Phase 4, complete):
 
-`Data Entry → Complete Entry → Production Task → Assignment → Editor Start → Production Output → Manager Review → Approve/Correction → Production Ready`
+`Data Entry → Complete Entry → Production Task → Assignment → Editor Start → Production Output → Manager Review → Approve/Correction → Production Ready → Send to Automation → socialContentAutomationHandoff → socialPosts → existing cron/instagramScheduler.php → InstagramAutomation.php/FacebookPublisher.php → Meta Graph API → Published Post`
 
-Publishing/Automation handoff is intentionally not connected.
+Production Ready → Automation is now connected (Phases 4.1–4.7), via the existing, unmodified `SocialPostEngine`/`InstagramAutomation`/`FacebookPublisher`/`cron/instagramScheduler.php`. Real Facebook and Instagram publishes (including a real scheduler-driven publish) have been performed and independently verified — see `docs/INSTAGRAM_AUTOMATION_PRODUCTION_STATE.md` §28 for the full audit, real post ids, and documented operational limitations (an "ambiguous Meta success" edge case requiring manual reconciliation; no automatic retry).
 
-The immediate next step after this file is **Phase 3.1: authenticated browser verification and production hardening**, unless the user explicitly changes direction.
+`SocialContentProductionEngine.php` remains isolated from `socialPosts` — the handoff is owned entirely by `includes/SocialAutomationHandoffEngine.php`, a separate engine, per the approved Architecture Lock.
+
+Next work is not yet defined; do not resume LinkedIn/Pinterest/GBP publishing or build a new scheduler unless explicitly requested.
 
 ---
 

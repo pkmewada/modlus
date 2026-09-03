@@ -170,11 +170,20 @@ View only their own assigned tasks (server-enforced — the query is hard-scoped
 - No connection to `socialPosts`, `SocialPostEngine.php`, `InstagramAutomation.php`, or `FacebookPublisher.php` — none of those files were touched, and nothing in this phase writes to `socialPosts`.
 - No cron/scheduler changes.
 
-**`PRODUCTION_READY` does not yet hand off to Social Media Automation.** Reaching that status is purely a business-state marker for this phase.
+**Historical note**: at the time this document was written, `PRODUCTION_READY` did not yet hand off to Social Media Automation — reaching that status was purely a business-state marker. **This has since been built** (Phases 4.1–4.7): a manager's explicit "Send to Automation" action on a `PRODUCTION_READY` task creates a `socialContentAutomationHandoff` row and the corresponding `socialPosts` row, via `includes/SocialAutomationHandoffEngine.php` — a separate engine, not a change to this one. See `docs/INSTAGRAM_AUTOMATION_PRODUCTION_STATE.md` §28 and `docs/MODLUS_SYSTEM_ARCHITECTURE.md` §10.4 for the current, actual behavior; the paragraph below is left for historical context only.
 
-## Future handoff (not built yet)
+## Future handoff (historical — now built, see note above)
 
 A later phase will define a controlled, explicit action that takes a `PRODUCTION_READY` `socialContentProduction` row and creates the corresponding `socialPosts` draft (with the content-production fields — caption, media, song, etc. — added by then). That handoff is deliberately out of scope here so it can be designed with the real production fields in hand, rather than guessed at now.
+
+## Phase 6 — operational monitoring (manager page, additive)
+
+Added to `pages/social-content-production.php` without changing its existing layout/filters/modals:
+- A server-derived **status/overdue summary** row (`api/social-content-production/get-summary.php` → `SocialContentProductionEngine::getProductionSummary()`) — counts per status plus overdue, respecting the client/platform/month filters already on the page. Never computed from the browser's already-filtered task list.
+- An **Editor Workload** table — active Video Editors only, pending-work counts (assigned/in-progress/submitted/correction/overdue); `PRODUCTION_READY` work is deliberately excluded from workload since it's no longer pending.
+- A **Platform** filter, populated from the existing `api/deliverables/get-platforms.php` (no new lookup endpoint).
+- The **Automation status** (sent/pending/failed) is now also shown in the task detail modal's Production Output section, reusing the `automationStatus`/`automationSocialPostId`/`automationErrorMessage` fields `get-tasks.php` already attaches (Phase 4.5) — no new query.
+- `SocialContentProductionEngine::recordExternalEvent()` (new, public) lets `SocialAutomationHandoffEngine` append one append-only history row (`automation_handoff_sent` / `automation_handoff_failed`) to a task's own history timeline when it hands off to Automation — previously that event was only visible in the site-wide activity log, not in this module's own history. This does not change the isolation direction: `SocialContentProductionEngine` still never calls into `SocialAutomationHandoffEngine` or writes to `socialPosts`; the new method only lets an external caller push one event in, exactly like appending to any other append-only log.
 
 ## Development rule (project-wide, not specific to this module)
 
