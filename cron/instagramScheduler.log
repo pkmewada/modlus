@@ -14,3 +14,7 @@
 [2026-08-28 20:24:13] Scheduler run complete. Finalized 0 in-flight, published 0 newly due.
 [2026-08-28 21:17:39] Post #43 (Client: Praveen Mewada (000001)) facebook: failed: This account has no linked Facebook Page to publish to.
 [2026-08-28 21:17:39] Scheduler run complete. Finalized 0 in-flight, published 1 newly due.
+[2026-09-03 15:45:29] Post #20 (Client: Praveen Mewada (000001)) failed: Only photo or video can be accepted as media type.
+[2026-09-03 15:45:29] Scheduler run complete. Finalized 0 in-flight, published 1 newly due.
+[2026-09-03 15:58:09] Post #22 (Client: Praveen Mewada (000001)) published (image). Media ID: 17901371508356646
+[2026-09-03 15:58:09] Scheduler run complete. Finalized 0 in-flight, published 1 newly due.

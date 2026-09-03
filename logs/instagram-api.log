@@ -22,3 +22,37 @@ HTTP Status: 0
 Params: {"image_url":"https:\/\/modlus.in\/uploads\/instagram-posts\/test.jpg","caption":"regression test","access_token":"[REDACTED]"}
 cURL error: SSL certificate problem: unable to get local issuer certificate
 
+[2026-09-03 15:16:36]
+Instagram Graph API network error
+URL: https://graph.facebook.com/v19.0/336886156185070/feed
+Method: POST
+HTTP Status: 0
+Params: {"message":"Modlus automation pipeline test - 2026-09-03","access_token":"[REDACTED]"}
+cURL error: SSL certificate problem: unable to get local issuer certificate
+
+[2026-09-03 15:19:21]
+Instagram Graph API network error
+URL: https://graph.facebook.com/v19.0/336886156185070/feed
+Method: POST
+HTTP Status: 0
+Params: {"message":"Modlus automation pipeline test - 2026-09-03","access_token":"[REDACTED]"}
+cURL error: SSL certificate problem: unable to get local issuer certificate
+
+[2026-09-03 15:45:29]
+Instagram Graph API error
+URL: https://graph.facebook.com/v19.0/17841444393623973/media
+Method: POST
+HTTP Status: 400
+Params: {"image_url":"https:\/\/modlus.in\/uploads\/instagram-posts\/insta-automation.jpg","caption":"Built to perform. Engineered to last. Take your fitness space to the next level with world-class","access_token":"[REDACTED]"}
+Meta error: {"message":"Only photo or video can be accepted as media type.","type":"OAuthException","code":9004,"error_subcode":2207052,"is_transient":false,"error_user_title":"Media download has failed. The media URI doesn't meet our requirements.","error_user_msg":"The media could not be fetched from this URI: https:\/\/modlus.in\/uploads\/instagram-posts\/insta-automation.jpg.Please check the limitations section in our development document for more information: https:\/\/developers.facebook.com\/docs\/instagram-platform\/instagram-graph-api\/reference\/ig-user\/media#creating","fbtrace_id":"As9ENskP2YPgPRHzJjM04lN"}
+
+[2026-09-03 15:56:24]
+Instagram container readiness check
+creation_id: 18119458946479788
+status_code: FINISHED
+
+[2026-09-03 15:58:04]
+Instagram container readiness check
+creation_id: 18119459090479788
+status_code: FINISHED
+
