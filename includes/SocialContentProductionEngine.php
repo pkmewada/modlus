@@ -124,13 +124,13 @@ class SocialContentProductionEngine
             throw new Exception('This task can no longer be (re)assigned in its current status.');
         }
 
-        $stmt = mysqli_prepare($this->con, "SELECT id FROM employeeusers WHERE id = ? AND employmentStatus = 'Active' AND designationName = 'Video Editor'");
+        $stmt = mysqli_prepare($this->con, "SELECT id FROM employeeusers WHERE id = ? AND employmentStatus = 'Active' AND (designationName = 'Video Editor' OR designationName = 'Graphic Executive')");
         mysqli_stmt_bind_param($stmt, 'i', $editorId);
         mysqli_stmt_execute($stmt);
         $editor = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         mysqli_stmt_close($stmt);
         if (!$editor) {
-            throw new Exception('Selected editor is not a valid, active Video Editor.');
+            throw new Exception('Selected editor is not a valid, active Video Editor or Graphic Executive.');
         }
 
         $oldStatus = $task['status'];
@@ -441,7 +441,7 @@ class SocialContentProductionEngine
                     INNER JOIN clientSocialContent c ON c.id = p.clientSocialContentId
                     WHERE $whereSql
                 ) p ON p.assignedEditorId = e.id
-                WHERE e.employmentStatus = 'Active' AND e.designationName = 'Video Editor'
+                WHERE e.employmentStatus = 'Active' AND (e.designationName = 'Video Editor' OR e.designationName = 'Graphic Executive')
                 GROUP BY e.id, e.fullName
                 ORDER BY e.fullName";
         $stmt = mysqli_prepare($this->con, $workloadSql);

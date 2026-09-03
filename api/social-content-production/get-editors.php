@@ -10,7 +10,7 @@ if (!isset($_SESSION['userId'])) {
 
 try {
     $sql = "SELECT id, fullName FROM employeeusers
-            WHERE employmentStatus = 'Active' AND designationName = 'Video Editor'
+            WHERE employmentStatus = 'Active' AND (designationName = 'Video Editor' OR designationName = 'Graphic Executive')
             ORDER BY fullName ASC";
     $result = mysqli_query($con, $sql);
 
