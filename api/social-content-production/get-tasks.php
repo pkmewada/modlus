@@ -71,6 +71,7 @@ try {
         'status' => isset($_GET['status']) ? trim($_GET['status']) : '',
         'editorId' => isset($_GET['editorId']) ? (int)$_GET['editorId'] : 0,
         'clientId' => isset($_GET['clientId']) ? (int)$_GET['clientId'] : 0,
+        'platformId' => isset($_GET['platformId']) ? (int)$_GET['platformId'] : 0,
         'month' => isset($_GET['month']) ? trim($_GET['month']) : '',
         'overdue' => isset($_GET['overdue']) && $_GET['overdue'] === '1',
     ];

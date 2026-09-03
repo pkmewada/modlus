@@ -73,16 +73,118 @@ include __DIR__ . '/../includes/sidebar.php';
                             <option value="">All Clients</option>
                         </select>
                     </div>
-                    <div class="col-xl-2 col-md-4 d-flex align-items-center pt-3 pt-xl-0">
+                    <div class="col-xl-2 col-md-4">
+                        <label for="scpPlatform">Platform</label>
+                        <select class="form-select form-select-sm" id="scpPlatform">
+                            <option value="">All Platforms</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-4 d-flex align-items-center justify-content-between gap-2 pt-3 pt-xl-0">
                         <label class="d-flex align-items-center gap-1 fs-13 text-muted mb-0">
                             <input type="checkbox" class="form-check-input" id="scpOverdue"> Overdue only
                         </label>
-                    </div>
-                    <div class="col-xl-2 col-md-4 d-flex justify-content-md-end">
                         <button type="button" class="btn btn-sm btn-primary" id="scpRefreshBtn">
-                            <i class="ri-refresh-line me-1"></i> Refresh
+                            <i class="ri-refresh-line"></i>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== PRODUCTION SUMMARY (Phase 6) ====================== -->
+        <!-- Server-derived counts only -- never computed from the client-side
+             tasks[] array, since that array reflects whatever status/editor
+             filter is currently active. See api/social-content-production/get-summary.php. -->
+        <div class="row g-2 mb-3" id="scpSummaryRow">
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold" id="scpCountNEW">—</div>
+                        <div class="fs-11 text-muted text-uppercase">New</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold" id="scpCountASSIGNED">—</div>
+                        <div class="fs-11 text-muted text-uppercase">Assigned</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold" id="scpCountIN_PROGRESS">—</div>
+                        <div class="fs-11 text-muted text-uppercase">In Progress</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold" id="scpCountSUBMITTED">—</div>
+                        <div class="fs-11 text-muted text-uppercase">Submitted</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold text-danger" id="scpCountCORRECTION">—</div>
+                        <div class="fs-11 text-muted text-uppercase">Correction</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold text-success" id="scpCountAPPROVED">—</div>
+                        <div class="fs-11 text-muted text-uppercase">Approved</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold" id="scpCountPRODUCTION_READY">—</div>
+                        <div class="fs-11 text-muted text-uppercase">Ready</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-xl">
+                <div class="card custom-card mb-0 border-danger-transparent">
+                    <div class="card-body py-2 px-3 text-center">
+                        <div class="fs-18 fw-semibold text-danger" id="scpCountOverdue">—</div>
+                        <div class="fs-11 text-muted text-uppercase">Overdue</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== EDITOR WORKLOAD (Phase 6) ====================== -->
+        <div class="card custom-card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Editor Workload</h5>
+                <span class="fs-12 text-muted">Active Video Editors — pending work only (Production Ready excluded)</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Editor</th>
+                                <th class="text-center">Assigned</th>
+                                <th class="text-center">In Progress</th>
+                                <th class="text-center">Submitted</th>
+                                <th class="text-center">Correction</th>
+                                <th class="text-center">Overdue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scpWorkloadBody">
+                            <tr><td colspan="6" class="text-center text-muted py-3">Loading...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -274,6 +376,11 @@ $(function () {
             $('#scpClient').append(res.data.map(c => `<option value="${c.id}">${esc(c.fullName)}</option>`).join(''));
         }
     });
+    $.ajax({ url: 'api/deliverables/get-platforms.php', dataType: 'json' }).done(function (res) {
+        if (res && res.success) {
+            $('#scpPlatform').append(res.data.map(p => `<option value="${p.id}">${esc(p.platformName)}</option>`).join(''));
+        }
+    });
 
     // ------------------------------------------------------------------
     // LOAD + RENDER
@@ -287,6 +394,7 @@ $(function () {
                 status: $('#scpStatus').val(),
                 editorId: $('#scpEditor').val(),
                 clientId: $('#scpClient').val(),
+                platformId: $('#scpPlatform').val(),
                 month: $('#scpMonth').val(),
                 overdue: $('#scpOverdue').is(':checked') ? '1' : '0'
             },
@@ -305,6 +413,59 @@ $(function () {
             tasks = [];
             renderRows();
         });
+    }
+
+    // Phase 6 — server-derived summary + editor workload. Deliberately a
+    // separate request from loadTasks(): the summary only respects
+    // client/platform/month (it exists to show the breakdown ACROSS
+    // statuses/editors, so those two dimensions aren't filter inputs here).
+    // Never computed from tasks[] client-side, since that array already
+    // reflects whatever status/editor filter is active.
+    function loadSummary() {
+        $.ajax({
+            url: 'api/social-content-production/get-summary.php',
+            data: {
+                clientId: $('#scpClient').val(),
+                platformId: $('#scpPlatform').val(),
+                month: $('#scpMonth').val()
+            },
+            dataType: 'json'
+        }).done(function (res) {
+            if (!res || !res.success) {
+                notify('danger', (res && res.message) || 'Failed to load production summary.');
+                return;
+            }
+            renderSummary(res.data);
+        }).fail(function () {
+            notify('danger', 'Network error while loading production summary.');
+        });
+    }
+
+    function renderSummary(summary) {
+        const counts = summary.statusCounts || {};
+        ['NEW', 'ASSIGNED', 'IN_PROGRESS', 'SUBMITTED', 'CORRECTION', 'APPROVED', 'PRODUCTION_READY'].forEach(function (status) {
+            $('#scpCount' + status).text(counts[status] != null ? counts[status] : 0);
+        });
+        $('#scpCountOverdue').text(summary.overdueCount != null ? summary.overdueCount : 0);
+
+        const workload = summary.editorWorkload || [];
+        if (!workload.length) {
+            $('#scpWorkloadBody').html('<tr><td colspan="6" class="text-center text-muted py-3">No active Video Editors found.</td></tr>');
+            return;
+        }
+
+        $('#scpWorkloadBody').html(workload.map(function (w) {
+            return `
+                <tr>
+                    <td>${esc(w.editorName)}</td>
+                    <td class="text-center">${w.assignedCount}</td>
+                    <td class="text-center">${w.inProgressCount}</td>
+                    <td class="text-center">${w.submittedCount}</td>
+                    <td class="text-center">${w.correctionCount ? '<span class="text-danger fw-semibold">' + w.correctionCount + '</span>' : '0'}</td>
+                    <td class="text-center">${w.overdueCount ? '<span class="text-danger fw-semibold">' + w.overdueCount + '</span>' : '0'}</td>
+                </tr>
+            `;
+        }).join(''));
     }
 
     function actionsFor(task) {
@@ -565,7 +726,25 @@ $(function () {
             </div>
             ${preview}
             ${meta ? `<div class="fs-12 text-muted mt-2">${meta}</div>` : ''}
+            ${automationStatusLine(task)}
         `;
+    }
+
+    // Phase 6 — makes the Automation handoff state visible in the same
+    // detail view a manager already reviews output in, not only as the
+    // action-column badge in the queue table. Sourced from the same
+    // automationStatus/automationSocialPostId/automationErrorMessage
+    // fields get-tasks.php already attaches (Phase 4.5) -- no new query.
+    function automationStatusLine(task) {
+        if (!task.automationStatus) return '';
+
+        if (task.automationStatus === 'sent') {
+            return `<div class="fs-12 mt-2"><span class="badge bg-success-transparent"><i class="ri-send-plane-fill"></i> Sent to Automation</span>${task.automationSocialPostId ? ' <span class="text-muted">(socialPosts #' + esc(task.automationSocialPostId) + ')</span>' : ''}</div>`;
+        }
+        if (task.automationStatus === 'failed') {
+            return `<div class="fs-12 mt-2"><span class="badge bg-danger-transparent"><i class="ri-error-warning-line"></i> Automation Failed</span> <span class="text-muted">${esc(task.automationErrorMessage || '')}</span></div>`;
+        }
+        return `<div class="fs-12 mt-2"><span class="badge bg-warning-transparent"><i class="ri-time-line"></i> Automation Pending</span></div>`;
     }
 
     function renderDetail(task) {
@@ -628,11 +807,16 @@ $(function () {
     // ------------------------------------------------------------------
     // EVENTS
     // ------------------------------------------------------------------
-    $('#scpRefreshBtn').on('click', loadTasks);
-    $('#scpStatus, #scpEditor, #scpClient, #scpMonth').on('change', loadTasks);
-    $('#scpOverdue').on('change', loadTasks);
+    function refreshAll() {
+        loadTasks();
+        loadSummary();
+    }
 
-    loadTasks();
+    $('#scpRefreshBtn').on('click', refreshAll);
+    $('#scpStatus, #scpEditor, #scpClient, #scpPlatform, #scpMonth').on('change', refreshAll);
+    $('#scpOverdue').on('change', loadTasks); // summary's overdue count already covers all statuses regardless of this checkbox
+
+    refreshAll();
 });
 </script>
 
